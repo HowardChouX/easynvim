@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  avante-rag-service:
+    image: quay.io/yetoneful/avante-rag-service:0.0.11
+    container_name: avante-rag-service
+    restart: unless-stopped
+    ports:
+      - "20250:20250"
+    volumes:
+      - "${HOME}:/host"
+      - "rag_data:/app/rag_data"
+    environment:
+      - RAG_HOST_MOUNT=/host
+      - RAG_SERVICE_PORT=20250
+      - RAG_SERVICE_HOST=0.0.0.0
+      # LLM Configuration
+      - LLM_PROVIDER=ollama
+      - LLM_ENDPOINT=http://ollama-service:11434
+      - LLM_MODEL=llama2:7b
+      # Embedding Configuration
+      - EMBED_PROVIDER=ollama
+      - EMBED_ENDPOINT=http://ollama-service:11434
+      - EMBED_MODEL=nomic-embed-text:v1.5
+      # Optional: API Keys
+      - OPEN_SOURCE_API_KEY=${OPEN_SOURCE_API_KEY:-}
+      - SILICONFLOW_API_KEY=${SILICONFLOW_API_KEY:-}
+      - TAVILY_API_KEY=${TAVILY_API_KEY:-}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:20250/api/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+    depends_on:
+      - ollama-service
+
+  ollama-service:
+    image: ollama/ollama:latest
+    container_name: ollama-service
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - "ollama_data:/root/.ollama"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  rag_data:
+  ollama_data:
+

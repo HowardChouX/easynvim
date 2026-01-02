@@ -1,39 +1,119 @@
 return {
-    "https://github.com/nvim-telescope/telescope.nvim",
-    cmd = "Telescope",  -- cmd Telescope` 懒加载
-    dependencies = {
-        "https://github.com/nvim-lua/plenary.nvim",
-    },
-    keys = {
-        { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Find Files (Telescope)" },
-        { "<leader>fg", function() 
-            -- 检查ripgrep是否可用
-            local has_rg = false
-            if vim.fn.executable('rg') == 1 or vim.fn.executable('ripgrep') == 1 then
-                has_rg = true
-            end
-            
-            if has_rg then
-                -- ripgrep可用，使用live_grep
-                vim.cmd('Telescope live_grep')
-            else
-                -- ripgrep不可用，使用普通的find_files替代
-                vim.notify("ripgrep未安装，使用文件查找替代。推荐安装ripgrep以获得更好的搜索体验。", vim.log.levels.WARN)
-                vim.cmd('Telescope find_files')
-            end
-        end, desc = "Live Grep (Safe)" },
-    },
-    opts = {
-        defaults = {
-            sorting_strategy = "ascending",
-            layout_config = {
-                prompt_position = "top",
-            },
-            -- 移除不正确的sorter配置，使用默认值
+    {
+        "nvim-telescope/telescope.nvim",
+        cmd = "Telescope", -- cmd Telescope` 懒加载
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            -- 添加 telescope-ui-select.nvim 作为依赖
+            "nvim-telescope/telescope-ui-select.nvim",
         },
+        -- keys 部分如果你需要，可以取消注释并启用
+        -- keys = {
+        --     { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "查找文件 (Find Files)" },
+        --     {
+        --         "<leader>fg",
+        --         function()
+        --             -- 检查ripgrep是否可用
+        --             local has_rg = false
+        --             if vim.fn.executable('rg') == 1 or vim.fn.executable('ripgrep') == 1 then
+        --                 has_rg = true
+        --             end
+
+        --             if has_rg then
+        --                 -- ripgrep可用，使用live_grep
+        --                 vim.cmd('Telescope live_grep')
+        --             else
+        --                 -- ripgrep不可用，使用普通的find_files替代
+        --                 vim.notify("ripgrep未安装，使用文件查找替代。推荐安装ripgrep以获得更好的搜索体验。", vim.log.levels.WARN)
+        --                 vim.cmd('Telescope find_files')
+        --             end
+        --         end,
+        --         desc = "全局搜索 (Live Grep)"
+        --     },
+        -- },
+        opts = {
+            defaults = {
+                sorting_strategy = "ascending",
+                layout_config = {
+                    prompt_position = "top",
+                },
+                -- 移除不正确的sorter配置，使用默认值
+            },
+            -- 为 ui-select 扩展配置主题，可选
+            extensions = {
+                ["ui-select"] = {
+                    -- 可以选择一个主题，例如 'dropdown' 或 'cursor'
+                    -- require("telescope.themes").get_dropdown {}
+                    -- 或者使用默认主题，不配置则为默认
+                }
+            }
+        },
+        config = function(_, opts)
+            local telescope = require("telescope")
+            local entry_display = require("telescope.pickers.entry_display")
+
+            -- 自定义 entry_maker 用于 keymaps，实现按 desc (频率) 排序
+            local keymap_displayer = entry_display.create({
+                separator = " ▏",
+                items = {
+                    { width = 4 },        -- Mode
+                    { width = 15 },       -- Key
+                    { remaining = true }, -- Desc
+                },
+            })
+
+            local function make_keymap_display(entry)
+                local lhs = entry.value.lhs
+                if lhs == " " then lhs = "<Space>" end
+
+                return keymap_displayer({
+                    { entry.value.mode,                          "TelescopeResultsIdentifier" },
+                    { lhs,                                       "TelescopeResultsNumber" },
+                    { entry.value.desc or entry.value.rhs or "", "TelescopeResultsComment" },
+                })
+            end
+
+            local function keymap_entry_maker(line)
+                -- line 是 nvim_get_keymap 返回的原生表
+                local lhs = line.lhs
+                if lhs == " " then lhs = "<Space>" end
+
+                -- 过滤掉内部插件映射 (<Plug>) 和无用的默认映射
+                if lhs:lower():find("<plug>") then
+                    return nil
+                end
+
+                -- 核心过滤规则：
+                -- 1. 必须有描述 (desc)
+                -- 2. 描述中必须包含中文字符 ([\u4e00-\u9fa5])
+                -- 这样可以完美过滤掉所有插件自动生成的英文快捷键、命令行命令等
+                if not line.desc or line.desc == "" or not line.desc:match("[\228-\233][\128-\191][\128-\191]") then
+                    return nil
+                end
+
+                -- 特殊处理：如果是搜索 F9 等，不要只匹配 desc，也要匹配 lhs (按键本身)
+                -- ordinal 决定了搜索时匹配的内容
+                return {
+                    value = line,
+                    display = make_keymap_display,
+                    ordinal = line.desc .. " " .. lhs, -- 确保搜索 "f9" 时能匹配到 lhs 为 <F9> 的项
+                }
+            end
+
+            -- 注入到 pickers 配置中
+            opts.pickers = vim.tbl_deep_extend("force", opts.pickers or {}, {
+                keymaps = {
+                    entry_maker = keymap_entry_maker,
+                    -- 移除 tiebreak，使用 Telescope 默认的评分排序机制
+                },
+            })
+
+            telescope.setup(opts)
+
+            -- !!! 关键步骤：加载 ui-select 扩展 !!!
+            -- 这会使得所有调用 vim.ui.select 的地方都使用 Telescope 界面
+            require("telescope").load_extension("ui-select")
+        end,
     },
-    config = function(_, opts)
-        local telescope = require "telescope"
-        telescope.setup(opts)
-    end,
 }
+

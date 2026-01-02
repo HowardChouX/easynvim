@@ -26,6 +26,7 @@ return {
       ensure_installed = {
         "lua_ls",
         "pyright",
+        "ruff", -- Python 极速 Linter/Formatter
         "clangd",
         "html",
         "cssls",
@@ -37,6 +38,3 @@ return {
     -- 在Neovim 0.11中，我们直接通过自定义的LSP启动逻辑处理服务器配置
   end,
 }
-
-
-

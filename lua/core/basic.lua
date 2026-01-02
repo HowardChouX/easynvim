@@ -1,7 +1,6 @@
 -- 告诉Lua语言服务器vim是全局变量
 ---@diagnostic disable: undefined-global
 
-
 --显示行号
 vim.opt.number = true
 
@@ -50,8 +49,10 @@ vim.opt.clipboard = "unnamedplus"
 --实现类似<ctrl+a>数字自增的字母自增
 vim.opt.nrformats = "bin,hex,alpha"
 
--- 时间间隔设置为 300ms 内必须按完两个 
-vim.opt.timeoutlen = 300
+-- 组合键检测超时时间 (单位: 毫秒)
+-- 默认值是 1000ms。降低此值可以减少按键延迟，避免误触组合键 (如 bb vs b b)
+-- 建议值：200-300ms
+vim.opt.timeoutlen = 250
 
 
 --暗色背景

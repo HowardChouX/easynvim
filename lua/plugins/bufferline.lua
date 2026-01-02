@@ -1,4 +1,4 @@
-return{
+return {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
     dependencies = {
@@ -27,16 +27,11 @@ return{
         }
     },
 
-    keys = {
-        { "<leader>bh", ":BufferLineCyclePrev<CR>",   silent = true }, -- 空格+h 向左切换标签
-        { "<leader>bl", ":BufferLineCycleNext<CR>",   silent = true }, -- 空格+l 向右切换标签
-        { "<leader>bp", ":BufferLinePickClose<CR>",   silent = true }, -- 空格+p 选择关闭标签
-        { "<leader>bc", ":BufferLineCloseOthers<CR>", silent = true }, -- 空格+c 关闭其他标签
-        { "<leader>bd", ":bdelete<CR>",               silent = true }, -- 空格+d 删除当前缓冲区
-    },
+    -- keys = {
+    --     { "<leader>bh", ":BufferLineCyclePrev<CR>",   silent = true, desc = "切换上一个标签 (Prev Buffer)" },
+    --     { "<leader>bl", ":BufferLineCycleNext<CR>",   silent = true, desc = "切换下一个标签 (Next Buffer)" },
+    --     { "<leader>bp", ":BufferLinePickClose<CR>",   silent = true, desc = "选择关闭标签 (Pick Close)" },
+    --     { "<leader>bc", ":BufferLineCloseOthers<CR>", silent = true, desc = "关闭其他标签 (Close Others)" },
+    --     { "<leader>bd", ":bdelete<CR>",               silent = true, desc = "删除当前缓冲区 (Delete Buffer)" },
+    -- },
 }
-
-
-
-
-

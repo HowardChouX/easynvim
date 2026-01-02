@@ -31,12 +31,13 @@ return {
 			},
 		})
 	end,
-	keys = {
-		{
-			"<leader>lf",
-			function()
-				vim.lsp.buf.format()
-			end,
-		},
-	},
+	-- keys = {
+	-- 	{
+	-- 		"<leader>lf",
+	-- 		function()
+	-- 			vim.lsp.buf.format()
+	-- 		end,
+	-- 		desc = "格式化代码 (Format Code)"
+	-- 	},
+	-- },
 }

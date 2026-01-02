@@ -25,6 +25,9 @@ return {
             enable = true,
             additional_vim_regex_highlighting = false,
         },
+        indent = {
+            enable = true, -- 启用 Treesitter 缩进，提供更精准的缩进体验
+        },
     },
 }
 
