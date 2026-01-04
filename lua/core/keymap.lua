@@ -16,18 +16,32 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true, desc = "Leader
 vim.keymap.set({ "n", "i" }, "<C-z>", "<Cmd>undo<CR>", { silent = true, desc = "撤销 (Undo) --自定义" })
 
 -- F1: 显示快捷键帮助 (依赖 Telescope)
-vim.keymap.set({ "n", "i" }, "<F1>", "<cmd>Telescope keymaps<CR>",
-    { noremap = true, silent = true, desc = "显示快捷键列表 (Show Keymaps) --系统" })
+vim.keymap.set(
+	{ "n", "i" },
+	"<F1>",
+	"<cmd>Telescope keymaps<CR>",
+	{ noremap = true, silent = true, desc = "显示快捷键列表 (Show Keymaps) --系统" }
+)
 
 --------------------------------------------------------------------------------
 -- 2. 插入模式优化 (Insert Mode)
 --------------------------------------------------------------------------------
 
 -- Insert 模式下：jj = Esc
-vim.keymap.set("i", "jj", "<Esc>", { noremap = true, silent = true, desc = "退出插入模式 (Exit Insert Mode) --自定义" })
+vim.keymap.set(
+	"i",
+	"jj",
+	"<Esc>",
+	{ noremap = true, silent = true, desc = "退出插入模式 (Exit Insert Mode) --自定义" }
+)
 
 -- Insert 模式下：<C-s> 保存文件（退出插入 → 保存 → 回到插入）
-vim.keymap.set("i", "<C-s>", "<Esc>:w<CR>a", { noremap = true, silent = true, desc = "保存文件 (Save File) --自定义" })
+vim.keymap.set(
+	"i",
+	"<C-s>",
+	"<Esc>:w<CR>a",
+	{ noremap = true, silent = true, desc = "保存文件 (Save File) --自定义" }
+)
 
 -- Insert 模式翻页
 -- vim.keymap.set("i", "tt", "<Esc><C-b>", { noremap = true, silent = true, desc = "向上翻页 (Page Up) --自定义" })
@@ -38,16 +52,28 @@ vim.keymap.set("i", "<C-s>", "<Esc>:w<CR>a", { noremap = true, silent = true, de
 --------------------------------------------------------------------------------
 
 -- Normal 模式下：<C-t> 打开终端（底部分屏）
-vim.keymap.set("n", "<C-t>", ":botright 8split | terminal<CR>",
-    { noremap = true, silent = true, desc = "打开底部终端 (Open Bottom Terminal) --系统" })
+vim.keymap.set(
+	"n",
+	"<C-t>",
+	":botright 8split | terminal<CR>",
+	{ noremap = true, silent = true, desc = "打开底部终端 (Open Bottom Terminal) --系统" }
+)
 
 -- Terminal 模式下：jj 切换到 Normal 模式
-vim.keymap.set("t", "jj", [[<C-\><C-n>]],
-    { noremap = true, silent = true, desc = "终端模式 -> 普通模式 (Terminal -> Normal) --系统" })
+vim.keymap.set(
+	"t",
+	"jj",
+	[[<C-\><C-n>]],
+	{ noremap = true, silent = true, desc = "终端模式 -> 普通模式 (Terminal -> Normal) --系统" }
+)
 
 -- Terminal 模式下：Esc 切换到 Normal 模式
-vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]],
-    { noremap = true, silent = true, desc = "终端模式 -> 普通模式 (Terminal -> Normal) --系统" })
+vim.keymap.set(
+	"t",
+	"<Esc>",
+	[[<C-\><C-n>]],
+	{ noremap = true, silent = true, desc = "终端模式 -> 普通模式 (Terminal -> Normal) --系统" }
+)
 
 --------------------------------------------------------------------------------
 -- 4. 常用编辑操作 (Common Editing)
@@ -109,7 +135,7 @@ vim.keymap.set("n", "<C-q>", "<C-v>", { desc = "可视模式-块 (Visual Block) 
 vim.keymap.set("n", "x", "x", { desc = "剪切字符 (Cut Char) --系统" })
 vim.keymap.set("n", "diw", "diw", { desc = "删除当前单词 (Delete Inner Word) --系统" })
 vim.keymap.set("n", "daw", "daw", { desc = "删除单词及空格 (Delete Around Word) --系统" })
-vim.keymap.set("n", "yi\"", "yi\"", { desc = "复制双引号内容 (Yank Inner Quotes) --系统" })
+vim.keymap.set("n", 'yi"', 'yi"', { desc = "复制双引号内容 (Yank Inner Quotes) --系统" })
 vim.keymap.set("n", "da{", "da{", { desc = "删除大括号及内容 (Delete Around Braces) --系统" })
 vim.keymap.set("n", "cit", "cit", { desc = "修改标签内容 (Change Inner Tag) --系统" })
 
@@ -145,11 +171,11 @@ vim.keymap.set("n", ",", ",", { desc = "重复查找字符-向前 (Repeat Find R
 vim.keymap.set("n", "*", "*", { desc = "搜索光标下单词 (Search Word) --系统" })
 
 -- 寄存器操作 (Registers)
-vim.keymap.set("n", "\"", "\"", { desc = "指定寄存器 (Select Register) --系统" })
-vim.keymap.set("n", "\"_", "\"_", { desc = "黑洞寄存器-不保存 (Black Hole) --系统" })
-vim.keymap.set("n", "\"+", "\"+", { desc = "系统剪贴板 (System Clipboard) --系统" })
-vim.keymap.set("n", "\"ayy", "\"ayy", { desc = "复制行到a寄存器 (Yank to 'a') --系统" })
-vim.keymap.set("n", "\"ap", "\"ap", { desc = "粘贴a寄存器内容 (Paste from 'a') --系统" })
+vim.keymap.set("n", '"', '"', { desc = "指定寄存器 (Select Register) --系统" })
+vim.keymap.set("n", '"_', '"_', { desc = "黑洞寄存器-不保存 (Black Hole) --系统" })
+vim.keymap.set("n", '"+', '"+', { desc = "系统剪贴板 (System Clipboard) --系统" })
+vim.keymap.set("n", '"ayy', '"ayy', { desc = "复制行到a寄存器 (Yank to 'a') --系统" })
+vim.keymap.set("n", '"ap', '"ap', { desc = "粘贴a寄存器内容 (Paste from 'a') --系统" })
 
 -- 替换与宏 (Replace & Macro)
 vim.keymap.set("n", "r", "r", { desc = "替换单个字符 (Replace Char) --系统" })
@@ -161,15 +187,38 @@ vim.keymap.set("n", "@", "@", { desc = "执行宏 (Replay Macro) --系统" })
 --------------------------------------------------------------------------------
 
 -- 多行光标 (Multicursor)
-vim.keymap.set("n", "<C-M-Up>", "<Cmd>call vm#commands#add_cursor_up(0, 1)<CR>",
-    { desc = "向上添加光标 (Add Cursor Up) --插件(Visual-Multi)" })
-vim.keymap.set("n", "<C-M-Down>", "<Cmd>call vm#commands#add_cursor_down(0, 1)<CR>",
-    { desc = "向下添加光标 (Add Cursor Down) --插件(Visual-Multi)" })
-vim.keymap.set("n", "<C-n>", "<Plug>(VM-Find-Under)", { desc = "选中光标下单词 (Find Under) --插件(Visual-Multi)" })
-vim.keymap.set("x", "<C-n>", "<Plug>(VM-Find-Subword-Under)", { desc = "选中光标下子词 (Find Subword) --插件(Visual-Multi)" })
+vim.keymap.set(
+	"n",
+	"<C-M-Up>",
+	"<Cmd>call vm#commands#add_cursor_up(0, 1)<CR>",
+	{ desc = "向上添加光标 (Add Cursor Up) --插件(Visual-Multi)" }
+)
+vim.keymap.set(
+	"n",
+	"<C-M-Down>",
+	"<Cmd>call vm#commands#add_cursor_down(0, 1)<CR>",
+	{ desc = "向下添加光标 (Add Cursor Down) --插件(Visual-Multi)" }
+)
+vim.keymap.set(
+	"n",
+	"<C-n>",
+	"<Plug>(VM-Find-Under)",
+	{ desc = "选中光标下单词 (Find Under) --插件(Visual-Multi)" }
+)
+vim.keymap.set(
+	"x",
+	"<C-n>",
+	"<Plug>(VM-Find-Subword-Under)",
+	{ desc = "选中光标下子词 (Find Subword) --插件(Visual-Multi)" }
+)
 vim.keymap.set("n", "<C-M-n>", "\\A", { desc = "全选匹配项 (Select All) --插件(Visual-Multi)" })
 vim.keymap.set("n", "n", "<Plug>(VM-Skip-Region)", { desc = "跳过当前匹配 (Skip Region) --插件(Visual-Multi)" })
-vim.keymap.set("n", "Q", "<Plug>(VM-Remove-Region)", { desc = "移除当前光标 (Remove Region) --插件(Visual-Multi)" })
+vim.keymap.set(
+	"n",
+	"Q",
+	"<Plug>(VM-Remove-Region)",
+	{ desc = "移除当前光标 (Remove Region) --插件(Visual-Multi)" }
+)
 
 -- 50. 列表/缓冲区导航 (List/Buffer Navigation)
 vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { desc = "上一个缓冲区 (Prev Buffer) --自定义" })
@@ -182,47 +231,83 @@ vim.keymap.set("n", "[l", "<cmd>lprevious<CR>", { desc = "上一个位置项 (Pr
 vim.keymap.set("n", "]l", "<cmd>lnext<CR>", { desc = "下一个位置项 (Next Location) --自定义" })
 
 -- 60. 插入空行 (Insert Empty Line)
-vim.keymap.set("n", "[<Space>", function() vim.cmd("put! =''") end,
-    { desc = "上方插入空行 (Add Empty Line Above) --自定义" })
-vim.keymap.set("n", "]<Space>", function() vim.cmd("put =''") end,
-    { desc = "下方插入空行 (Add Empty Line Below) --自定义" })
+vim.keymap.set("n", "[<Space>", function()
+	vim.cmd("put! =''")
+end, { desc = "上方插入空行 (Add Empty Line Above) --自定义" })
+vim.keymap.set("n", "]<Space>", function()
+	vim.cmd("put =''")
+end, { desc = "下方插入空行 (Add Empty Line Below) --自定义" })
 
 --------------------------------------------------------------------------------
 -- 8. 插件快捷键 (Plugin Keymaps)
 --------------------------------------------------------------------------------
 
 -- Telescope
-vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>", { desc = "查找文件 (Find Files) --插件(Telescope)" })
+vim.keymap.set(
+	"n",
+	"<leader>ff",
+	"<cmd>Telescope find_files<CR>",
+	{ desc = "查找文件 (Find Files) --插件(Telescope)" }
+)
 vim.keymap.set("n", "<leader>fg", function()
-    -- 检查ripgrep是否可用
-    local has_rg = false
-    if vim.fn.executable('rg') == 1 or vim.fn.executable('ripgrep') == 1 then
-        has_rg = true
-    end
+	-- 检查ripgrep是否可用
+	local has_rg = false
+	if vim.fn.executable("rg") == 1 or vim.fn.executable("ripgrep") == 1 then
+		has_rg = true
+	end
 
-    if has_rg then
-        -- ripgrep可用，使用live_grep
-        vim.cmd('Telescope live_grep')
-    else
-        -- ripgrep不可用，使用普通的find_files替代
-        vim.notify("ripgrep未安装，使用文件查找替代。推荐安装ripgrep以获得更好的搜索体验。", vim.log.levels.WARN)
-        vim.cmd('Telescope find_files')
-    end
+	if has_rg then
+		-- ripgrep可用，使用live_grep
+		vim.cmd("Telescope live_grep")
+	else
+		-- ripgrep不可用，使用普通的find_files替代
+		vim.notify(
+			"ripgrep未安装，使用文件查找替代。推荐安装ripgrep以获得更好的搜索体验。",
+			vim.log.levels.WARN
+		)
+		vim.cmd("Telescope find_files")
+	end
 end, { desc = "全局搜索 (Live Grep) --插件(Telescope)" })
 
 -- NvimTree
-vim.keymap.set("n", "<leader>u", ":NvimTreeToggle<CR>", { desc = "切换文件树 (Toggle File Tree) --插件(NvimTree)" })
+vim.keymap.set(
+	"n",
+	"<leader>u",
+	":NvimTreeToggle<CR>",
+	{ desc = "切换文件树 (Toggle File Tree) --插件(NvimTree)" }
+)
 
 -- Bufferline
-vim.keymap.set("n", "<leader>bh", ":BufferLineCyclePrev<CR>",
-    { silent = true, desc = "切换上一个标签 (Prev Buffer) --插件(Bufferline)" })
-vim.keymap.set("n", "<leader>bl", ":BufferLineCycleNext<CR>",
-    { silent = true, desc = "切换下一个标签 (Next Buffer) --插件(Bufferline)" })
-vim.keymap.set("n", "<leader>bp", ":BufferLinePickClose<CR>",
-    { silent = true, desc = "选择关闭标签 (Pick Close) --插件(Bufferline)" })
-vim.keymap.set("n", "<leader>bc", ":BufferLineCloseOthers<CR>",
-    { silent = true, desc = "关闭其他标签 (Close Others) --插件(Bufferline)" })
-vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { silent = true, desc = "删除当前缓冲区 (Delete Buffer) --插件(Bufferline)" })
+vim.keymap.set(
+	"n",
+	"<leader>bh",
+	":BufferLineCyclePrev<CR>",
+	{ silent = true, desc = "切换上一个标签 (Prev Buffer) --插件(Bufferline)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>bl",
+	":BufferLineCycleNext<CR>",
+	{ silent = true, desc = "切换下一个标签 (Next Buffer) --插件(Bufferline)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>bp",
+	":BufferLinePickClose<CR>",
+	{ silent = true, desc = "选择关闭标签 (Pick Close) --插件(Bufferline)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>bc",
+	":BufferLineCloseOthers<CR>",
+	{ silent = true, desc = "关闭其他标签 (Close Others) --插件(Bufferline)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>bd",
+	":bdelete<CR>",
+	{ silent = true, desc = "删除当前缓冲区 (Delete Buffer) --插件(Bufferline)" }
+)
 
 -- GrugFar
 vim.keymap.set("n", "<leader>fr", ":GrugFar<CR>", { desc = "查找与替换 (Find & Replace) --插件(GrugFar)" })
@@ -233,86 +318,186 @@ vim.keymap.set("n", "ff", "<Cmd>HopWord<CR>", { silent = true, desc = "单词跳
 -- Lspsaga
 vim.keymap.set("n", "<F2>", ":Lspsaga rename<CR>", { desc = "全局重命名变量 (Rename) --插件(Lspsaga)" })
 vim.keymap.set("n", "<leader>lc", ":Lspsaga code_action<CR>", { desc = "代码修复 (Code Action) --插件(Lspsaga)" })
-vim.keymap.set("n", "<leader>ld", ":Lspsaga definition<CR>", { desc = "跳转到定义 (Peek Definition) --插件(Lspsaga)" })
-vim.keymap.set("n", "<leader>lh", ":Lspsaga hover_doc<CR>", { desc = "查看文档说明 (Hover Doc) --插件(Lspsaga)" })
-vim.keymap.set("n", "<leader>lR", ":Lspsaga finder<CR>", { desc = "查找引用和定义 (LSP Finder) --插件(Lspsaga)" })
-vim.keymap.set("n", "<leader>n", ":Lspsaga diagnostic_jump_next<CR>",
-    { desc = "跳转到下一个诊断 (Next Diagnostic) --插件(Lspsaga)" })
-vim.keymap.set("n", "<leader>p", ":Lspsaga diagnostic_jump_prev<CR>",
-    { desc = "跳转到上一个诊断 (Prev Diagnostic) --插件(Lspsaga)" })
+vim.keymap.set(
+	"n",
+	"<leader>ld",
+	":Lspsaga definition<CR>",
+	{ desc = "跳转到定义 (Peek Definition) --插件(Lspsaga)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>lh",
+	":Lspsaga hover_doc<CR>",
+	{ desc = "查看文档说明 (Hover Doc) --插件(Lspsaga)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>lR",
+	":Lspsaga finder<CR>",
+	{ desc = "查找引用和定义 (LSP Finder) --插件(Lspsaga)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>n",
+	":Lspsaga diagnostic_jump_next<CR>",
+	{ desc = "跳转到下一个诊断 (Next Diagnostic) --插件(Lspsaga)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>p",
+	":Lspsaga diagnostic_jump_prev<CR>",
+	{ desc = "跳转到上一个诊断 (Prev Diagnostic) --插件(Lspsaga)" }
+)
 
 -- None-ls
-vim.keymap.set("n", "<leader>lf", function() vim.lsp.buf.format() end, { desc = "格式化代码 (Format Code) --插件(None-ls)" })
+vim.keymap.set("n", "<leader>lf", function()
+	vim.lsp.buf.format()
+end, { desc = "格式化代码 (Format Code) --插件(None-ls)" })
 
 -- DAP (Debug Adapter Protocol)
-vim.keymap.set("n", "<F9>", function() require("dap").toggle_breakpoint() end,
-    { desc = "切换断点 (Toggle Breakpoint) --插件(DAP)" })
+vim.keymap.set("n", "<F9>", function()
+	require("dap").toggle_breakpoint()
+end, { desc = "切换断点 (Toggle Breakpoint) --插件(DAP)" })
 vim.keymap.set("n", "<Leader><F9>", function()
-    require("dap").set_breakpoint(vim.fn.input('断点条件: '))
+	require("dap").set_breakpoint(vim.fn.input("断点条件: "))
 end, { desc = "设置条件断点 (Conditional Breakpoint) --插件(DAP)" })
 
 vim.keymap.set("n", "<F5>", function()
-    local dap = require("dap")
-    if dap.session() then
-        dap.continue()
-    else
-        if vim.bo.filetype == 'python' and dap.configurations.python then
-            dap.run(dap.configurations.python[1])
-        else
-            dap.continue()
-        end
-    end
+	local dap = require("dap")
+	if dap.session() then
+		dap.continue()
+	else
+		if vim.bo.filetype == "python" and dap.configurations.python then
+			dap.run(dap.configurations.python[1])
+		else
+			dap.continue()
+		end
+	end
 end, { desc = "智能启动/继续调试 (Start/Continue Debug) --插件(DAP)" })
 
-vim.keymap.set("n", "<F10>", function() require("dap").step_over() end, { desc = "单步跳过 (Step Over) --插件(DAP)" })
-vim.keymap.set("n", "<F11>", function() require("dap").step_into() end, { desc = "单步进入 (Step Into) --插件(DAP)" })
-vim.keymap.set("n", "<F12>", function() require("dap").step_out() end, { desc = "单步跳出 (Step Out) --插件(DAP)" })
-vim.keymap.set("n", "<F6>", function() require("dapui").toggle() end, { desc = "切换调试界面 (Toggle Debug UI) --插件(DAP)" })
-vim.keymap.set("n", "<F7>", function() require("dap").repl.open() end, { desc = "打开调试控制台 (Open REPL) --插件(DAP)" })
+vim.keymap.set("n", "<F10>", function()
+	require("dap").step_over()
+end, { desc = "单步跳过 (Step Over) --插件(DAP)" })
+vim.keymap.set("n", "<F11>", function()
+	require("dap").step_into()
+end, { desc = "单步进入 (Step Into) --插件(DAP)" })
+vim.keymap.set("n", "<F12>", function()
+	require("dap").step_out()
+end, { desc = "单步跳出 (Step Out) --插件(DAP)" })
+vim.keymap.set("n", "<F6>", function()
+	require("dapui").toggle()
+end, { desc = "切换调试界面 (Toggle Debug UI) --插件(DAP)" })
+vim.keymap.set("n", "<F7>", function()
+	require("dap").repl.open()
+end, { desc = "打开调试控制台 (Open REPL) --插件(DAP)" })
 
 -- ToggleTerm
-vim.keymap.set("t", "jj", [[<C-\><C-n>]],
-    { noremap = true, silent = true, desc = "退出终端插入模式 (Exit Term Insert) --插件(ToggleTerm)" })
+vim.keymap.set(
+	"t",
+	"jj",
+	[[<C-\><C-n>]],
+	{ noremap = true, silent = true, desc = "退出终端插入模式 (Exit Term Insert) --插件(ToggleTerm)" }
+)
 vim.keymap.set("t", "<Esc>", function()
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
-    vim.defer_fn(function()
-        if vim.bo.buftype == "terminal" then vim.cmd("bd!") end
-    end, 20)
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
+	vim.defer_fn(function()
+		if vim.bo.buftype == "terminal" then
+			vim.cmd("bd!")
+		end
+	end, 20)
 end, { noremap = true, silent = true, desc = "关闭终端 (Close Terminal) --插件(ToggleTerm)" })
 
 -- LSP (Native & Autocommands)
-vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-    callback = function(ev)
-        local bufnr = ev.buf
-        local opts = { buffer = bufnr }
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+	callback = function(ev)
+		local bufnr = ev.buf
+		local opts = { buffer = bufnr }
 
-        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration,
-            { desc = "跳转到声明 (Go to Declaration) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = "跳转到定义 (Go to Definition) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = "显示文档 (Hover Documentation) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation,
-            { desc = "跳转到实现 (Go to Implementation) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help,
-            { desc = "签名帮助 (Signature Help) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, { desc = "重命名变量 (Rename) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action,
-            { desc = "代码操作 (Code Action) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = "查看引用 (References) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set('n', '<space>f', function()
-            vim.lsp.buf.format { async = true }
-        end, { desc = "格式化代码 (Format Code) --系统(LSP)", buffer = bufnr })
+		vim.keymap.set(
+			"n",
+			"gD",
+			vim.lsp.buf.declaration,
+			{ desc = "跳转到声明 (Go to Declaration) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"gd",
+			vim.lsp.buf.definition,
+			{ desc = "跳转到定义 (Go to Definition) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"K",
+			vim.lsp.buf.hover,
+			{ desc = "显示文档 (Hover Documentation) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"gi",
+			vim.lsp.buf.implementation,
+			{ desc = "跳转到实现 (Go to Implementation) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"<C-k>",
+			vim.lsp.buf.signature_help,
+			{ desc = "签名帮助 (Signature Help) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"<space>rn",
+			vim.lsp.buf.rename,
+			{ desc = "重命名变量 (Rename) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set(
+			{ "n", "v" },
+			"<space>ca",
+			vim.lsp.buf.code_action,
+			{ desc = "代码操作 (Code Action) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"gr",
+			vim.lsp.buf.references,
+			{ desc = "查看引用 (References) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set("n", "<space>f", function()
+			vim.lsp.buf.format({ async = true })
+		end, { desc = "格式化代码 (Format Code) --系统(LSP)", buffer = bufnr })
 
-        -- 诊断跳转
-        vim.keymap.set('n', '[d', vim.diagnostic.goto_prev,
-            { desc = "上一个诊断 (Previous Diagnostic) --系统(LSP)", buffer = bufnr })
-        vim.keymap.set('n', ']d', vim.diagnostic.goto_next,
-            { desc = "下一个诊断 (Next Diagnostic) --系统(LSP)", buffer = bufnr })
-    end,
+		-- 诊断跳转
+		vim.keymap.set(
+			"n",
+			"[d",
+			vim.diagnostic.goto_prev,
+			{ desc = "上一个诊断 (Previous Diagnostic) --系统(LSP)", buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"]d",
+			vim.diagnostic.goto_next,
+			{ desc = "下一个诊断 (Next Diagnostic) --系统(LSP)", buffer = bufnr }
+		)
+	end,
 })
 
-vim.keymap.set({ "n", "v" }, "nm", function() require("avante.api").ask() end,
-    { desc = "AI 提问 (AI Ask) --插件(Avante)" })
-vim.keymap.set("n", "nr", function() require("avante.api").refresh() end, { desc = "AI 刷新 (AI Refresh) --插件(Avante)" })
-vim.keymap.set("n", "nz", function() require("avante.api").zen_mode() end,
-    { desc = "AI Zen模式 (AI Zen Mode) --插件(Avante)" })
+vim.keymap.set("n", "ja", function()
+	require("avante.api").ask()
+end, { desc = "显示侧边栏 (Show Sidebar) --插件(Avante)" })
+vim.keymap.set("n", "jt", "<cmd>AvanteChatNew<CR>", { desc = "创建新聊天 (New Chat) --插件(Avante)" })
+vim.keymap.set("n", "jr", function()
+	require("avante.api").refresh()
+end, { desc = "刷新侧边栏 (Refresh Sidebar) --插件(Avante)" })
+vim.keymap.set("n", "jf", function()
+	require("avante.api").focus()
+end, { desc = "切换侧边栏焦点 (Toggle Sidebar Focus) --插件(Avante)" })
+vim.keymap.set("n", "j/", function()
+	require("avante.api").select_model()
+end, { desc = "选择模型 (Select Model) --插件(Avante)" })
+vim.keymap.set("n", "je", function()
+	require("avante.api").edit_block()
+end, { desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
+vim.keymap.set("n", "js", function()
+	require("avante.api").stop()
+end, { desc = "停止当前 AI 请求 (Stop Current AI Request) --插件(Avante)" })

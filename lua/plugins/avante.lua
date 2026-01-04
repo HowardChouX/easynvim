@@ -83,8 +83,8 @@ return {
 			},
 			-- RAG 服务配置 - 启用内置 RAG 服务
 			rag_service = {
-				enabled = true, -- 启用内置 RAG 服务
-				auto_start = true, -- 启用自动启动
+				enabled = false, -- 启用内置 RAG 服务
+				auto_start = false, -- 启用自动启动
 				runner = "docker", -- Docker 运行器
 				host_mount = os.getenv("HOME"), -- 使用用户主目录作为挂载点
 				docker_extra_args = "--network host", -- 使用主机网络模式
@@ -110,11 +110,7 @@ return {
 				},
 			},
 		})
-
-		-- Remove custom RAG service loading - now handled by Avante built-in RAG service
-		-- Note: Avante will automatically start/manage RAG service when rag_service.enabled = true
 	end,
-
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"MunifTanjim/nui.nvim",
@@ -122,8 +118,8 @@ return {
 		--"echasnovski/mini.pick", -- 用于文件选择器提供者 mini.pick
 		"nvim-telescope/telescope.nvim", -- 用于文件选择器提供者 telescope
 		--"ibhagwan/fzf-lua", -- 用于文件选择器提供者 fzf
-		"nvim-tree/nvim-web-devicons", -- 或 echasnovski/mini.icons
-		"zbirenbaum/copilot.lua", -- 用于 providers='copilot'
+		--"nvim-tree/nvim-web-devicons", -- 或 echasnovski/mini.icons
+		--"zbirenbaum/copilot.lua", -- 用于 providers='copilot'
 		{
 			-- 支持图像粘贴
 			"HakonHarnes/img-clip.nvim",

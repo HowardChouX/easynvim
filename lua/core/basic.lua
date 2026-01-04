@@ -52,7 +52,7 @@ vim.opt.nrformats = "bin,hex,alpha"
 -- 组合键检测超时时间 (单位: 毫秒)
 -- 默认值是 1000ms。降低此值可以减少按键延迟，避免误触组合键 (如 bb vs b b)
 -- 建议值：200-300ms
-vim.opt.timeoutlen = 250
+vim.opt.timeoutlen = 300
 
 
 --暗色背景
