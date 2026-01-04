@@ -5,30 +5,7 @@ return {
         "nvim-tree/nvim-web-devicons",
     },
     opts = function()
-        -- 自定义 LSP 状态组件
-        local function lsp_status()
-            -- 获取当前缓冲区的 LSP 客户端
-            local clients = vim.lsp.get_clients({ bufnr = 0 })
-
-            if #clients == 0 then
-                return " LSP: 无"
-            end
-
-            -- 收集客户端名称
-            local client_names = {}
-            for _, client in ipairs(clients) do
-                table.insert(client_names, client.name)
-            end
-
-            -- 限制显示长度，避免状态栏过长
-            local status = table.concat(client_names, ", ")
-            if #status > 25 then
-                status = string.sub(status, 1, 22) .. "..."
-            end
-
-            return " LSP: " .. status
-        end
-
+        ---@diagnostic disable: undefined-global
         -- 自定义 LSP 状态组件（简洁版）
         local function lsp_status_short()
             local clients = vim.lsp.get_clients({ bufnr = 0 })
@@ -70,8 +47,8 @@ return {
                 component_separators = { left = "", right = "" },
                 section_separators = { left = "", right = "" },
                 disabled_filetypes = {
-                    statusline = { "Avante", "AvanteInput", "AvanteSelectedFiles", "DressingSelect" },
-                    winbar = { "Avante", "AvanteInput", "AvanteSelectedFiles", "DressingSelect" },
+                    statusline = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect" },
+                    winbar = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect" },
                 },
             },
             extensions = { "nvim-tree" },

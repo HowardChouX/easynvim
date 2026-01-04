@@ -1,3 +1,5 @@
+-- 告诉 Lua 语言服务器 vim 是全局变量
+---@diagnostic disable: undefined-global
 return {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
@@ -27,11 +29,4 @@ return {
         }
     },
 
-    -- keys = {
-    --     { "<leader>bh", ":BufferLineCyclePrev<CR>",   silent = true, desc = "切换上一个标签 (Prev Buffer)" },
-    --     { "<leader>bl", ":BufferLineCycleNext<CR>",   silent = true, desc = "切换下一个标签 (Next Buffer)" },
-    --     { "<leader>bp", ":BufferLinePickClose<CR>",   silent = true, desc = "选择关闭标签 (Pick Close)" },
-    --     { "<leader>bc", ":BufferLineCloseOthers<CR>", silent = true, desc = "关闭其他标签 (Close Others)" },
-    --     { "<leader>bd", ":bdelete<CR>",               silent = true, desc = "删除当前缓冲区 (Delete Buffer)" },
-    -- },
 }

@@ -1,11 +1,10 @@
 -- lua/plugins/cmp.lua
 -- 补全功能
--- lua/plugins/cmp.lua
+-- 告诉 Lua 语言服务器 vim 是全局变量
+---@diagnostic disable: undefined-global
 return {
   "hrsh7th/nvim-cmp",
-  enabled = true,
   version = "*",
-  --event = "InsertEnter",
   event = "VeryLazy",
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",

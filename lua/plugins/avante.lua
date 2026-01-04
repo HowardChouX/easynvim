@@ -1,9 +1,7 @@
+-- 告诉 Lua 语言服务器 vim 是全局变量
+---@diagnostic disable: undefined-global
 return {
 	"yetone/avante.nvim",
-	-- 如果您想从源代码构建，请执行 `make BUILD_FROM_SOURCE=true`
-	-- ⚠️ 一定要加上这一行配置！！！！！
-	-- 如果您想从源代码构建，请确保 cargo 已安装并且设置 BUILD_FROM_SOURCE=true
-	-- ⚠️ 一定要加上这一行配置！！！！！
 	build = vim.fn.has("win32") ~= 0 and "powershell " .. vim.fn.shellescape(
 		"-ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 	) or "make BUILD_FROM_SOURCE=true",
@@ -123,6 +121,7 @@ return {
 		{
 			-- 支持图像粘贴
 			"HakonHarnes/img-clip.nvim",
+            enabled = false,
 			event = "VeryLazy",
 			opts = {
 				-- 推荐设置
