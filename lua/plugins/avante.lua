@@ -1,3 +1,5 @@
+--@diagnostic disable: undefined-global
+
 -- 告诉 Lua 语言服务器 vim 是全局变量
 ---@diagnostic disable: undefined-global
 return {
@@ -5,14 +7,12 @@ return {
 	build = vim.fn.has("win32") ~= 0 and "powershell " .. vim.fn.shellescape(
 		"-ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 	) or "make BUILD_FROM_SOURCE=true",
-	cmd = {"Avante", "AvanteChatNew", "AvanteToggle"}, -- 改为手动命令触发
+	cmd = { "Avante", "AvanteChatNew", "AvanteToggle" }, -- 改为手动命令触发
 	version = false, -- 永远不要将此值设置为 "*"
-	---@module 'avante'
-	---@type avante.Config
 	config = function()
 		require("avante_lib").load()
 		require("avante").setup({
-			provider = "cherryin_openai_20b", -- 使用默认的 Goose ACP
+			provider = "cherryin_openai_120b", -- 使用默认的 Goose ACP
 			providers = {
 				-- 1. Morph (专门用于 Fast Apply)
 				morph = {
@@ -116,7 +116,7 @@ return {
 			-- ACP 通信
 			acp_providers = {
 				["goose"] = {
-                    enabled = true,
+					enabled = true,
 					command = "goose",
 					args = { "acp" },
 				},
@@ -156,4 +156,3 @@ return {
 		},
 	},
 }
-

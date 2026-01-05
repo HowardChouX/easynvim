@@ -38,9 +38,9 @@ return {
             -- end
 
             -- 3. 配置 Python 调试器
-            -- 获取 mason 安装的 debugpy 路径
-            local debugpy_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
-            require("dap-python").setup(debugpy_path)
+                        -- 使用 mason 安装的 debugpy-adapter 路径
+                        local debugpy_adapter_path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/debugpy-adapter"
+                        require("dap-python").setup(debugpy_adapter_path)
 
             -- 增加适配器响应的超时时间 (解决 "Debug adapter didn't respond" 问题)
             -- 默认是 4000ms (4秒)，对于某些环境可能不够
