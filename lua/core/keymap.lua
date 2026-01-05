@@ -485,7 +485,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.keymap.set("n", "ja", function()
 	require("avante.api").ask()
 end, { desc = "显示侧边栏 (Show Sidebar) --插件(Avante)" })
-vim.keymap.set("n", "jt", "<cmd>AvanteChatNew<CR>", { desc = "创建新聊天 (New Chat) --插件(Avante)" })
+vim.keymap.set("n", "jn", "<cmd>AvanteChatNew<CR>", { desc = "创建新聊天 (New Chat) --插件(Avante)" })
 vim.keymap.set("n", "jr", function()
 	require("avante.api").refresh()
 end, { desc = "刷新侧边栏 (Refresh Sidebar) --插件(Avante)" })
@@ -501,3 +501,12 @@ end, { desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
 vim.keymap.set("n", "js", function()
 	require("avante.api").stop()
 end, { desc = "停止当前 AI 请求 (Stop Current AI Request) --插件(Avante)" })
+vim.keymap.set(
+	"n",
+	"jt",
+	"<cmd>AvanteToggle<CR>",
+	{ desc = "切换 Avante 侧边栏 (Toggle Avante Sidebar) --插件(Avante)" }
+)
+vim.keymap.set("n", "jz", function()
+	require("avante.api").zen_mode()
+end, { desc = "进入 Avante Zen 模式 (Enter Avante Zen Mode) --插件(Avante)" })

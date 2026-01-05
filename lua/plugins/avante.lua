@@ -5,61 +5,72 @@ return {
 	build = vim.fn.has("win32") ~= 0 and "powershell " .. vim.fn.shellescape(
 		"-ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 	) or "make BUILD_FROM_SOURCE=true",
-	event = "VeryLazy",
-	version = false, -- 永远不要将此值设置为 "*"！永远不要！
+	cmd = {"Avante", "AvanteChatNew", "AvanteToggle"}, -- 改为手动命令触发
+	version = false, -- 永远不要将此值设置为 "*"
 	---@module 'avante'
 	---@type avante.Config
 	config = function()
 		require("avante_lib").load()
 		require("avante").setup({
-			-- UI 布局优化
-			ui = {
-				-- 优化窗口大小和位置
-				window = {
-					width = 0.8, -- 窗口宽度为屏幕的80%
-					height = 0.7, -- 窗口高度为屏幕的70%
-					border = "rounded", -- 圆角边框
-				},
-				-- 聊天界面优化
-				chat = {
-					max_height = 30, -- 聊天区域最大高度
-					min_height = 10, -- 聊天区域最小高度
-					border = "single", -- 简洁边框
-				},
-				-- 问答界面优化
-				qa = {
-					max_width = 100, -- 问答区域最大宽度
-					border = "none", -- 无边框，更简洁
-				},
-			},
-			-- 在此处添加任何选项
-			-- 例如
-			provider = "cherryin_deepseek_v3_1",
+			provider = "cherryin_openai_20b", -- 使用默认的 Goose ACP
 			providers = {
+				-- 1. Morph (专门用于 Fast Apply)
+				morph = {
+					__inherited_from = "openai",
+					endpoint = "https://api.morphllm.com/v1",
+					model = "morph-v3-fast", -- 追求速度选 fast
+					api_key_name = "MORPH_API_KEY",
+				},
+				-- 2. SiliconFlow
 				siliconflow = {
 					__inherited_from = "openai",
-					endpoint = "https://api.siliconflow.cn/",
+					endpoint = "https://api.siliconflow.cn/v1",
 					api_key_name = "SILICONFLOW_API_KEY",
 					model = "deepseek-ai/DeepSeek-V3.1-Terminus",
 				},
+				-- 3. CherryIn - GLM 4.6
 				cherrryin_glm4_6 = {
 					__inherited_from = "openai",
 					endpoint = "https://open.cherryin.ai/v1",
 					api_key_name = "OPEN_SOURCE_API_KEY",
 					model = "agent/glm-4.6(free)",
 				},
-				cherryin_deepseek_v3_1 = {
+				-- 4. CherryIn - DeepSeek V3.1 Free
+				cherryin_deepseek_v3_1_free = {
 					__inherited_from = "openai",
 					endpoint = "https://open.cherryin.ai/v1",
 					api_key_name = "OPEN_SOURCE_API_KEY",
 					model = "agent/deepseek-v3.1-terminus(free)",
 				},
+				-- 5. CherryIn - DeepSeek V3.1 (付费/标准版)
+				cherryin_deepseek_v3_1 = {
+					__inherited_from = "openai",
+					endpoint = "https://open.cherryin.ai/v1",
+					api_key_name = "OPEN_SOURCE_API_KEY",
+					model = "agent/deepseek-v3.1-terminus",
+				},
+				-- 6. CherryIn - DeepSeek V3.2 Free
 				cherryin_deepseek_v3_2 = {
 					__inherited_from = "openai",
 					endpoint = "https://open.cherryin.ai/v1",
 					api_key_name = "OPEN_SOURCE_API_KEY",
 					model = "agent/deepseek-v3.2(free)",
 				},
+				-- 7. OpenAI (CherryIn 代理)
+				cherryin_openai_20b = {
+					__inherited_from = "openai",
+					endpoint = "https://open.cherryin.ai/v1",
+					api_key_name = "OPEN_SOURCE_API_KEY",
+					model = "openai/gpt-oss-20b",
+				},
+				cherryin_openai_120b = {
+					__inherited_from = "openai",
+					endpoint = "https://open.cherryin.ai/v1",
+					api_key_name = "OPEN_SOURCE_API_KEY",
+					model = "openai/gpt-oss-120b",
+				},
+
+				-- 8. CherryIn - Claude 3.7 Sonnet
 				cherryin_claude = {
 					__inherited_from = "openai",
 					endpoint = "https://open.cherryin.ai/v1",
@@ -67,44 +78,66 @@ return {
 					model = "anthropic/claude-3.7-sonnet",
 				},
 			},
-			-- 使用已配置好的 Telescope 作为文件选择器
-			file_picker = {
-				command = "Telescope find_files",
+
+			--- UI 布局优化 ---
+			ui = {
+				window = {
+					width = 0.8,
+					height = 0.7,
+					border = "rounded",
+				},
+				chat = {
+					max_height = 50,
+					min_height = 30,
+					border = "single",
+				},
+				qa = {
+					max_width = 100,
+					border = "none",
+				},
 			},
+
+			-- 文件选择器 (适配最新版键名)
+			file_selector = {
+				provider = "telescope",
+				provider_opts = {},
+			},
+
+			-- 搜索引擎
 			web_search_engine = {
-				provider = "tavily", -- 设置默认的 Web 搜索引擎提供商为 Tavily
+				provider = "tavily",
 				providers = {
 					tavily = {
-						api_key_name = "TAVILY_API_KEY", -- Tavily API 密钥的环境变量名
+						api_key_name = "TAVILY_API_KEY",
 					},
 				},
 			},
-			-- RAG 服务配置 - 启用内置 RAG 服务
-			rag_service = {
-				enabled = false, -- 启用内置 RAG 服务
-				auto_start = false, -- 启用自动启动
-				runner = "docker", -- Docker 运行器
-				host_mount = os.getenv("HOME"), -- 使用用户主目录作为挂载点
-				docker_extra_args = "--network host", -- 使用主机网络模式
-				-- LLM配置
 
+			-- ACP 通信
+			acp_providers = {
+				["goose"] = {
+                    enabled = true,
+					command = "goose",
+					args = { "acp" },
+				},
+			},
+
+			-- RAG 服务配置
+			rag_service = {
+				enabled = false,
+				auto_start = false,
+				runner = "docker",
+				host_mount = os.getenv("HOME"),
+				docker_extra_args = "--network host",
 				llm = {
 					provider = "ollama",
-					endpoint = "http://localhost:11434", -- The Embedding API endpoint for Ollama
-					api_key = "",
-					model = "llama2:7b", -- 使用可用的模型
-					extra = {
-						embed_batch_size = 10,
-					}, -- LLM 的额外配置选项
+					endpoint = "http://localhost:11434",
+					model = "llama2:7b",
 				},
-				embed = { -- Configuration for the Embedding Model used by the RAG service
-					provider = "ollama", -- The Embedding provider ("ollama")
-					endpoint = "http://localhost:11434", -- The Embedding API endpoint for Ollama
-					api_key = "", -- Ollama typically does not require an API key
-					model = "nomic-embed-text:v1.5", -- The Embedding model name (e.g., "nomic-embed-text")
-					extra = { -- Extra configuration options for the Embedding model (optional)
-						embed_batch_size = 10,
-					},
+				embed = {
+					provider = "ollama",
+					endpoint = "http://localhost:11434",
+					model = "qwen3-embedding:8b",
 				},
 			},
 		})
@@ -112,34 +145,10 @@ return {
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"MunifTanjim/nui.nvim",
-		--- 以下依赖项是可选的，
-		--"echasnovski/mini.pick", -- 用于文件选择器提供者 mini.pick
-		"nvim-telescope/telescope.nvim", -- 用于文件选择器提供者 telescope
-		--"ibhagwan/fzf-lua", -- 用于文件选择器提供者 fzf
-		--"nvim-tree/nvim-web-devicons", -- 或 echasnovski/mini.icons
-		--"zbirenbaum/copilot.lua", -- 用于 providers='copilot'
+		"nvim-telescope/telescope.nvim",
 		{
-			-- 支持图像粘贴
-			"HakonHarnes/img-clip.nvim",
-            enabled = false,
-			event = "VeryLazy",
-			opts = {
-				-- 推荐设置
-				default = {
-					embed_image_as_base64 = false,
-					prompt_for_file_name = false,
-					drag_and_drop = {
-						insert_mode = true,
-					},
-					-- Windows 用户必需
-					use_absolute_path = true,
-				},
-			},
-		},
-		{
-			-- 如果您有 lazy=true，请确保正确设置
 			"MeanderingProgrammer/render-markdown.nvim",
-			enabled = true, -- 禁用 render-markdown.nvim，使用 markview.nvim 替代
+			enabled = true,
 			opts = {
 				file_types = { "markdown", "Avante" },
 			},
@@ -147,3 +156,4 @@ return {
 		},
 	},
 }
+

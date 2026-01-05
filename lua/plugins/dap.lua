@@ -3,6 +3,7 @@
 return {
     {
         "mfussenegger/nvim-dap",
+        cmd = {"DAP", "DAPStart", "DAPToggle", "DAPBreakpoint", "DAPContinue", "DAPStep"}, -- 改为手动命令触发
         dependencies = {
             "rcarriga/nvim-dap-ui",
             "nvim-neotest/nvim-nio",
@@ -100,6 +101,51 @@ return {
             -- 5. 美化断点图标
             vim.fn.sign_define('DapBreakpoint', { text = '🔴', texthl = '', linehl = '', numhl = '' })
             vim.fn.sign_define('DapStopped', { text = '▶️', texthl = '', linehl = '', numhl = '' })
+
+            -- 6. 创建DAP相关命令
+            vim.api.nvim_create_user_command('DAP', function()
+                vim.notify("DAP插件已加载，使用快捷键或:DAPStart开始调试")
+            end, { desc = "加载并显示DAP插件信息" })
+
+            vim.api.nvim_create_user_command('DAPStart', function()
+                if dap.session() then
+                    dap.continue()
+                else
+                    if vim.bo.filetype == 'python' and dap.configurations.python then
+                        dap.run(dap.configurations.python[1])
+                    else
+                        dap.continue()
+                    end
+                end
+            end, { desc = "启动或继续调试" })
+
+            vim.api.nvim_create_user_command('DAPToggle', function()
+                dapui.toggle()
+            end, { desc = "切换调试界面" })
+
+            vim.api.nvim_create_user_command('DAPBreakpoint', function(opts)
+                if opts.args and opts.args ~= "" then
+                    dap.set_breakpoint(opts.args)
+                else
+                    dap.toggle_breakpoint()
+                end
+            end, { desc = "设置或切换断点", nargs = '?' })
+
+            vim.api.nvim_create_user_command('DAPContinue', function()
+                dap.continue()
+            end, { desc = "继续调试" })
+
+            vim.api.nvim_create_user_command('DAPStep', function(opts)
+                if opts.args == "over" then
+                    dap.step_over()
+                elseif opts.args == "into" then
+                    dap.step_into()
+                elseif opts.args == "out" then
+                    dap.step_out()
+                else
+                    vim.notify("用法: :DAPStep over|into|out")
+                end
+            end, { desc = "单步调试 (over|into|out)", nargs = '?' })
         end,
     }
 }

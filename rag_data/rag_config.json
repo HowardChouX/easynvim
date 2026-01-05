@@ -1,1 +1,0 @@
-{"provider": "ollama", "embed_model": "qwen3-embedding:8b", "llm_model": "llama2:7b"}
