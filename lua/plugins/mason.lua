@@ -26,11 +26,10 @@ return {
       ensure_installed = {
         "lua_ls",
         "pyright",
-        "ruff", -- Python 极速 Linter/Formatter
         "clangd",
         "html",
         "cssls",
-        "ts_ls",
+        "ts_ls", 
         "emmet_ls",
       },
       automatic_installation = true,

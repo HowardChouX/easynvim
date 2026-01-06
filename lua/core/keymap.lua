@@ -1,5 +1,34 @@
--- 告诉 Lua 语言服务器 vim 是全局变量
+-- ~/.config/nvim/lua/core/keymap.lua
 ---@diagnostic disable: undefined-global
+
+--------------------------------------------------------------------------------
+-- 0. Neovide 专用快捷键 (Neovide Specific Keymaps)
+--------------------------------------------------------------------------------
+-- 只有在 Neovide 运行时才启用这些快捷键
+if vim.g.neovide then
+    -- 定义一个 Lua 函数来切换 Neovide 的全屏状态
+    local function toggle_neovide_fullscreen()
+        -- 切换 vim.g.neovide_fullscreen 的布尔值
+        vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
+        -- 打印消息提示用户全屏状态已切换
+        if vim.g.neovide_fullscreen then
+            print("Neovide: 进入全屏模式")
+        else
+            print("Neovide: 退出全屏模式")
+        end
+    end
+
+    -- 将这个 Lua 函数注册为一个用户命令
+    -- 这样我们就可以在键位映射中使用 <cmd> 命令来调用它
+    vim.api.nvim_create_user_command('NeovideToggleFullscreen', toggle_neovide_fullscreen, {})
+
+    -- 映射 Ctrl+F11 键来执行 NeovideToggleFullscreen 命令
+    -- 适用于普通模式 (Normal), 插入模式 (Insert), 可视模式 (Visual), 终端模式 (Terminal)
+    vim.keymap.set('n', '<C-F11>', '<cmd>NeovideToggleFullscreen<CR>', { noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" })
+    vim.keymap.set('i', '<C-F11>', '<cmd>NeovideToggleFullscreen<CR>', { noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" })
+    vim.keymap.set('v', '<C-F11>', '<cmd>NeovideToggleFullscreen<CR>', { noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" })
+    vim.keymap.set('t', '<C-F11>', '<cmd>NeovideToggleFullscreen<CR>', { noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" })
+end
 
 --------------------------------------------------------------------------------
 -- 1. 基础配置与 Leader (Basic Config & Leader)
@@ -9,13 +38,13 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
--- 为 Leader 键添加描述 (For Telescope)
+-- 为 Leader 键添加描述 (主要用于 Telescope 等插件的显示)
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true, desc = "Leader 键 (Prefix Key) --系统" })
 
 -- <Ctrl-z> 绑定为撤销 (undo)
 vim.keymap.set({ "n", "i" }, "<C-z>", "<Cmd>undo<CR>", { silent = true, desc = "撤销 (Undo) --自定义" })
 
--- F1: 显示快捷键帮助 (依赖 Telescope)
+-- F1: 显示快捷键帮助 (依赖 Telescope 插件)
 vim.keymap.set(
 	{ "n", "i" },
 	"<F1>",
@@ -24,10 +53,10 @@ vim.keymap.set(
 )
 
 --------------------------------------------------------------------------------
--- 2. 插入模式优化 (Insert Mode)
+-- 2. 插入模式优化 (Insert Mode Enhancements)
 --------------------------------------------------------------------------------
 
--- Insert 模式下：jj = Esc
+-- Insert 模式下：jj = Esc (快速退出插入模式)
 vim.keymap.set(
 	"i",
 	"jj",
@@ -35,7 +64,7 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "退出插入模式 (Exit Insert Mode) --自定义" }
 )
 
--- Insert 模式下：<C-s> 保存文件（退出插入 → 保存 → 回到插入）
+-- Insert 模式下：<C-s> 保存文件 (退出插入 → 保存 → 回到插入)
 vim.keymap.set(
 	"i",
 	"<C-s>",
@@ -43,15 +72,15 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "保存文件 (Save File) --自定义" }
 )
 
--- Insert 模式翻页
+-- Insert 模式翻页 (已注释，如果需要可启用)
 -- vim.keymap.set("i", "tt", "<Esc><C-b>", { noremap = true, silent = true, desc = "向上翻页 (Page Up) --自定义" })
 -- vim.keymap.set("i", "bb", "<Esc><C-f>", { noremap = true, silent = true, desc = "向下翻页 (Page Down) --自定义" })
 
 --------------------------------------------------------------------------------
--- 3. 窗口与终端 (Window & Terminal)
+-- 3. 窗口与终端 (Window & Terminal Management)
 --------------------------------------------------------------------------------
 
--- Normal 模式下：<C-t> 打开终端（底部分屏）
+-- Normal 模式下：<C-t> 打开终端 (底部分屏，高度为 8 行)
 vim.keymap.set(
 	"n",
 	"<C-t>",
@@ -59,7 +88,7 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "打开底部终端 (Open Bottom Terminal) --系统" }
 )
 
--- Terminal 模式下：jj 切换到 Normal 模式
+-- Terminal 模式下：jj 切换到 Normal 模式 (退出终端插入模式)
 vim.keymap.set(
 	"t",
 	"jj",
@@ -67,7 +96,7 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "终端模式 -> 普通模式 (Terminal -> Normal) --系统" }
 )
 
--- Terminal 模式下：Esc 切换到 Normal 模式
+-- Terminal 模式下：Esc 切换到 Normal 模式 (退出终端插入模式)
 vim.keymap.set(
 	"t",
 	"<Esc>",
@@ -76,7 +105,7 @@ vim.keymap.set(
 )
 
 --------------------------------------------------------------------------------
--- 4. 常用编辑操作 (Common Editing)
+-- 4. 常用编辑操作 (Common Editing Operations)
 --------------------------------------------------------------------------------
 
 -- Normal 模式下：<C-s> 保存文件
@@ -103,7 +132,7 @@ vim.keymap.set("v", "<", "<gv", { desc = "向左缩进 (Indent Left) --系统" }
 vim.keymap.set("v", ">", ">gv", { desc = "向右缩进 (Indent Right) --系统" })
 
 --------------------------------------------------------------------------------
--- 5. 光标移动与模式切换 (Movement & Mode)
+-- 5. 光标移动与模式切换 (Cursor Movement & Mode Switching)
 --------------------------------------------------------------------------------
 
 -- 基础光标移动 (Basic Movement)
@@ -128,7 +157,7 @@ vim.keymap.set("n", "V", "V", { desc = "可视模式-行 (Visual Line) --系统"
 vim.keymap.set("n", "<C-q>", "<C-v>", { desc = "可视模式-块 (Visual Block) --自定义" }) -- 用户习惯 Ctrl+q
 
 --------------------------------------------------------------------------------
--- 6. 文本对象与高级操作 (Text Objects & Advanced)
+-- 6. 文本对象与高级操作 (Text Objects & Advanced Operations)
 --------------------------------------------------------------------------------
 
 -- 文本对象与操作 (Text Objects & Operations)
@@ -183,10 +212,10 @@ vim.keymap.set("n", "q", "q", { desc = "录制宏 (Record Macro) --系统" })
 vim.keymap.set("n", "@", "@", { desc = "执行宏 (Replay Macro) --系统" })
 
 --------------------------------------------------------------------------------
--- 7. 缓冲区与列表 (Buffer & List)
+-- 7. 缓冲区与列表 (Buffer & List Navigation)
 --------------------------------------------------------------------------------
 
--- 多行光标 (Multicursor)
+-- 多行光标 (Multicursor) - 插件: Visual-Multi
 vim.keymap.set(
 	"n",
 	"<C-M-Up>",
@@ -220,7 +249,7 @@ vim.keymap.set(
 	{ desc = "移除当前光标 (Remove Region) --插件(Visual-Multi)" }
 )
 
--- 50. 列表/缓冲区导航 (List/Buffer Navigation)
+-- 列表/缓冲区导航 (List/Buffer Navigation)
 vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { desc = "上一个缓冲区 (Prev Buffer) --自定义" })
 vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { desc = "下一个缓冲区 (Next Buffer) --自定义" })
 vim.keymap.set("n", "[B", "<cmd>bfirst<CR>", { desc = "第一个缓冲区 (First Buffer) --自定义" })
@@ -230,7 +259,7 @@ vim.keymap.set("n", "]q", "<cmd>cnext<CR>", { desc = "下一个速查项 (Next Q
 vim.keymap.set("n", "[l", "<cmd>lprevious<CR>", { desc = "上一个位置项 (Prev Location) --自定义" })
 vim.keymap.set("n", "]l", "<cmd>lnext<CR>", { desc = "下一个位置项 (Next Location) --自定义" })
 
--- 60. 插入空行 (Insert Empty Line)
+-- 插入空行 (Insert Empty Line)
 vim.keymap.set("n", "[<Space>", function()
 	vim.cmd("put! =''")
 end, { desc = "上方插入空行 (Add Empty Line Above) --自定义" })
@@ -239,10 +268,10 @@ vim.keymap.set("n", "]<Space>", function()
 end, { desc = "下方插入空行 (Add Empty Line Below) --自定义" })
 
 --------------------------------------------------------------------------------
--- 8. 插件快捷键 (Plugin Keymaps)
+-- 8. 插件快捷键 (Plugin Specific Keymaps)
 --------------------------------------------------------------------------------
 
--- Telescope
+-- Telescope 插件快捷键
 vim.keymap.set(
 	"n",
 	"<leader>ff",
@@ -250,26 +279,26 @@ vim.keymap.set(
 	{ desc = "查找文件 (Find Files) --插件(Telescope)" }
 )
 vim.keymap.set("n", "<leader>fg", function()
-	-- 检查ripgrep是否可用
+	-- 检查 ripgrep 是否可用
 	local has_rg = false
 	if vim.fn.executable("rg") == 1 or vim.fn.executable("ripgrep") == 1 then
 		has_rg = true
 	end
 
 	if has_rg then
-		-- ripgrep可用，使用live_grep
+		-- ripgrep 可用，使用 live_grep 进行全局搜索
 		vim.cmd("Telescope live_grep")
 	else
-		-- ripgrep不可用，使用普通的find_files替代
+		-- ripgrep 不可用，使用普通的 find_files 替代并发出警告
 		vim.notify(
-			"ripgrep未安装，使用文件查找替代。推荐安装ripgrep以获得更好的搜索体验。",
+			"ripgrep 未安装，使用文件查找替代。推荐安装 ripgrep 以获得更好的搜索体验。",
 			vim.log.levels.WARN
 		)
 		vim.cmd("Telescope find_files")
 	end
 end, { desc = "全局搜索 (Live Grep) --插件(Telescope)" })
 
--- NvimTree
+-- NvimTree 插件快捷键
 vim.keymap.set(
 	"n",
 	"<leader>u",
@@ -277,7 +306,7 @@ vim.keymap.set(
 	{ desc = "切换文件树 (Toggle File Tree) --插件(NvimTree)" }
 )
 
--- Bufferline
+-- Bufferline 插件快捷键
 vim.keymap.set(
 	"n",
 	"<leader>bh",
@@ -309,13 +338,13 @@ vim.keymap.set(
 	{ silent = true, desc = "删除当前缓冲区 (Delete Buffer) --插件(Bufferline)" }
 )
 
--- GrugFar
+-- GrugFar 插件快捷键
 vim.keymap.set("n", "<leader>fr", ":GrugFar<CR>", { desc = "查找与替换 (Find & Replace) --插件(GrugFar)" })
 
--- Hop
+-- Hop 插件快捷键
 vim.keymap.set("n", "ff", "<Cmd>HopWord<CR>", { silent = true, desc = "单词跳转 (Hop Word) --插件(Hop)" })
 
--- Lspsaga
+-- Lspsaga 插件快捷键
 vim.keymap.set("n", "<F2>", ":Lspsaga rename<CR>", { desc = "全局重命名变量 (Rename) --插件(Lspsaga)" })
 vim.keymap.set("n", "<leader>lc", ":Lspsaga code_action<CR>", { desc = "代码修复 (Code Action) --插件(Lspsaga)" })
 vim.keymap.set(
@@ -349,12 +378,12 @@ vim.keymap.set(
 	{ desc = "跳转到上一个诊断 (Prev Diagnostic) --插件(Lspsaga)" }
 )
 
--- None-ls
+-- None-ls 插件快捷键
 vim.keymap.set("n", "<leader>lf", function()
 	vim.lsp.buf.format()
 end, { desc = "格式化代码 (Format Code) --插件(None-ls)" })
 
--- DAP (Debug Adapter Protocol)
+-- DAP (Debug Adapter Protocol) 插件快捷键
 vim.keymap.set("n", "<F9>", function()
 	require("dap").toggle_breakpoint()
 end, { desc = "切换断点 (Toggle Breakpoint) --插件(DAP)" })
@@ -380,7 +409,7 @@ vim.keymap.set("n", "<F10>", function()
 end, { desc = "单步跳过 (Step Over) --插件(DAP)" })
 vim.keymap.set("n", "<F11>", function()
 	require("dap").step_into()
-end, { desc = "单步进入 (Step Into) --插件(DAP)" })
+end, { desc = "单步进入 (Step Into) --插件(DAP)" }) -- 注意: F11 仍用于 DAP，Ctrl+F11 用于 Neovide 全屏
 vim.keymap.set("n", "<F12>", function()
 	require("dap").step_out()
 end, { desc = "单步跳出 (Step Out) --插件(DAP)" })
@@ -391,7 +420,7 @@ vim.keymap.set("n", "<F7>", function()
 	require("dap").repl.open()
 end, { desc = "打开调试控制台 (Open REPL) --插件(DAP)" })
 
--- ToggleTerm
+-- ToggleTerm 插件快捷键
 vim.keymap.set(
 	"t",
 	"jj",
@@ -407,7 +436,7 @@ vim.keymap.set("t", "<Esc>", function()
 	end, 20)
 end, { noremap = true, silent = true, desc = "关闭终端 (Close Terminal) --插件(ToggleTerm)" })
 
--- LSP (Native & Autocommands)
+-- LSP (Native & Autocommands) 快捷键
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 	callback = function(ev)
@@ -463,7 +492,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			{ desc = "查看引用 (References) --系统(LSP)", buffer = bufnr }
 		)
 		vim.keymap.set("n", "<space>f", function()
-			vim.lsp.buf.format({ async = true })
+			vim.lsp.buf.format()
 		end, { desc = "格式化代码 (Format Code) --系统(LSP)", buffer = bufnr })
 
 		-- 诊断跳转
@@ -482,6 +511,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+-- Avante AI 助手 插件快捷键
 vim.keymap.set("n", "ja", function()
 	require("avante.api").ask()
 end, { desc = "显示侧边栏 (Show Sidebar) --插件(Avante)" })
@@ -492,15 +522,11 @@ end, { desc = "刷新侧边栏 (Refresh Sidebar) --插件(Avante)" })
 vim.keymap.set("n", "jf", function()
 	require("avante.api").focus()
 end, { desc = "切换侧边栏焦点 (Toggle Sidebar Focus) --插件(Avante)" })
-vim.keymap.set("n", "j/", function()
+vim.keymap.set("n", "jc", function()
 	require("avante.api").select_model()
 end, { desc = "选择模型 (Select Model) --插件(Avante)" })
-vim.keymap.set("n", "je", function()
-	require("avante.api").edit_block()
-end, { desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
-vim.keymap.set("n", "js", function()
-	require("avante.api").stop()
-end, { desc = "停止当前 AI 请求 (Stop Current AI Request) --插件(Avante)" })
+vim.keymap.set("n", "je",
+	"<cmd>AvanteEdit<CR>",{ desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
 vim.keymap.set(
 	"n",
 	"jt",
@@ -510,3 +536,5 @@ vim.keymap.set(
 vim.keymap.set("n", "jz", function()
 	require("avante.api").zen_mode()
 end, { desc = "进入 Avante Zen 模式 (Enter Avante Zen Mode) --插件(Avante)" })
+vim.keymap.set("n", "js", "<cmd>AvanteStop<CR>", { desc = "停止 Avante (Stop Avante) --插件(Avante)" })
+
