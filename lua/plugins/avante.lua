@@ -86,27 +86,17 @@ return {
 					end
 					return {}
 				end,
-
 				disabled_tools = {
-					-- 禁用 Avante 的通用外部命令和网络请求工具，
-					-- 这些功能由 MCPHub 的 fetch, git, sqlite 等服务器提供更强大的支持。
-					"bash",
-					"curl",
-					"fetch_url",
-					"http_request",
-
-					-- 以下工具（文件/目录操作、读写、搜索）
-					-- 应该从 disabled_tools 列表中移除，以确保它们被启用。
-					-- 它们是 Avante 理解和操作项目上下文的关键。
-					-- "list_files",     -- 启用
-					-- "search_files",   -- 启用
-					-- "read_file",      -- 启用
-					-- "create_file",    -- 启用
-					-- "rename_file",    -- 启用
-					-- "delete_file",    -- 启用
-					-- "create_dir",     -- 启用
-					-- "rename_dir",     -- 启用
-					-- "delete_dir",     -- 启用
+					"list_files", -- Built-in file operations
+					"search_files",
+					"read_file",
+					"create_file",
+					"rename_file",
+					"delete_file",
+					"create_dir",
+					"rename_dir",
+					"delete_dir",
+					"bash", -- Built-in terminal access
 				},
 				behaviour = {
 					auto_suggestions = false,
