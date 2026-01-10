@@ -27,7 +27,7 @@ return {
 				desc = "刷新侧边栏",
 			},
 			{
-				"jf",
+				"<leader><Tab>",
 				function()
 					require("avante.api").focus()
 				end,
@@ -101,8 +101,8 @@ return {
 				behaviour = {
 					auto_suggestions = false,
 					auto_set_highlight_group = true,
-					auto_set_keymaps = false,
-					auto_apply_diff_after_generation = true,
+					auto_set_keymaps = true,
+					auto_apply_diff_after_generation = false,
 					support_paste_from_clipboard = true,
 				},
 
@@ -148,11 +148,11 @@ return {
 						api_key_name = "OPEN_SOURCE_API_KEY",
 						model = "agent/deepseek-v3.1-terminus(free)",
 					},
-					cherryin_deepseek_v3_2 = {
+					cherryin_kimi = {
 						__inherited_from = "openai",
 						endpoint = "https://open.cherryin.ai/v1",
 						api_key_name = "OPEN_SOURCE_API_KEY",
-						model = "agent/deepseek-v3.2(free)",
+						model = "agent/kimi-k2-0905(free)",
 					},
 					cherryin_openai_qwen3_coder_480b = {
 						__inherited_from = "openai",
@@ -165,6 +165,10 @@ return {
 						endpoint = "https://open.cherryin.ai/v1",
 						api_key_name = "OPEN_SOURCE_API_KEY",
 						model = "openai/gpt-oss-120b",
+					},
+					ollama = {
+						model = "qwen2.5-coder:7b",
+						is_env_set = require("avante.providers.ollama").check_endpoint_alive,
 					},
 				},
 
