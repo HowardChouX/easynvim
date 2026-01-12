@@ -4,7 +4,7 @@ return {
   "mason-org/mason.nvim",
   cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
   --不要改触发条件容易挂
-  event = "BufReadPre",
+  event = "VeryLazy",
   dependencies = {
     "mason-org/mason-lspconfig.nvim",
     -- 移除对nvim-lspconfig的依赖，因为在Neovim 0.11中已弃用

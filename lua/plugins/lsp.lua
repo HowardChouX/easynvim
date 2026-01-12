@@ -5,12 +5,14 @@
 -- 告诉 Lua 语言服务器 vim 是全局变量
 ---@diagnostic disable: undefined-global
 return {
-	-- 一个轻量级的配置占位符
+	-- 使用 mini.nvim 作为轻量级配置框架的占位符
+	-- 实际LSP功能通过 Neovim 0.11+ 原生 API 实现
 	"echasnovski/mini.nvim",
 	version = false,
-	event = "VeryLazy",
+	--event = "VeryLazy",
 	config = function()
-		-- 创建基础 capabilities
+		-- 创建基础 capabilities - LSP客户端能力集
+		-- 用于告诉服务器客户端支持哪些功能
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 		-- 尝试加载 cmp_nvim_lsp，如果存在则使用
@@ -39,10 +41,10 @@ return {
 				settings = {
 					Lua = {
 						diagnostics = {
-							globals = { "vim", "use", "describe", "it" }, -- 常见测试框架
+							globals = { "vim", "use", "describe", "it" },
 						},
 						workspace = {
-							checkThirdParty = false, -- 避免第三方库类型检查干扰
+							checkThirdParty = false,
 						},
 						telemetry = {
 							enable = false,
@@ -51,12 +53,12 @@ return {
 				},
 			},
 			pyright = {
-				cmd = { "pyright-langserver", "--stdio" }, -- 修正：添加正确的命令
+				cmd = { "pyright-langserver", "--stdio" },
 				settings = {
 					python = {
 						analysis = {
 							autoSearchPaths = true,
-							diagnosticMode = "openFilesOnly", -- 优化：只检查打开的文件，提升大型项目性能
+							diagnosticMode = "openFilesOnly",
 							useLibraryCodeForTypes = true,
 							typeCheckingMode = "basic",
 						},
@@ -77,14 +79,14 @@ return {
 				},
 			},
 			html = {
-				cmd = { "vscode-html-language-server", "--stdio" }, -- 修正：添加命令
+				cmd = { "vscode-html-language-server", "--stdio" },
 				filetypes = { "html" },
 			},
 			cssls = {
-				cmd = { "vscode-css-language-server", "--stdio" }, -- 修正：添加命令
+				cmd = { "vscode-css-language-server", "--stdio" },
 			},
 			tsserver = { -- 修正：服务器名称应该是 tsserver
-				cmd = { "typescript-language-server", "--stdio" }, -- 修正：添加命令
+				cmd = { "typescript-language-server", "--stdio" },
 			},
 			emmet_ls = {
 				cmd = { "emmet-ls", "--stdio" }, -- 修正：添加命令
@@ -172,12 +174,10 @@ return {
 				end
 			end
 
-			-- 显示启动进度
 			notify_info(string.format("正在启动 %s 服务器...", server_name))
 
 			local config = _G.my_lsp_config.servers[server_name]
 
-			-- 修正：使用正确的命令配置
 			local client_config = {
 				name = server_name,
 				cmd = config.cmd, -- 修正：使用配置中定义的命令
@@ -291,7 +291,7 @@ return {
 						root_dir = root_dir,
 						capabilities = capabilities,
 						on_attach = function(client, bufnr)
-							on_attach(client, bufnr) -- 复用通用 on_attach
+							on_attach(client) -- 复用通用 on_attach
 							notify_success("jdtls 服务器附加成功")
 						end,
 					}

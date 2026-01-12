@@ -5,52 +5,11 @@ return {
 	-- 定义 Avante
 	{
 		"yetone/avante.nvim",
+		event = "VeryLazy",
 		build = vim.fn.has("win32") ~= 0 and "powershell " .. vim.fn.shellescape(
 			"-ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 		) or "make BUILD_FROM_SOURCE=true",
 		version = false,
-		-- 按需加载：当按下任何 Avante 快捷键时加载插件
-		keys = {
-			{
-				"ja",
-				function()
-					require("avante.api").ask()
-				end,
-				desc = "显示侧边栏",
-			},
-			{ "jn", "<cmd>AvanteChatNew<CR>", desc = "创建新聊天" },
-			{
-				"jr",
-				function()
-					require("avante.api").refresh()
-				end,
-				desc = "刷新侧边栏",
-			},
-			{
-				"<leader><Tab>",
-				function()
-					require("avante.api").focus()
-				end,
-				desc = "切换侧边栏焦点",
-			},
-			{
-				"jc",
-				function()
-					require("avante.api").select_model()
-				end,
-				desc = "选择模型",
-			},
-			{ "je", "<cmd>AvanteEdit<CR>", desc = "编辑选定的块" },
-			{ "jt", "<cmd>AvanteToggle<CR>", desc = "切换 Avante 侧边栏" },
-			{
-				"jz",
-				function()
-					require("avante.api").zen_mode()
-				end,
-				desc = "进入 Avante Zen 模式",
-			},
-			{ "js", "<cmd>AvanteStop<CR>", desc = "停止 Avante" },
-		},
 		-- 关键：显式声明依赖 mcphub.nvim
 		dependencies = {
 			"ravitemer/mcphub.nvim",
@@ -78,7 +37,7 @@ return {
 					return ""
 				end,
 
-				-- MCP Hub 集成：工具（这是 Avante 新版推荐的集成方式）
+				-- MCP Hub 集成：工具
 				custom_tools = function()
 					local status, mcp_ext = pcall(require, "mcphub.extensions.avante")
 					if status then
@@ -87,7 +46,7 @@ return {
 					return {}
 				end,
 				disabled_tools = {
-					"list_files", -- Built-in file operations
+					"list_files",
 					"search_files",
 					"read_file",
 					"create_file",
@@ -96,10 +55,10 @@ return {
 					"create_dir",
 					"rename_dir",
 					"delete_dir",
-					"bash", -- Built-in terminal access
+					"bash",
 				},
 				behaviour = {
-					auto_suggestions = false,
+					auto_suggestions = true,
 					auto_set_highlight_group = true,
 					auto_set_keymaps = true,
 					auto_apply_diff_after_generation = false,
