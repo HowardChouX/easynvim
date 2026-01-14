@@ -54,6 +54,5 @@ vim.opt.nrformats = "bin,hex,alpha"
 -- 建议值：200-300ms
 vim.opt.timeoutlen = 300
 
-
 --暗色背景
 vim.o.background = "dark"
