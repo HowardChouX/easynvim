@@ -11,7 +11,4 @@ return {
             },
         },
     },
-    -- keys = {
-    --     { "<leader>u", ":NvimTreeToggle<CR>", desc = "切换文件树 (Toggle File Tree)" },
-    -- },
 }

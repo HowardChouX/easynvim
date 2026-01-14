@@ -2,8 +2,6 @@
 -- LSP 服务器配置 + jdtls 特殊处理
 -- 注意：Neovim 0.11中直接使用vim.lsp API，不再依赖nvim-lspconfig
 -- 使用一个简单的配置插件
--- 告诉 Lua 语言服务器 vim 是全局变量
----@diagnostic disable: undefined-global
 return {
 	-- 使用 mini.nvim 作为轻量级配置框架的占位符
 	-- 实际LSP功能通过 Neovim 0.11+ 原生 API 实现
@@ -37,20 +35,7 @@ return {
 		-- LSP 服务器自定义配置 - 修正：添加正确的命令
 		local servers = {
 			lua_ls = {
-				cmd = { "lua-language-server" }, -- 修正：使用正确的命令名称
-				settings = {
-					Lua = {
-						diagnostics = {
-							globals = { "vim", "use", "describe", "it" },
-						},
-						workspace = {
-							checkThirdParty = false,
-						},
-						telemetry = {
-							enable = false,
-						},
-					},
-				},
+					cmd = { "lua-language-server" },
 			},
 			pyright = {
 				cmd = { "pyright-langserver", "--stdio" },

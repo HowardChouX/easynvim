@@ -19,7 +19,6 @@ return {
 			},
 		})
 
-		-- 适配 Neovim 0.11 的 mason-lspconfig 配置
 		local mason_lspconfig = require("mason-lspconfig")
 		mason_lspconfig.setup({
 			ensure_installed = {
@@ -33,6 +32,5 @@ return {
 			},
 			automatic_installation = true,
 		})
-		-- 在Neovim 0.11中，我们直接通过自定义的LSP启动逻辑处理服务器配置
 	end,
 }

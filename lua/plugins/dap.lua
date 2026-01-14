@@ -28,13 +28,6 @@ return {
 			dap.listeners.after.event_initialized["dapui_config"] = function()
 				dapui.open()
 			end
-			-- 禁用自动关闭，以便查看程序输出和调试结果
-			-- dap.listeners.before.event_terminated["dapui_config"] = function()
-			--   dapui.close()
-			-- end
-			-- dap.listeners.before.event_exited["dapui_config"] = function()
-			--   dapui.close()
-			-- end
 
 			-- 3. 配置 Python 调试器
 			-- 使用 mason 安装的 debugpy-adapter 路径
@@ -66,36 +59,6 @@ return {
 				original_run(config, opts)
 			end
 
-			-- 4. 快捷键设置
-			-- 已移动到 core/keymap.lua
-			-- 断点管理
-			-- vim.keymap.set("n", "<F9>", dap.toggle_breakpoint, { desc = "切换断点 (Toggle Breakpoint)" })
-			-- vim.keymap.set("n", "<Leader><F9>", function()
-			--     dap.set_breakpoint(vim.fn.input('断点条件: '))
-			-- end, { desc = "设置条件断点 (Conditional Breakpoint)" })
-
-			-- -- 调试控制 (F键风格)
-			-- vim.keymap.set("n", "<F5>", function()
-			--     if dap.session() then
-			--         dap.continue()
-			--     else
-			--         -- 智能启动逻辑：如果有 Python 配置且当前是 Python 文件，尝试直接启动第一个配置
-			--         -- 这避免了每次都需要选择 "1. Python: Launch file"
-			--         if vim.bo.filetype == 'python' and dap.configurations.python then
-			--             dap.run(dap.configurations.python[1])
-			--         else
-			--             dap.continue()
-			--         end
-			--     end
-			-- end, { desc = "智能启动/继续调试 (Start/Continue Debug)" })
-
-			-- vim.keymap.set("n", "<F10>", dap.step_over, { desc = "单步跳过 (Step Over)" })
-			-- vim.keymap.set("n", "<F11>", dap.step_into, { desc = "单步进入 (Step Into)" })
-			-- vim.keymap.set("n", "<F12>", dap.step_out, { desc = "单步跳出 (Step Out)" })
-
-			-- -- UI 控制
-			-- vim.keymap.set("n", "<F6>", dapui.toggle, { desc = "切换调试界面 (Toggle Debug UI)" })
-			-- vim.keymap.set("n", "<F7>", dap.repl.open, { desc = "打开调试控制台 (Open REPL)" })
 
 			-- 5. 美化断点图标
 			vim.fn.sign_define("DapBreakpoint", { text = "🔴", texthl = "", linehl = "", numhl = "" })

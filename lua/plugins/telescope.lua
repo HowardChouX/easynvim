@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 return {
     {
         "nvim-telescope/telescope.nvim",
@@ -7,30 +8,6 @@ return {
             -- 添加 telescope-ui-select.nvim 作为依赖
             "nvim-telescope/telescope-ui-select.nvim",
         },
-        -- keys 部分如果你需要，可以取消注释并启用
-        -- keys = {
-        --     { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "查找文件 (Find Files)" },
-        --     {
-        --         "<leader>fg",
-        --         function()
-        --             -- 检查ripgrep是否可用
-        --             local has_rg = false
-        --             if vim.fn.executable('rg') == 1 or vim.fn.executable('ripgrep') == 1 then
-        --                 has_rg = true
-        --             end
-
-        --             if has_rg then
-        --                 -- ripgrep可用，使用live_grep
-        --                 vim.cmd('Telescope live_grep')
-        --             else
-        --                 -- ripgrep不可用，使用普通的find_files替代
-        --                 vim.notify("ripgrep未安装，使用文件查找替代。推荐安装ripgrep以获得更好的搜索体验。", vim.log.levels.WARN)
-        --                 vim.cmd('Telescope find_files')
-        --             end
-        --         end,
-        --         desc = "全局搜索 (Live Grep)"
-        --     },
-        -- },
         opts = {
             defaults = {
                 sorting_strategy = "ascending",

@@ -1,111 +1,102 @@
 return {
-    "nvim-lualine/lualine.nvim",
-    event = "UIEnter", -- 界面渲染完成后触发
-    dependencies = {
-        "nvim-tree/nvim-web-devicons",
-    },
-    opts = function()
-        ---@diagnostic disable: undefined-global
-        -- 自定义 LSP 状态组件（简洁版）
-        local function lsp_status_short()
-            local clients = vim.lsp.get_clients({ bufnr = 0 })
+	"nvim-lualine/lualine.nvim",
+	event = "UIEnter", -- 界面渲染完成后触发
+	dependencies = {
+		"nvim-tree/nvim-web-devicons",
+	},
+	opts = function()
+		---@diagnostic disable: undefined-global
+		local function lsp_status_short()
+			local clients = vim.lsp.get_clients({ bufnr = 0 })
 
-            if #clients == 0 then
-                return ""
-            end
+			if #clients == 0 then
+				return ""
+			end
+			return " " .. #clients
+		end
 
-            -- 只显示图标和数量
-            return " " .. #clients
-        end
+		local function lsp_diagnostics()
+			if not vim.diagnostic then
+				return ""
+			end
 
-        -- 自定义 LSP 状态组件（带错误/警告指示）
-        local function lsp_diagnostics()
-            if not vim.diagnostic then
-                return ""
-            end
+			local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+			local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
 
-            local errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-            local warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+			local result = ""
+			if errors > 0 then
+				result = result .. " " .. errors
+			end
+			if warnings > 0 then
+				if #result > 0 then
+					result = result .. " "
+				end
+				result = result .. " " .. warnings
+			end
 
-            local result = ""
-            if errors > 0 then
-                result = result .. " " .. errors
-            end
-            if warnings > 0 then
-                if #result > 0 then
-                    result = result .. " "
-                end
-                result = result .. " " .. warnings
-            end
+			return result
+		end
 
-            return result
-        end
+		return {
+			options = {
+				theme = "auto",
+				component_separators = { left = "", right = "" },
+				section_separators = { left = "", right = "" },
+				disabled_filetypes = {
+					statusline = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect" },
+					winbar = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect" },
+				},
+			},
+			extensions = { "nvim-tree" },
+			sections = {
+				lualine_a = { "mode" },
+				lualine_b = { "branch", "diff", "diagnostics" },
+				lualine_c = { "filename" },
+				lualine_x = {
+					lsp_status_short,
+					lsp_diagnostics,
+					"filesize",
+					"encoding",
+					"filetype",
+				},
+				lualine_y = { "progress" },
+				lualine_z = { "location" },
+			},
+			inactive_sections = {
+				lualine_a = {},
+				lualine_b = {},
+				lualine_c = { "filename" },
+				lualine_x = { lsp_status_short, "location" },
+				lualine_y = {},
+				lualine_z = {},
+			},
+		}
+	end,
+	config = function(_, opts)
+		require("lualine").setup(opts)
 
-        return {
-            options = {
-                theme = "auto",
-                component_separators = { left = "", right = "" },
-                section_separators = { left = "", right = "" },
-                disabled_filetypes = {
-                    statusline = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect" },
-                    winbar = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect" },
-                },
-            },
-            extensions = { "nvim-tree" },
-            sections = {
-                lualine_a = { "mode" },
-                lualine_b = { "branch", "diff", "diagnostics" },
-                lualine_c = { "filename" },
-                -- 添加 LSP 状态到 x 区域
-                lualine_x = {
-                    lsp_status_short, -- 简洁版 LSP 状态
-                    lsp_diagnostics,  -- 诊断信息
-                    "filesize",
-                    "encoding",
-                    "filetype",
-                },
-                lualine_y = { "progress" },
-                lualine_z = { "location" }
-            },
-            -- 可选：为 inactive 状态栏也配置 LSP 显示
-            inactive_sections = {
-                lualine_a = {},
-                lualine_b = {},
-                lualine_c = { "filename" },
-                lualine_x = { lsp_status_short, "location" },
-                lualine_y = {},
-                lualine_z = {}
-            },
-        }
-    end,
-    config = function(_, opts)
-        require("lualine").setup(opts)
+		vim.api.nvim_create_augroup("LualineLSP", { clear = true })
+		vim.api.nvim_create_autocmd("LspAttach", {
+			group = "LualineLSP",
+			callback = function()
+				vim.defer_fn(function()
+					require("lualine").refresh()
+				end, 100)
+			end,
+		})
 
-        -- 可选：添加 LSP 状态变化时的自动刷新
-        vim.api.nvim_create_augroup("LualineLSP", { clear = true })
-        vim.api.nvim_create_autocmd("LspAttach", {
-            group = "LualineLSP",
-            callback = function()
-                -- 延迟刷新，确保 LSP 完全附加
-                vim.defer_fn(function()
-                    require("lualine").refresh()
-                end, 100)
-            end,
-        })
+		vim.api.nvim_create_autocmd("LspDetach", {
+			group = "LualineLSP",
+			callback = function()
+				require("lualine").refresh()
+			end,
+		})
 
-        vim.api.nvim_create_autocmd("LspDetach", {
-            group = "LualineLSP",
-            callback = function()
-                require("lualine").refresh()
-            end,
-        })
-
-        -- 诊断信息变化时也刷新
-        vim.api.nvim_create_autocmd("DiagnosticChanged", {
-            group = "LualineLSP",
-            callback = function()
-                require("lualine").refresh()
-            end,
-        })
-    end,
+		vim.api.nvim_create_autocmd("DiagnosticChanged", {
+			group = "LualineLSP",
+			callback = function()
+				require("lualine").refresh()
+			end,
+		})
+	end,
 }

@@ -7,7 +7,6 @@ return {
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 	},
-	-- 优化 1: 改为局部安装，避免污染系统全局 npm，也不需要 sudo 权限
 	build = "npm install -g mcp-hub@latest",
 	config = function()
 		require("mcphub").setup({
@@ -17,11 +16,8 @@ return {
 			shutdown_delay = 5 * 60 * 1000, -- 5分钟后自动关闭不活动的服务器
 			-- 退出 Neovim 时立即关闭所有服务器
 			shutdown_on_exit = true,
-			-- 优化 2: 使用插件目录下安装的 binary，配合上面的 build = "npm install"
 			use_bundled_binary = true,
 			mcp_request_timeout = 60000,
-
-			-- 环境变量：如果有需要全局注入的 Key 可以放这里，但你已经在 servers.json 里配好了
 			global_env = {},
 
 			workspace = {
