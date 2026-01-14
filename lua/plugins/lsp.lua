@@ -1,4 +1,4 @@
--- lua/lsp.lua
+---@diagnostic disable: undefined-global
 -- LSP 服务器配置 + jdtls 特殊处理
 -- 注意：Neovim 0.11中直接使用vim.lsp API，不再依赖nvim-lspconfig
 -- 使用一个简单的配置插件
@@ -35,7 +35,7 @@ return {
 		-- LSP 服务器自定义配置 - 修正：添加正确的命令
 		local servers = {
 			lua_ls = {
-					cmd = { "lua-language-server" },
+				cmd = { "lua-language-server" },
 			},
 			pyright = {
 				cmd = { "pyright-langserver", "--stdio" },
@@ -80,6 +80,27 @@ return {
 			racket = {
 				cmd = { "racket", "-l", "racket-langserver" },
 				filetypes = { "racket", "scheme" },
+			        settings = {
+			          racket = {
+			            -- Enable additional completion triggers
+			            completion = {
+			              enabled = true
+			            }
+			          }
+			        },
+			        -- Force completion to work even with minimal triggers
+			        capabilities = {
+			          textDocument = {
+			            completion = {
+			              completionItem = {
+			                snippetSupport = true,
+			                resolveSupport = {
+			                  properties = { "documentation", "detail", "additionalTextEdits" }
+			                }
+			              }
+			            }
+			          }
+			        }
 			},
 		}
 
