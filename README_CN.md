@@ -1,4 +1,4 @@
-# 🚀 现代 Neovim 配置 (Neovim 0.12+ 就绪)
+# 🚀 现代 Neovim 配置 (Neovim 0.11+)
 
 本仓库提供了一个**高性能、现代化的 Neovim 配置**，使用 Lua 编写。它集成了一系列精心挑选的插件，为您提供：
 - 通过 `vim.loader` 字节码缓存实现的**快速启动**
@@ -71,7 +71,6 @@
 | `nvim-dap` + 适配器（`debugpy`、`cppdbg`） | 调试支持 |
 | `nvim-surround` | 轻松环绕文本 |
 | `indent-blankline.nvim` | 缩进指南 |
-| `blink.cmp`（可选） | 替代补全源 |
 
 ---
 
@@ -101,14 +100,14 @@
 
 ## 🛠️ 安装指南
 1. **先决条件**
-   - Neovim ≥ 0.12
+   - Neovim ≥ 0.11
    - Git
    - 较新的 Node.js（用于某些 LSP 服务器）
    - 可选但推荐：`ripgrep`、`fd`、`bat` 用于提升 Telescope 性能
 
 2. **克隆配置**
    ```bash
-   git clone <repo-url> ~/.config/nvim
+   git clone git@github.com:HowardChouX/easynvim.git ~/.config/nvim
    ```
 
 3. **启动 Neovim** - 首次启动时 `lazy.nvim` 将自动安装所有插件
@@ -137,8 +136,8 @@
 ## 🐞 故障排除
 - **插件安装失败** - 检查网络连接和 `git` 是否在 `PATH` 中。运行 `:Lazy clean` 然后 `:Lazy sync`
 - **LSP 未附加** - 运行 `:Mason` 确保服务器已安装，并检查 `:LspInfo` 获取活动客户端
-- **快捷键不工作** - 验证 `lua/core/keymap.lua` 是否在 `init.lua` 中加载。使用 `:verbose map <key>` 查看来源
-- **Avante RAG 服务** - 运行 `:RAGStatus` 获取详细诊断。确保 Docker Desktop 正在运行且 API 密钥正确
+- **快捷键不工作** - 验证 `lua/core/keymap.lua` 是否在 `init.lua` 中加载.
+- **Avante RAG 服务** -确保 Docker Desktop 正在运行且 API 密钥正确
 - **主题缺失** - 安装缺失的主题插件或在 `lua/plugins/tokyonight.lua` 中更改名称
 
 ---
@@ -310,5 +309,4 @@ A: 确保调试适配器已安装，检查 DAP 配置
 
 ---
 
-*由项目维护者生成和维护。*
 
