@@ -62,6 +62,8 @@ return {
 					auto_set_highlight_group = true,
 					auto_set_keymaps = true,
 					auto_apply_diff_after_generation = false,
+                    show_diff = true,
+					confirm_before_apply = true,
 					support_paste_from_clipboard = true,
 				},
 
