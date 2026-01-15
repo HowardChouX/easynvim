@@ -2,6 +2,7 @@
 ---@diagnostic disable: undefined-global
 
 return {
+	-- 定义 Avante
 	{
 		"yetone/avante.nvim",
 		event = "VeryLazy",
@@ -24,25 +25,27 @@ return {
 		config = function()
 			require("avante_lib").load()
 			require("avante").setup({
-				-- 添加窗口配置，设置为右侧悬浮
 				windows = {
 					position = "right",
-					floating = true,
-					wrap = true, -- 启用文本换行
-					width = 32, -- 窗口宽度，可以适当调大一些
-					-- 输入框配置
+					wrap = true,
+					width = 32,
 					input = {
 						prefix = "> ",
-						height = 13, -- 输入框高度
+						height = 16,
 					},
-					-- 侧边栏配置
 					sidebar = {
 						border = "rounded",
 						title = " Avante AI Assistant ",
-						title_pos = "center", -- 标题位置: "left", "center", "right"
+						title_pos = "center",
 						zindex = 50,
 					},
-                },
+					ask = {
+						border = "rounded",
+						focus_on_apply = "ours",
+						width = 32,
+						height = 16,
+					},
+				},
 				-- MCP Hub 集成：系统提示词
 				system_prompt = function()
 					-- 使用 pcall 防止 mcphub 还没加载完导致崩溃
@@ -82,8 +85,6 @@ return {
 					show_diff = true,
 					confirm_before_apply = true,
 					support_paste_from_clipboard = true,
-					-- 添加这个选项来优化悬浮窗口体验
-					minimize_diff = true,
 				},
 
 				provider = "cherryin_openai_qwen3_coder_480b",
@@ -162,30 +163,11 @@ return {
 				},
 			})
 
-			-- 添加一些有用的快捷键和自动命令来优化悬浮窗口体验
-			-- 快速切换 avante 窗口
-			vim.keymap.set("n", "<leader>aa", "<cmd>AvanteToggle<cr>", { desc = "Toggle Avante" })
-			vim.keymap.set("n", "<leader>az", "<cmd>AvanteZenMode<cr>", { desc = "Avante Zen Mode" })
-
-			-- 如果窗口被意外关闭，重新打开
-			vim.api.nvim_create_autocmd("WinClosed", {
-				callback = function()
-					-- 检查是否所有 avante 窗口都被关闭了
-					local avante_wins = 0
-					for _, win in ipairs(vim.api.nvim_list_wins()) do
-						local buf = vim.api.nvim_win_get_buf(win)
-						local ft = vim.api.nvim_buf_get_option(buf, "filetype")
-						if ft == "Avante" or ft == "AvanteInput" then
-							avante_wins = avante_wins + 1
-						end
-					end
-
-					-- 如果没有 avante 窗口了，清理状态
-					if avante_wins == 0 then
-						vim.g.avante_state = nil
-					end
-				end,
-			})
+			-- 添加手动修复命令
+			vim.api.nvim_create_user_command("AvanteFixInput", function()
+				fix_zen_mode_input()
+				vim.notify("Avante input windows fixed", vim.log.levels.INFO)
+			end, { desc = "Fix duplicate Avante input windows" })
 		end,
 	},
 }
