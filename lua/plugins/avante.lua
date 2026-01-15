@@ -67,33 +67,6 @@ return {
 					support_paste_from_clipboard = true,
 				},
 
-				ui = {
-					window = {
-						width = 0.9,
-						height = 0.9,
-						align = "center",
-						relative = "editor",
-						border = "rounded",
-					},
-
-					-- 下面是官方推荐的 input 配置
-					input = {
-						position = "bottom",
-						border = "rounded",
-
-						-- Initial height (lines)
-						height = 8,
-
-						-- Allow growing when user types more text
-						auto_resize = true,
-
-						-- Boundaries
-						min_height = 6,
-						max_height = 15,
-
-						prompt = "Ask > ",
-					},
-				},
 
 				provider = "cherryin_openai_qwen3_coder_480b",
 				providers = {
