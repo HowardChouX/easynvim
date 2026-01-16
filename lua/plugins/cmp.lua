@@ -1,5 +1,4 @@
 -- lua/plugins/cmp.lua
--- 补全功能
 -- 告诉 Lua 语言服务器 vim 是全局变量
 ---@diagnostic disable: undefined-global
 return {
