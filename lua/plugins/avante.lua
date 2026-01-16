@@ -2,7 +2,6 @@
 ---@diagnostic disable: undefined-global
 
 return {
-	-- 定义 Avante
 	{
 		"yetone/avante.nvim",
 		lazy = true,
