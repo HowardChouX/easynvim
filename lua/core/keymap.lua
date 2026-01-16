@@ -1,32 +1,52 @@
--- ~/.config/nvim/lua/core/keymap.lua 
+-- ~/.config/nvim/lua/core/keymap.lua
 --- @diagnostic disable: undefined-global
 --------------------------------------------------------------------------------
 -- 0. Neovide 专用快捷键 (Neovide Specific Keymaps)
 --------------------------------------------------------------------------------
 -- 只有在 Neovide 运行时才启用这些快捷键
 if vim.g.neovide then
-    -- 定义一个 Lua 函数来切换 Neovide 的全屏状态
-    local function toggle_neovide_fullscreen()
-        -- 切换 vim.g.neovide_fullscreen 的布尔值
-        vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
-        -- 打印消息提示用户全屏状态已切换
-        if vim.g.neovide_fullscreen then
-            print("Neovide: 进入全屏模式")
-        else
-            print("Neovide: 退出全屏模式")
-        end
-    end
+	-- 定义一个 Lua 函数来切换 Neovide 的全屏状态
+	local function toggle_neovide_fullscreen()
+		-- 切换 vim.g.neovide_fullscreen 的布尔值
+		vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
+		-- 打印消息提示用户全屏状态已切换
+		if vim.g.neovide_fullscreen then
+			print("Neovide: 进入全屏模式")
+		else
+			print("Neovide: 退出全屏模式")
+		end
+	end
 
-    -- 将这个 Lua 函数注册为一个用户命令
-    -- 这样我们就可以在键位映射中使用 <cmd> 命令来调用它
-    vim.api.nvim_create_user_command('NeovideToggleFullscreen', toggle_neovide_fullscreen, {})
+	-- 将这个 Lua 函数注册为一个用户命令
+	-- 这样我们就可以在键位映射中使用 <cmd> 命令来调用它
+	vim.api.nvim_create_user_command("NeovideToggleFullscreen", toggle_neovide_fullscreen, {})
 
-    -- 映射 Ctrl+F11 键来执行 NeovideToggleFullscreen 命令
-    -- 适用于普通模式 (Normal), 插入模式 (Insert), 可视模式 (Visual), 终端模式 (Terminal)
-    vim.keymap.set('n', '<C-F11>', '<cmd>NeovideToggleFullscreen<CR>', { noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" })
-    vim.keymap.set('i', '<C-F11>', '<cmd>NeovideToggleFullscreen<CR>', { noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" })
-    vim.keymap.set('v', '<C-F11>', '<cmd>NeovideToggleFullscreen<CR>', { noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" })
-    vim.keymap.set('t', '<C-F11>', '<cmd>NeovideToggleFullscreen<CR>', { noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" })
+	-- 映射 Ctrl+F11 键来执行 NeovideToggleFullscreen 命令
+	-- 适用于普通模式 (Normal), 插入模式 (Insert), 可视模式 (Visual), 终端模式 (Terminal)
+	vim.keymap.set(
+		"n",
+		"<C-F11>",
+		"<cmd>NeovideToggleFullscreen<CR>",
+		{ noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" }
+	)
+	vim.keymap.set(
+		"i",
+		"<C-F11>",
+		"<cmd>NeovideToggleFullscreen<CR>",
+		{ noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" }
+	)
+	vim.keymap.set(
+		"v",
+		"<C-F11>",
+		"<cmd>NeovideToggleFullscreen<CR>",
+		{ noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" }
+	)
+	vim.keymap.set(
+		"t",
+		"<C-F11>",
+		"<cmd>NeovideToggleFullscreen<CR>",
+		{ noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" }
+	)
 end
 
 --------------------------------------------------------------------------------
@@ -490,7 +510,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.lsp.buf.references,
 			{ desc = "查看引用 (References) --系统(LSP)", buffer = bufnr }
 		)
-
 	end,
 })
 
@@ -508,8 +527,7 @@ end, { desc = "切换侧边栏焦点 (Toggle Sidebar Focus) --插件(Avante)" })
 vim.keymap.set("n", "jc", function()
 	require("avante.api").select_model()
 end, { desc = "选择模型 (Select Model) --插件(Avante)" })
-vim.keymap.set("n", "je",
-	"<cmd>AvanteEdit<CR>",{ desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
+vim.keymap.set("n", "je", "<cmd>AvanteEdit<CR>", { desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
 vim.keymap.set(
 	"n",
 	"jt",
@@ -520,4 +538,3 @@ vim.keymap.set("n", "jz", function()
 	require("avante.api").zen_mode()
 end, { desc = "进入 Avante Zen 模式 (Enter Avante Zen Mode) --插件(Avante)" })
 vim.keymap.set("n", "js", "<cmd>AvanteStop<CR>", { desc = "停止 Avante (Stop Avante) --插件(Avante)" })
-
