@@ -5,7 +5,7 @@ return {
 	-- 定义 Avante
 	{
 		"yetone/avante.nvim",
-		event = "VeryLazy",
+		lazy = true,
 		build = vim.fn.has("win32") ~= 0 and "powershell " .. vim.fn.shellescape(
 			"-ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 		) or "make BUILD_FROM_SOURCE=true",

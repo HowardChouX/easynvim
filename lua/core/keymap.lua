@@ -378,7 +378,7 @@ vim.keymap.set(
 )
 
 -- None-ls 插件快捷键
-vim.keymap.set("n", "<leader>lf", function()
+vim.keymap.set("n", "<leader>f", function()
 	vim.lsp.buf.format()
 end, { desc = "格式化代码 (Format Code) --插件(None-ls)" })
 
@@ -490,23 +490,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.lsp.buf.references,
 			{ desc = "查看引用 (References) --系统(LSP)", buffer = bufnr }
 		)
-		vim.keymap.set("n", "<space>f", function()
-			vim.lsp.buf.format()
-		end, { desc = "格式化代码 (Format Code) --系统(LSP)", buffer = bufnr })
 
-		-- 诊断跳转
-		vim.keymap.set(
-			"n",
-			"[d",
-			vim.diagnostic.goto_prev,
-			{ desc = "上一个诊断 (Previous Diagnostic) --系统(LSP)", buffer = bufnr }
-		)
-		vim.keymap.set(
-			"n",
-			"]d",
-			vim.diagnostic.goto_next,
-			{ desc = "下一个诊断 (Next Diagnostic) --系统(LSP)", buffer = bufnr }
-		)
 	end,
 })
 

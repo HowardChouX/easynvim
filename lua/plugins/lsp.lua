@@ -1,16 +1,9 @@
 ---@diagnostic disable: undefined-global
--- LSP 服务器配置 + jdtls 特殊处理
--- 注意：Neovim 0.11中直接使用vim.lsp API，不再依赖nvim-lspconfig
--- 使用一个简单的配置插件
 return {
-	-- 使用 mini.nvim 作为轻量级配置框架的占位符
-	-- 实际LSP功能通过 Neovim 0.11+ 原生 API 实现
 	"echasnovski/mini.nvim",
+    event = "BufReadPre",
 	version = false,
-	--event = "VeryLazy",
 	config = function()
-		-- 创建基础 capabilities - LSP客户端能力集
-		-- 用于告诉服务器客户端支持哪些功能
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 		-- 尝试加载 cmp_nvim_lsp，如果存在则使用
@@ -21,21 +14,14 @@ return {
 			-- 可选：开发时提示
 			vim.notify("cmp_nvim_lsp not found. Install it via lazy.nvim for better completion.", vim.log.levels.WARN)
 		end
-
-		-- 确保支持代码片段（对HTML/Emmet很重要）
-		capabilities.textDocument.completion.completionItem.snippetSupport = true
-
 		-- 通用 on_attach 回调
 		local on_attach = function(client)
-			-- 禁用格式化，交由 null-ls 或专门的格式化工具处理
 			client.server_capabilities.documentFormattingProvider = false
 			client.server_capabilities.documentRangeFormattingProvider = false
 		end
-
-		-- LSP 服务器自定义配置 - 修正：添加正确的命令
 		local servers = {
 			lua_ls = {
-				cmd = { "lua-language-server" },
+				cmd = { vim.fn.expand("~/.local/share/nvim/mason/bin/lua-language-server") },
 			},
 			pyright = {
 				cmd = { "pyright-langserver", "--stdio" },
@@ -63,44 +49,30 @@ return {
 					"--pch-storage=memory", -- 内存缓存 PCH，提升速度
 				},
 			},
-			html = {
-				cmd = { "vscode-html-language-server", "--stdio" },
-				filetypes = { "html" },
-			},
-			cssls = {
-				cmd = { "vscode-css-language-server", "--stdio" },
-			},
-			tsserver = { -- 修正：服务器名称应该是 tsserver
-				cmd = { "typescript-language-server", "--stdio" },
-			},
-			emmet_ls = {
-				cmd = { "emmet-ls", "--stdio" }, -- 修正：添加命令
-				filetypes = { "html", "jsx", "tsx", "vue", "svelte" },
-			},
 			racket = {
 				cmd = { "racket", "-l", "racket-langserver" },
 				filetypes = { "racket", "scheme" },
-			        settings = {
-			          racket = {
-			            -- Enable additional completion triggers
-			            completion = {
-			              enabled = true
-			            }
-			          }
-			        },
-			        -- Force completion to work even with minimal triggers
-			        capabilities = {
-			          textDocument = {
-			            completion = {
-			              completionItem = {
-			                snippetSupport = true,
-			                resolveSupport = {
-			                  properties = { "documentation", "detail", "additionalTextEdits" }
-			                }
-			              }
-			            }
-			          }
-			        }
+				settings = {
+					racket = {
+						-- Enable additional completion triggers
+						completion = {
+							enabled = true,
+						},
+					},
+				},
+				-- Force completion to work even with minimal triggers
+				capabilities = {
+					textDocument = {
+						completion = {
+							completionItem = {
+								snippetSupport = true,
+								resolveSupport = {
+									properties = { "documentation", "detail", "additionalTextEdits" },
+								},
+							},
+						},
+					},
+				},
 			},
 		}
 
@@ -146,20 +118,13 @@ return {
 			local filetype_to_server = {
 				lua = "lua_ls",
 				python = "pyright",
-				cpp = "clangd",
 				c = "clangd",
-				html = "html",
-				css = "cssls",
-				javascript = "tsserver", -- 修正：使用正确的服务器名称
-				typescript = "tsserver", -- 修正：使用正确的服务器名称
-				javascriptreact = "tsserver", -- 修正：使用正确的服务器名称
-				typescriptreact = "tsserver", -- 修正：使用正确的服务器名称
-				vue = "emmet_ls",
-				svelte = "emmet_ls",
+				cpp = "clangd",
 				racket = "racket",
 				scheme = "racket",
 			}
 
+			-- 检查是否配置了对应的服务器
 			local server_name = filetype_to_server[filetype]
 			if not server_name then
 				notify_info(string.format("文件类型 '%s' 未配置LSP服务器", filetype))
@@ -171,22 +136,11 @@ return {
 				return
 			end
 
-			-- 检查服务器是否已启动
-			local active_clients = vim.lsp.get_clients()
-			for _, client in ipairs(active_clients) do
-				if client.name == server_name then
-					notify_info(string.format("LSP服务器 '%s' 已在运行", server_name))
-					return
-				end
-			end
-
-			notify_info(string.format("正在启动 %s 服务器...", server_name))
-
 			local config = _G.my_lsp_config.servers[server_name]
 
 			local client_config = {
 				name = server_name,
-				cmd = config.cmd, -- 修正：使用配置中定义的命令
+				cmd = config.cmd,
 				filetypes = config.filetypes or { filetype },
 				root_dir = vim.fn.getcwd(),
 				capabilities = _G.my_lsp_config.capabilities,
@@ -194,7 +148,6 @@ return {
 				settings = config.settings or {},
 			}
 
-			-- 使用vim.lsp.start API（Neovim 0.8+推荐方式）
 			local ok, client_id = pcall(function()
 				return vim.lsp.start(client_config)
 			end)
@@ -226,14 +179,6 @@ return {
 			"python",
 			"cpp",
 			"c",
-			"html",
-			"css",
-			"javascript",
-			"typescript",
-			"javascriptreact",
-			"typescriptreact",
-			"vue",
-			"svelte",
 			"racket",
 			"scheme",
 		}
@@ -258,77 +203,5 @@ return {
 				end,
 			})
 		end
-
-		-- Java 特殊处理：jdtls
-		vim.api.nvim_create_autocmd("FileType", {
-			pattern = "java",
-			callback = function(args)
-				-- 使用vim.schedule确保通知在合适的时机显示
-				vim.schedule(function()
-					-- 检查缓冲区是否仍然有效
-					if not vim.api.nvim_buf_is_valid(args.buf) then
-						return
-					end
-
-					local buf_ft = vim.bo[args.buf].filetype
-					if buf_ft ~= "java" then
-						return
-					end
-
-					notify_info("检测到 Java 文件，正在启动 jdtls...")
-
-					-- 确保 jdtls 插件已加载
-					if not pcall(require, "jdtls") then
-						notify_error("jdtls 插件未找到，请安装 'mfussenegger/nvim-jdtls'")
-						return
-					end
-
-					local jdtls = require("jdtls")
-
-					-- 项目根目录检测
-					local root_dir = jdtls.setup.find_root({ ".git", "pom.xml", "build.gradle", "gradlew", "mvnw" })
-					if not root_dir then
-						notify_warning("未找到 Java 项目根目录，jdtls 可能无法正常工作")
-						root_dir = vim.fn.getcwd()
-					end
-
-					local config = {
-						cmd = { "jdtls" }, -- 确保 jdtls 在 PATH 中
-						root_dir = root_dir,
-						capabilities = capabilities,
-						on_attach = function(client, bufnr)
-							on_attach(client) -- 复用通用 on_attach
-							notify_success("jdtls 服务器附加成功")
-						end,
-					}
-
-					local ok, err = pcall(jdtls.start_or_attach, config)
-					if ok then
-						notify_success("jdtls 启动成功")
-					else
-						notify_error("jdtls 启动失败: " .. tostring(err))
-					end
-				end)
-			end,
-		})
-		-- 添加手动启动LSP的命令，用于调试
-		vim.api.nvim_create_user_command("StartLSP", function(opts)
-			local ft = opts.args or vim.bo.filetype
-			if ft == "" then
-				notify_error("请指定文件类型或在当前缓冲区中使用")
-				return
-			end
-			_G.start_lsp_server(ft)
-		end, {
-			nargs = "?",
-			complete = function()
-				return filetypes
-			end,
-		})
-
-		-- 初始化完成提示
-		vim.schedule(function()
-			notify_success("LSP 配置加载完成")
-		end)
 	end,
 }

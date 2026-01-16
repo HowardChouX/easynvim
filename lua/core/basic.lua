@@ -1,4 +1,4 @@
--- 告诉Lua语言服务器vim是全局变量 
+-- 告诉Lua语言服务器vim是全局变量
 --- @diagnostic disable: undefined-global
 
 --显示行号

@@ -6,7 +6,7 @@ return {
 	event = "VeryLazy",
 	dependencies = {
 		"mason-org/mason-lspconfig.nvim",
-		-- 移除对nvim-lspconfig的依赖，因为在Neovim 0.11中已弃用
+		"WhoIsSethDaniel/mason-tool-installer.nvim",
 	},
 	config = function()
 		require("mason").setup({
@@ -18,19 +18,22 @@ return {
 				},
 			},
 		})
-
 		local mason_lspconfig = require("mason-lspconfig")
 		mason_lspconfig.setup({
 			ensure_installed = {
 				"lua_ls",
 				"pyright",
 				"clangd",
-				"html",
-				"cssls",
-				"ts_ls",
-				"emmet_ls",
 			},
 			automatic_installation = true,
+		})
+
+		require("mason-tool-installer").setup({
+			ensure_installed = {
+				"stylua",
+				"black",
+				"clang-format",
+			},
 		})
 	end,
 }
