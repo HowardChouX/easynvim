@@ -11,7 +11,7 @@ vim.opt.relativenumber = true
 vim.opt.cursorline = true
 
 --单行字符数阈值高亮设置为80
-vim.opt.colorcolumn = "80"
+--vim.opt.colorcolumn = "80"
 
 --tap转换为空格
 vim.opt.expandtab = true
