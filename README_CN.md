@@ -6,8 +6,7 @@
 - 由 `nvim-cmp` 驱动的**智能补全**
 - 通过 `nvim-treesitter` 实现的语法高亮、缩进和文本对象
 - 通过 `telescope.nvim`、`nvim-tree` 和 `bufferline.nvim` 实现的模糊查找、文件资源管理和缓冲区标签
-- Python 和 C++ 的**集成调试（DAP）**
-- 通过 **Avante.nvim**（RAG 服务）实现的**AI 辅助编程**
+- 通过 **Avante.nvim** 和 **MCP Hub** 实现的**AI 辅助编程**
 
 ---
 
@@ -19,22 +18,31 @@
 │  ├─ core/               # 基础选项、快捷键和懒加载配置
 │  │   ├─ basic.lua        # 通用 Neovim 选项
 │  │   ├─ keymap.lua       # 全局快捷键映射
-│  │   └─ lazy.lua         # lazy.nvim 引导配置
+│  │   ├─ lazy.lua         # lazy.nvim 引导配置
+│  │   └─ neovide_config.lua # Neovide 图形界面配置
 │  └─ plugins/            # 单个插件配置
-│      ├─ avante.lua        # AI RAG 服务集成
-│      ├─ cmp.lua           # 补全引擎
-│      ├─ dap.lua           # 调试适配器协议设置
-│      ├─ lsp.lua           # LSP 服务器配置
-│      ├─ mason.lua         # 外部工具安装器
-│      ├─ telescope.lua     # 模糊查找器
-│      ├─ nvim-tree.lua      # 文件资源管理器
+│      ├─ avante.lua        # AI 助手集成
 │      ├─ bufferline.lua    # 缓冲区标签 UI
-│      ├─ hop.lua           # 快速导航
+│      ├─ cmp.lua           # 补全引擎
+│      ├─ diagnostics.lua   # 诊断配置
 │      ├─ grug-far.lua      # 全局搜索替换
+│      ├─ hop.lua           # 快速导航
+│      ├─ indent-blankline.lua # 缩进指南
 │      ├─ lspsaga.lua       # 增强的 LSP UI
+│      ├─ lualine.lua       # 状态栏
+│      ├─ mason.lua         # 外部工具安装器
+│      ├─ mcphub.lua        # MCP Hub 服务器管理
+│      ├─ multicursor.lua   # 多光标编辑
+│      ├─ noice.lua         # 现代化通知系统
 │      ├─ none-ls.lua       # 诊断和格式化
+│      ├─ nvim-autopairs.lua # 自动括号配对
 │      ├─ nvim-surround.lua # 环绕文本对象
-│      └─ … (其他插件)
+│      ├─ nvim-tree.lua     # 文件资源管理器
+│      ├─ nvim-treesitter.lua # 语法高亮和查询
+│      ├─ render-markdown.lua # Markdown 渲染
+│      ├─ telescope.lua     # 模糊查找器
+│      ├─ toggleterm.lua    # 终端管理
+│      └─ tokyonight.lua    # Tokyo Night 主题
 └─ AGENTS.md               # 未来维护者的交接文档
 ```
 
@@ -45,9 +53,9 @@
 - **LSP 自动设置** - `mason.nvim` 确保语言服务器安装；根据文件类型懒启动服务器
 - **智能补全** - `nvim-cmp` 提供 LSP、缓冲区、路径和代码片段等多种源
 - **Treesitter** - 语法高亮、增量选择和文本对象
-- **AI 辅助** - `avante.nvim` 在 Neovim 启动时自动启动 RAG 服务（基于 Docker）
-- **调试功能** - `nvim-dap` 预配置支持 Python (`debugpy`) 和 C++ (`cppdbg`)
+- **AI 辅助** - `avante.nvim` 集成多种 AI 模型和 `mcphub.nvim` 提供 MCP 服务器支持
 - **一致的 UI** - `tokyonight.nvim` 主题、`lualine` 状态栏、`bufferline` 标签页
+- **现代化界面** - `noice.nvim` 提供美观的命令行和通知界面
 
 ---
 
@@ -67,10 +75,16 @@
 | `none-ls.nvim` | 诊断、代码操作和格式化 |
 | `hop.nvim` | 按字符/单词快速导航 |
 | `grug-far.nvim` | 项目范围的搜索和替换 |
-| `avante.nvim` | AI 代码助手（RAG 服务） |
-| `nvim-dap` + 适配器（`debugpy`、`cppdbg`） | 调试支持 |
+| `avante.nvim` | AI 代码助手（多模型支持） |
+| `mcphub.nvim` | MCP 服务器管理和工具集成 |
 | `nvim-surround` | 轻松环绕文本 |
 | `indent-blankline.nvim` | 缩进指南 |
+| `nvim-autopairs` | 自动括号配对 |
+| `visual-multi` | 多光标编辑 |
+| `toggleterm.nvim` | 终端管理 |
+| `noice.nvim` | 现代化通知和命令行界面 |
+| `nvim-notify` | 美观的通知系统 |
+| `tokyonight.nvim` | Tokyo Night 主题 |
 
 ---
 
@@ -91,10 +105,8 @@
 | `<Space>rn` | Normal | 重命名符号 |
 | `<Space>ca` | Normal | 代码操作 |
 | `<Space>f` | Normal | 格式化缓冲区 |
-| `F5` | Normal | 开始/继续调试 |
-| `F9` | Normal | 切换断点 |
-| `ja` | Normal | 询问 AI（Avante） |
-| `F1` | Normal | 打开可搜索的快捷键面板 |
+| `<Leader>aa` | Normal | 显示 AI 助手侧边栏 |
+| `<F1>` | Normal | 打开可搜索的快捷键面板 |
 
 ---
 
@@ -129,15 +141,15 @@
    export SILICONFLOW_API_KEY="..."
    export TAVILY_API_KEY="..."
    ```
-   RAG 服务将在 Neovim 加载时自动启动
+   Avante AI 助手将在加载时自动集成 MCP Hub 服务
 
 ---
 
 ## 🐞 故障排除
 - **插件安装失败** - 检查网络连接和 `git` 是否在 `PATH` 中。运行 `:Lazy clean` 然后 `:Lazy sync`
 - **LSP 未附加** - 运行 `:Mason` 确保服务器已安装，并检查 `:LspInfo` 获取活动客户端
-- **快捷键不工作** - 验证 `lua/core/keymap.lua` 是否在 `init.lua` 中加载.
-- **Avante RAG 服务** -确保 Docker Desktop 正在运行且 API 密钥正确
+- **快捷键不工作** - 验证 `lua/core/keymap.lua` 是否在 `init.lua` 中加载
+- **AI 助手问题** - 确保 MCP Hub 连接正常，检查 API 密钥配置
 - **主题缺失** - 安装缺失的主题插件或在 `lua/plugins/tokyonight.lua` 中更改名称
 
 ---
@@ -150,46 +162,52 @@
 - **快速导航**：Hop 插件的字符级快速跳转
 - **多光标编辑**：Visual-Multi 插件的多光标支持
 - **环绕操作**：轻松添加、修改和删除文本环绕符号
+- **自动配对**：自动完成括号、引号等符号配对
 
 ### 开发工具
-- **语言服务器**：支持 Python、C++、Lua、JavaScript/TypeScript、Java、HTML/CSS 等
-- **调试支持**：集成 DAP，支持 Python 和 C++ 调试
-- **代码格式化**：通过 null-ls 和 LSP 提供自动格式化
+- **语言服务器**：支持 Python、C++、Lua、Racket、JavaScript/TypeScript、HTML/CSS 等
+- **代码格式化**：通过 none-ls 和 LSP 提供自动格式化
 - **诊断信息**：实时显示错误和警告
+- **现代化界面**：Noice.nvim 提供美观的通知和命令行界面
 
 ### AI 辅助
-- **Avante.nvim**：基于 RAG 的 AI 编程助手
-- **多模型支持**：支持 Cherryin、OpenAI 等多种模型
+- **Avante.nvim**：基于 MCP Hub 的 AI 编程助手
+- **多模型支持**：支持 Cherryin (GLM-4.6、DeepSeek、Qwen)、OpenAI、Ollama 等多种模型
+- **MCP 集成**：自动集成文件系统、Git、时间、SQLite 等 MCP 服务器
+- **智能权限**：安全的自动授权机制，保护项目安全
 - **代码生成**：智能代码建议和生成
-- **问题解答**：上下文相关的编程问题解答
 
 ### 界面美化
 - **主题系统**：Tokyo Night 主题，支持多种风格
 - **状态栏**：Lualine 提供丰富的状态信息
 - **文件树**：Nvim-tree 提供直观的文件导航
 - **缓冲区管理**：Bufferline 提供标签页式缓冲区管理
+- **缩进指南**：清晰的缩进线可视化
+- **Neovide 支持**：针对 GUI 版本的优化配置
 
 ---
 
 ## ⚙️ 配置说明
 
 ### 核心配置
-配置分为三个主要部分：
+配置分为四个主要部分：
 - `basic.lua`：基础 Neovim 选项设置
-- `keymap.lua`：全局快捷键映射
+- `keymap.lua`：全局快捷键映射（包含智能描述系统）
 - `lazy.lua`：插件管理器设置
+- `neovide_config.lua`：Neovide 图形界面专用配置
 
 ### 插件配置
 每个插件在 `lua/plugins/` 目录下有独立的配置文件，支持：
-- 懒加载优化
-- 自定义选项
-- 快捷键集成
-- 依赖管理
+- 懒加载优化（VeryLazy、事件触发等）
+- 自定义选项和依赖管理
+- 快捷键集成和配置
 
 ### 自定义命令
-- `:StartLSP`：手动启动 LSP 服务器
-- `:DAP` 系列命令：调试相关操作
+- `:Mason` 系列命令：LSP 服务器管理
+- `:Telescope` 系列命令：文件查找和搜索
+- `:Lspsaga` 系列命令：增强 LSP 操作
 - `:Avante` 系列命令：AI 助手操作
+- `:NullLsInfo`：格式化工具状态
 
 ---
 
@@ -212,16 +230,6 @@
 :Telescope buffers       # 缓冲区搜索
 ```
 
-### DAP 调试命令
-```vim
-:DAPStart          # 启动/继续调试
-:DAPToggle         # 切换调试界面
-:DAPBreakpoint     # 设置/切换断点
-:DAPStep over      # 单步跳过
-:DAPStep into      # 单步进入
-:DAPStep out       # 单步跳出
-```
-
 ---
 
 ## 📁 配置文件 API
@@ -237,12 +245,17 @@ vim.g.mapleader = " "          -- Leader 键
 
 ### LSP 配置接口
 ```lua
--- 在 lsp.lua 中定义的服务器配置
-_G.my_lsp_config = {
-    capabilities = capabilities,
-    on_attach = on_attach,
-    servers = servers
-}
+-- 在 mason.lua 中定义的服务器配置
+vim.lsp.config("lua_ls", {
+    filetypes = { "lua" },
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" },
+            },
+        },
+    },
+})
 ```
 
 ### 插件配置接口
@@ -252,36 +265,31 @@ _G.my_lsp_config = {
 
 ## 🔄 与外部工具集成
 
-### Docker 集成
-- Avante RAG 服务使用 Docker 容器
-- 自动启动和管理 RAG 服务
-
-### Git 集成
-- 内置 Git 状态显示
-- 支持 Git 操作快捷键
+### MCP Hub 集成
+- **自动服务器管理**：智能启动和停止 MCP 服务器
+- **安全权限控制**：危险操作需要手动确认
+- **文件系统集成**：安全的文件读写操作
+- **Git 状态显示**：内置 Git 状态信息
 
 ### Shell 集成
-- 内置终端支持
-- 快捷键快速打开终端
+- **内置终端支持**：ToggleTerm 提供便捷的终端访问
+- **快捷键快速打开**：Ctrl+T 快速打开底部终端
 
 ---
 
 ## 🔍 故障排除 FAQ
 
 ### Q: 插件加载失败怎么办？
-A: 检查网络连接，运行 `:Lazy clean` 然后 `:Lazy sync`
+A: 检查网络连接和 `git` 是否在 `PATH` 中。运行 `:Lazy clean` 然后 `:Lazy sync`
 
 ### Q: LSP 服务器不工作？
-A: 确保服务器已通过 `:Mason` 安装，检查 `:LspInfo`
+A: 运行 `:Mason` 确保服务器已安装，并检查 `:LspInfo`
 
 ### Q: AI 助手无法启动？
-A: 验证 Docker 是否运行，API 密钥是否正确设置
+A: 确保 MCP Hub 连接正常，检查 API 密钥配置
 
 ### Q: 快捷键冲突？
 A: 使用 `:Telescope keymaps` 查看所有快捷键及其来源
-
-### Q: 调试功能异常？
-A: 确保调试适配器已安装，检查 DAP 配置
 
 ---
 
@@ -305,7 +313,7 @@ A: 确保调试适配器已安装，检查 DAP 配置
 ### 调试技巧
 - 使用 `:Lazy profile` 分析插件性能
 - `:LspInfo` 检查 LSP 状态
-- `:DAP` 命令调试程序
+- `:NullLsInfo` 检查格式化工具状态
 
 ---
 

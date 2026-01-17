@@ -1,5 +1,7 @@
--- ~/.config/nvim/lua/core/keymap.lua
 --- @diagnostic disable: undefined-global
+
+
+
 --------------------------------------------------------------------------------
 -- 0. Neovide 专用快捷键 (Neovide Specific Keymaps)
 --------------------------------------------------------------------------------
@@ -521,7 +523,7 @@ vim.keymap.set("n", "<leader>an", "<cmd>AvanteChatNew<CR>", { desc = "创建新�
 vim.keymap.set("n", "<leader>ar", function()
 	require("avante.api").refresh()
 end, { desc = "刷新侧边栏 (Refresh Sidebar) --插件(Avante)" })
-vim.keymap.set("n", "<leader>af", function()
+vim.keymap.set("n", "<leader><tab>", function()
 	require("avante.api").focus()
 end, { desc = "切换侧边栏焦点 (Toggle Sidebar Focus) --插件(Avante)" })
 vim.keymap.set("n", "<leader>ac", function()

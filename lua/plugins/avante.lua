@@ -4,6 +4,18 @@
 return {
 	{
 		"yetone/avante.nvim",
+		lazy = true,
+		keys = {
+			{
+				"<leader>aa",
+				function()
+					require("avante.api").ask()
+				end,
+				desc = "Avante: Ask",
+			},
+			{ "<leader>at", "<cmd>AvanteToggle<CR>", desc = "Avante: Toggle" },
+			{ "<leader>an", "<cmd>AvanteChatNew<CR>", desc = "Avante: New" },
+		},
 		build = vim.fn.has("win32") ~= 0 and "powershell " .. vim.fn.shellescape(
 			"-ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 		) or "make BUILD_FROM_SOURCE=true",
@@ -160,12 +172,6 @@ return {
 					docker_extra_args = "--network host",
 				},
 			})
-
-			-- 添加手动修复命令
-			vim.api.nvim_create_user_command("AvanteFixInput", function()
-				fix_zen_mode_input()
-				vim.notify("Avante input windows fixed", vim.log.levels.INFO)
-			end, { desc = "Fix duplicate Avante input windows" })
 		end,
 	},
 }
