@@ -514,27 +514,28 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- Avante AI 助手 插件快捷键
-vim.keymap.set("n", "ja", function()
+vim.keymap.set("n", "<leader>aa", function()
 	require("avante.api").ask()
 end, { desc = "显示侧边栏 (Show Sidebar) --插件(Avante)" })
-vim.keymap.set("n", "jn", "<cmd>AvanteChatNew<CR>", { desc = "创建新聊天 (New Chat) --插件(Avante)" })
-vim.keymap.set("n", "jr", function()
+vim.keymap.set("n", "<leader>an", "<cmd>AvanteChatNew<CR>", { desc = "创建新聊天 (New Chat) --插件(Avante)" })
+vim.keymap.set("n", "<leader>ar", function()
 	require("avante.api").refresh()
 end, { desc = "刷新侧边栏 (Refresh Sidebar) --插件(Avante)" })
-vim.keymap.set("n", "<leader><Tab>", function()
+vim.keymap.set("n", "<leader>af", function()
 	require("avante.api").focus()
 end, { desc = "切换侧边栏焦点 (Toggle Sidebar Focus) --插件(Avante)" })
-vim.keymap.set("n", "jc", function()
+vim.keymap.set("n", "<leader>ac", function()
 	require("avante.api").select_model()
 end, { desc = "选择模型 (Select Model) --插件(Avante)" })
-vim.keymap.set("n", "je", "<cmd>AvanteEdit<CR>", { desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
+vim.keymap.set("n", "<leader>ae", "<cmd>AvanteEdit<CR>", { desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
 vim.keymap.set(
 	"n",
-	"jt",
+	"<leader>at",
 	"<cmd>AvanteToggle<CR>",
 	{ desc = "切换 Avante 侧边栏 (Toggle Avante Sidebar) --插件(Avante)" }
 )
-vim.keymap.set("n", "jz", function()
+vim.keymap.set("n", "<leader>az", function()
 	require("avante.api").zen_mode()
 end, { desc = "进入 Avante Zen 模式 (Enter Avante Zen Mode) --插件(Avante)" })
-vim.keymap.set("n", "js", "<cmd>AvanteStop<CR>", { desc = "停止 Avante (Stop Avante) --插件(Avante)" })
+vim.keymap.set("n", "<leader>as", "<cmd>AvanteStop<CR>", { desc = "停止 Avante (Stop Avante) --插件(Avante)" })
+

@@ -3,12 +3,14 @@
 return {
 	"mason-org/mason.nvim",
 	cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
-	event = "VeryLazy",
+	event = "InsertEnter",
 	dependencies = {
 		"mason-org/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
+		"neovim/nvim-lspconfig",
 	},
 	config = function()
+		-- Mason UI配置
 		require("mason").setup({
 			ui = {
 				icons = {
@@ -18,16 +20,99 @@ return {
 				},
 			},
 		})
-		local mason_lspconfig = require("mason-lspconfig")
-		mason_lspconfig.setup({
+
+		-- Mason LSP配置 - 使用推荐的自动启用方式
+		require("mason-lspconfig").setup({
 			ensure_installed = {
 				"lua_ls",
 				"pyright",
 				"clangd",
 			},
-			automatic_installation = true,
+			-- automatic_enable = true 是默认值，不需要显式设置
 		})
 
+		-- 使用Neovim 0.11+的vim.lsp.config API配置服务器
+		-- 这些配置会被mason-lspconfig自动应用到已安装的服务器
+
+		-- Lua LSP配置
+		vim.lsp.config("lua_ls", {
+			filetypes = { "lua" },
+			settings = {
+				Lua = {
+					diagnostics = {
+						globals = { "vim" },
+					},
+				},
+			},
+		})
+
+		-- Python LSP配置
+		vim.lsp.config("pyright", {
+			filetypes = { "python" },
+			settings = {
+				python = {
+					analysis = {
+						autoSearchPaths = true,
+						diagnosticMode = "openFilesOnly",
+						useLibraryCodeForTypes = true,
+						typeCheckingMode = "basic",
+					},
+				},
+			},
+		})
+
+		-- C/C++ LSP配置
+		vim.lsp.config("clangd", {
+			filetypes = { "c", "cpp", "objc", "objcpp" },
+			cmd = {
+				"clangd",
+				"--background-index",
+				"--clang-tidy",
+				"--header-insertion=iwyu",
+				"--completion-style=detailed",
+				"--function-arg-placeholders",
+				"--fallback-style=llvm",
+				"-j=4",
+				"--pch-storage=memory",
+			},
+		})
+
+		-- Racket LSP配置
+		vim.lsp.config("racket", {
+			filetypes = { "racket", "scheme" },
+			settings = {
+				racket = {
+					completion = {
+						enabled = true,
+					},
+				},
+			},
+		})
+
+		-- 简化通知系统
+		vim.api.nvim_create_autocmd("LspAttach", {
+			callback = function(args)
+				local client = vim.lsp.get_client_by_id(args.data.client_id)
+				if client then
+					vim.notify(client.name .. " 服务器已启动", vim.log.levels.INFO, {
+						title = "LSP",
+					})
+				end
+			end,
+		})
+
+		vim.api.nvim_create_autocmd("LspDetach", {
+			callback = function(args)
+				local client = vim.lsp.get_client_by_id(args.data.client_id)
+				if client then
+					vim.notify(client.name .. " 服务器异常退出", vim.log.levels.ERROR, {
+						title = "LSP",
+					})
+				end
+			end,
+		})
+
+		-- Mason工具安装器
 		require("mason-tool-installer").setup({
 			ensure_installed = {
 				"stylua",
