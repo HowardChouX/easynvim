@@ -28,7 +28,7 @@ return {
 				"pyright",
 				"clangd",
 			},
-			-- automatic_enable = true 是默认值，不需要显式设置
+			automatic_enable = true
 		})
 
 		-- 使用Neovim 0.11+的vim.lsp.config API配置服务器
@@ -77,9 +77,10 @@ return {
 			},
 		})
 
-		-- Racket LSP配置
-		vim.lsp.config("racket", {
+        -- Racket LSP配置 - 修正为正确的配置
+		vim.lsp.config("racket_langserver", {
 			filetypes = { "racket", "scheme" },
+			cmd = { "racket", "--lib", "racket-langserver" },  -- 正确的命令 [3]
 			settings = {
 				racket = {
 					completion = {
@@ -88,6 +89,9 @@ return {
 				},
 			},
 		})
+        -- 显式启用 racket_langserver
+		vim.lsp.enable("racket_langserver")
+
 
 		-- 简化通知系统
 		vim.api.nvim_create_autocmd("LspAttach", {
