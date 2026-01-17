@@ -4,7 +4,6 @@
 return {
 	{
 		"yetone/avante.nvim",
-		lazy = true,
 		keys = {
 			{
 				"<leader>aa",
