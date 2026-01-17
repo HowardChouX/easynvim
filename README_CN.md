@@ -135,7 +135,7 @@
    ```
    然后安装您需要的服务器（例如 `pyright`、`ruff`、`clangd`）
 
-6. **验证 AI 服务** - 确保 Docker 正在运行，并在 `~/.zshrc` 中设置所需的 API 密钥：
+6. **验证 AI 服务** - 如果使用RAG确保 Docker 正在运行，但默认关闭了效果不好用,并在 `~/.zshrc` 中设置所需的 API 密钥：
    ```bash
    export OPEN_SOURCE_API_KEY="..."
    export SILICONFLOW_API_KEY="..."
@@ -165,9 +165,9 @@
 - **自动配对**：自动完成括号、引号等符号配对
 
 ### 开发工具
-- **语言服务器**：支持 Python、C++、Lua、Racket、JavaScript/TypeScript、HTML/CSS 等
+- **语言服务器**：支持 Python、C++、Lua、Racket等
 - **代码格式化**：通过 none-ls 和 LSP 提供自动格式化
-- **诊断信息**：实时显示错误和警告
+- **诊断信息**：normal模式下显示错误和警告
 - **现代化界面**：Noice.nvim 提供美观的通知和命令行界面
 
 ### AI 辅助
