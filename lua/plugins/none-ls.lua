@@ -4,15 +4,7 @@ return {
 	"nvimtools/none-ls.nvim",
 	dependencies = { "nvim-lua/plenary.nvim" },
 	cmd = "NullLsInfo",
-	keys = {
-		{
-			"<leader>f",
-			function()
-				vim.lsp.buf.format()
-			end,
-			desc = "格式化代码 (Format Code)",
-		},
-	},
+    event = "VeryLazy",
 	config = function()
 		local null_ls = require("null-ls")
 		null_ls.setup({
@@ -24,3 +16,4 @@ return {
 		})
 	end,
 }
+

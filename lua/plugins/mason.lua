@@ -3,7 +3,7 @@
 return {
 	"mason-org/mason.nvim",
 	cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
-	event = "InsertEnter",
+	event = "VeryLazy",
 	dependencies = {
 		"mason-org/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
@@ -105,16 +105,6 @@ return {
 			end,
 		})
 
-		vim.api.nvim_create_autocmd("LspDetach", {
-			callback = function(args)
-				local client = vim.lsp.get_client_by_id(args.data.client_id)
-				if client then
-					vim.notify(client.name .. " 服务器异常退出", vim.log.levels.ERROR, {
-						title = "LSP",
-					})
-				end
-			end,
-		})
 
 		-- Mason工具安装器
 		require("mason-tool-installer").setup({
