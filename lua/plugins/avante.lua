@@ -4,6 +4,7 @@
 return {
 	{
 		"yetone/avante.nvim",
+        enabled = false,
 		keys = {
 			{
 				"<leader>aa",

@@ -1,8 +1,8 @@
 -- 告诉 Lua 语言服务器 vim 是全局变量
 ---@diagnostic disable: undefined-global
-
 return {
 	"ravitemer/mcphub.nvim",
+    enabled = false,
     event = "VeryLazy",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
