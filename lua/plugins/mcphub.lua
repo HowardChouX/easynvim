@@ -3,6 +3,7 @@
 
 return {
 	"ravitemer/mcphub.nvim",
+    enabled = true,
     event = "VeryLazy",
 	dependencies = {
 		"nvim-lua/plenary.nvim",

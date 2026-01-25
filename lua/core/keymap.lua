@@ -1,7 +1,5 @@
 --- @diagnostic disable: undefined-global
 
-
-
 --------------------------------------------------------------------------------
 -- 0. Neovide 专用快捷键 (Neovide Specific Keymaps)
 --------------------------------------------------------------------------------
@@ -529,7 +527,12 @@ end, { desc = "切换侧边栏焦点 (Toggle Sidebar Focus) --插件(Avante)" })
 vim.keymap.set("n", "<leader>ac", function()
 	require("avante.api").select_model()
 end, { desc = "选择模型 (Select Model) --插件(Avante)" })
-vim.keymap.set("n", "<leader>ae", "<cmd>AvanteEdit<CR>", { desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" })
+vim.keymap.set(
+	"n",
+	"<leader>ae",
+	"<cmd>AvanteEdit<CR>",
+	{ desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" }
+)
 vim.keymap.set(
 	"n",
 	"<leader>at",
@@ -540,4 +543,3 @@ vim.keymap.set("n", "<leader>az", function()
 	require("avante.api").zen_mode()
 end, { desc = "进入 Avante Zen 模式 (Enter Avante Zen Mode) --插件(Avante)" })
 vim.keymap.set("n", "<leader>as", "<cmd>AvanteStop<CR>", { desc = "停止 Avante (Stop Avante) --插件(Avante)" })
-
