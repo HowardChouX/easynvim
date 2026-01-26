@@ -7,6 +7,7 @@
 - 通过 `nvim-treesitter` 实现的语法高亮、缩进和文本对象
 - 通过 `telescope.nvim`、`nvim-tree` 和 `bufferline.nvim` 实现的模糊查找、文件资源管理和缓冲区标签
 - 通过 **Avante.nvim** 和 **MCP Hub** 实现的**AI 辅助编程**
+- 内置 **Gemini CLI**，在编辑器中直接与 Google AI 对话
 
 ---
 
@@ -25,6 +26,7 @@
 │      ├─ bufferline.lua    # 缓冲区标签 UI
 │      ├─ cmp.lua           # 补全引擎
 │      ├─ diagnostics.lua   # 诊断配置
+│      ├─ gemini-cli.lua    # Gemini CLI 集成
 │      ├─ grug-far.lua      # 全局搜索替换
 │      ├─ hop.lua           # 快速导航
 │      ├─ indent-blankline.lua # 缩进指南
@@ -54,6 +56,7 @@
 - **智能补全** - `nvim-cmp` 提供 LSP、缓冲区、路径和代码片段等多种源
 - **Treesitter** - 语法高亮、增量选择和文本对象
 - **AI 辅助** - `avante.nvim` 集成多种 AI 模型和 `mcphub.nvim` 提供 MCP 服务器支持
+- **Gemini CLI** - 内置 Gemini CLI，直接在编辑器中与 Google AI 对话
 - **一致的 UI** - `tokyonight.nvim` 主题、`lualine` 状态栏、`bufferline` 标签页
 - **现代化界面** - `noice.nvim` 提供美观的命令行和通知界面
 
@@ -77,10 +80,12 @@
 | `grug-far.nvim` | 项目范围的搜索和替换 |
 | `avante.nvim` | AI 代码助手（多模型支持） |
 | `mcphub.nvim` | MCP 服务器管理和工具集成 |
+| `gemini-cli.nvim` | **新增:** 在 Neovim 中使用 Gemini CLI |
+| `snacks.nvim` | `gemini-cli.nvim` 的 UI 依赖 |
 | `nvim-surround` | 轻松环绕文本 |
 | `indent-blankline.nvim` | 缩进指南 |
 | `nvim-autopairs` | 自动括号配对 |
-| `visual-multi` | 多光标编辑 |
+| `vim-visual-multi` | 多光标编辑 |
 | `toggleterm.nvim` | 终端管理 |
 | `noice.nvim` | 现代化通知和命令行界面 |
 | `nvim-notify` | 美观的通知系统 |
@@ -99,13 +104,15 @@
 | `<Leader>fg` | Normal | 实时搜索（Telescope） |
 | `<Leader>fr` | Normal | 全局替换（Grug-far） |
 | `<Leader>u` | Normal | 切换文件树 |
+| `<Leader>aa` | Normal | 显示 AI 助手侧边栏 (Avante) |
+| `<Leader>gt` | Normal | **新增:** 切换 Gemini CLI |
+| `<Leader>ga` | Normal | **新增:** 启动 Gemini 对话 |
 | `gd` | Normal | 跳转到定义（LSP） |
 | `gr` | Normal | 列出引用 |
 | `K` | Normal | 悬停文档 |
 | `<Space>rn` | Normal | 重命名符号 |
 | `<Space>ca` | Normal | 代码操作 |
 | `<Space>f` | Normal | 格式化缓冲区 |
-| `<Leader>aa` | Normal | 显示 AI 助手侧边栏 |
 | `<F1>` | Normal | 打开可搜索的快捷键面板 |
 
 ---
@@ -172,6 +179,7 @@
 
 ### AI 辅助
 - **Avante.nvim**：基于 MCP Hub 的 AI 编程助手
+- **Gemini CLI**：直接在 Neovim 中访问 Google Gemini
 - **多模型支持**：支持 Cherryin (GLM-4.6、DeepSeek、Qwen)、OpenAI、Ollama 等多种模型
 - **MCP 集成**：自动集成文件系统、Git、时间、SQLite 等 MCP 服务器
 - **智能权限**：安全的自动授权机制，保护项目安全
@@ -207,6 +215,7 @@
 - `:Telescope` 系列命令：文件查找和搜索
 - `:Lspsaga` 系列命令：增强 LSP 操作
 - `:Avante` 系列命令：AI 助手操作
+- `:Gemini` 系列命令: Gemini CLI 操作
 - `:NullLsInfo`：格式化工具状态
 
 ---
@@ -316,5 +325,3 @@ A: 使用 `:Telescope keymaps` 查看所有快捷键及其来源
 - `:NullLsInfo` 检查格式化工具状态
 
 ---
-
-
