@@ -41,12 +41,9 @@ return {
 				mru = {
 					enable = true,
 					limit = 10,
-					header = "󰄕 Most Recent Files",
 				},
 				footer = {},
 			},
 		})
-
-		vim.api.nvim_set_keymap("n", "<leader>d", ":Dashboard<CR>", { noremap = true, silent = true })
 	end,
 }

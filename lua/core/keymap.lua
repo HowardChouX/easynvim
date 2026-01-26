@@ -325,6 +325,9 @@ vim.keymap.set(
 	{ desc = "切换文件树 (Toggle File Tree) --插件(NvimTree)" }
 )
 
+-- Dashboard 插件快捷键
+vim.keymap.set("n", "<leader>d", ":Dashboard<CR>", { desc = "打开仪表盘 (Open Dashboard) --插件(Dashboard)" })
+
 -- Bufferline 插件快捷键
 vim.keymap.set(
 	"n",

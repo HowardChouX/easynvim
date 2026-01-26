@@ -56,3 +56,11 @@ vim.opt.timeoutlen = 300
 
 --暗色背景
 vim.o.background = "dark"
+
+
+-- 禁用 netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- 确保有 24位色支持
+vim.opt.termguicolors = true
