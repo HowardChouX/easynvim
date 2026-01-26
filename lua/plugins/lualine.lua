@@ -43,8 +43,8 @@ return {
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = {
-					statusline = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect" },
-					winbar = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect" },
+					statusline = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect", "snacks_terminal" },
+					winbar = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect", "snacks_terminal" },
 				},
 			},
 			extensions = { "nvim-tree" },

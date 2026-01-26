@@ -513,6 +513,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
+
+-- Gemini CLI 插件快捷键
+vim.keymap.set("n", "<leader>ga", "<cmd>Gemini ask<cr>", { desc = "Launch Gemini --插件(Gemini CLI)" })
+vim.keymap.set("n", "<leader>gt", "<cmd>Gemini toggle<cr>", { desc = "Toggle Gemini CLI --插件(Gemini CLI)" })
+
 -- Avante AI 助手 插件快捷键
 vim.keymap.set("n", "<leader>aa", function()
 	require("avante.api").ask()
