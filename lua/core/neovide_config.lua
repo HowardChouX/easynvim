@@ -1,6 +1,7 @@
 -- 告诉 Lua 语言服务器 vim 是全局变量
 ---@diagnostic disable: undefined-global
 -- ~/.config/nvim/lua/neovide_config.lua
+
 -- 只有在 Neovide 运行时才应用这些设置
 if vim.g.neovide then
     -- 启用全屏模式 (默认启动时全屏)
@@ -10,7 +11,7 @@ if vim.g.neovide then
 
     -- 窗口透明度 (0.0 完全透明, 1.0 完全不透明)
     -- 注意: neovide_transparency 已弃用，请使用 neovide_opacity
-    -- 你的原始值是 0.9，这里也设置为 0.9 (表示 90% 不透明)
+    -- 你的原始值是 0.9，这里也设置为 0.9 (表示不透明)
     vim.g.neovide_opacity = 0.95
 
     -- 光标动画速度 (值越小动画越快，0.05 是一个比较流畅的值)
@@ -34,7 +35,7 @@ if vim.g.neovide then
 
     -- 设置 Neovide 的字体 (例如 "JetBrainsMono Nerd Font:h12")
     vim.g.neovide_font_family = "JetBrainsMono Nerd Font"
-    vim.g.neovide_font_size = 12
+    vim.g.neovide_font_size = 10
     vim.o.guifont = "JetBrainsMono Nerd Font:h14"
 
     -- 启用 Neovide 的浮动窗口阴影
