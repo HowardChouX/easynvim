@@ -405,43 +405,6 @@ vim.keymap.set("n", "<leader>f", function()
 	vim.lsp.buf.format()
 end, { desc = "格式化代码 (Format Code) --插件(None-ls)" })
 
--- DAP (Debug Adapter Protocol) 插件快捷键
-vim.keymap.set("n", "<F9>", function()
-	require("dap").toggle_breakpoint()
-end, { desc = "切换断点 (Toggle Breakpoint) --插件(DAP)" })
-vim.keymap.set("n", "<Leader><F9>", function()
-	require("dap").set_breakpoint(vim.fn.input("断点条件: "))
-end, { desc = "设置条件断点 (Conditional Breakpoint) --插件(DAP)" })
-
-vim.keymap.set("n", "<F5>", function()
-	local dap = require("dap")
-	if dap.session() then
-		dap.continue()
-	else
-		if vim.bo.filetype == "python" and dap.configurations.python then
-			dap.run(dap.configurations.python[1])
-		else
-			dap.continue()
-		end
-	end
-end, { desc = "智能启动/继续调试 (Start/Continue Debug) --插件(DAP)" })
-
-vim.keymap.set("n", "<F10>", function()
-	require("dap").step_over()
-end, { desc = "单步跳过 (Step Over) --插件(DAP)" })
-vim.keymap.set("n", "<F11>", function()
-	require("dap").step_into()
-end, { desc = "单步进入 (Step Into) --插件(DAP)" }) -- 注意: F11 仍用于 DAP，Ctrl+F11 用于 Neovide 全屏
-vim.keymap.set("n", "<F12>", function()
-	require("dap").step_out()
-end, { desc = "单步跳出 (Step Out) --插件(DAP)" })
-vim.keymap.set("n", "<F6>", function()
-	require("dapui").toggle()
-end, { desc = "切换调试界面 (Toggle Debug UI) --插件(DAP)" })
-vim.keymap.set("n", "<F7>", function()
-	require("dap").repl.open()
-end, { desc = "打开调试控制台 (Open REPL) --插件(DAP)" })
-
 -- ToggleTerm 插件快捷键
 vim.keymap.set(
 	"t",
