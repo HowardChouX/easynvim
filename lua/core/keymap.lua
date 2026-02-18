@@ -161,6 +161,8 @@ vim.keymap.set("n", "k", "k", { desc = "上移 (Up) --系统" })
 vim.keymap.set("n", "l", "l", { desc = "右移 (Right) --系统" })
 vim.keymap.set("n", "0", "0", { desc = "行首 (Start of Line) --系统" })
 vim.keymap.set("n", "$", "$", { desc = "行尾 (End of Line) --系统" })
+vim.keymap.set({ "n", "v" }, "H", "0", { desc = "跳转到行首 (Start of Line) --自定义" })
+vim.keymap.set({ "n", "v" }, "L", "$", { desc = "跳转到行尾 (End of Line) --自定义" })
 
 -- 模式切换与可视块 (Mode Switching & Visual Block)
 vim.keymap.set("n", "i", "i", { desc = "光标前插入 (Insert Before Cursor) --系统" })
