@@ -1,10 +1,11 @@
--- 告诉 Lua 语言服务器 vim 是全局变量
+-- Tell Lua language server that vim is a global variable
 ---@diagnostic disable: undefined-global
 
 return {
 	{
 		"yetone/avante.nvim",
 		enabled = true,
+		event = "VeryLazy",
 		keys = {
 			{
 				"<leader>aa",
@@ -15,12 +16,60 @@ return {
 			},
 			{ "<leader>at", "<cmd>AvanteToggle<CR>", desc = "Avante: Toggle" },
 			{ "<leader>an", "<cmd>AvanteChatNew<CR>", desc = "Avante: New" },
+			{ "<leader>a?", function() require("avante.api").select_provider() end, desc = "Avante: Select Provider" },
+			{
+				"<leader>ap",
+				function()
+					-- Planning Mode: Architecture design and task planning
+					require("avante").override({
+						mode = "agentic",
+						provider = "claude",  -- Use Claude for planning
+						behaviour = { auto_suggestions = false }
+					})
+					vim.notify("Avante: Planning Mode activated", vim.log.levels.INFO)
+				end,
+				desc = "Avante: Planning Mode",
+			},
+			{
+				"<leader>ae",
+				function()
+					-- Editing Mode: Code refactoring and optimization
+					require("avante").override({
+						mode = "agentic",
+						system_prompt = "You are an expert code reviewer. Focus on code quality, performance optimization, and refactoring suggestions."
+					})
+					vim.notify("Avante: Editing Mode activated", vim.log.levels.INFO)
+				end,
+				desc = "Avante: Editing Mode",
+			},
+			{
+				"<leader>as",
+				function()
+					-- Suggesting Mode: Real-time code completion
+					require("avante").override({
+						mode = "agentic",
+						behaviour = { auto_suggestions = true }
+					})
+					vim.notify("Avante: Suggesting Mode activated", vim.log.levels.INFO)
+				end,
+				desc = "Avante: Suggesting Mode",
+			},
+			{
+				"<leader>am",
+				function()
+					local current_mode = require("avante.config")._options.mode
+					local new_mode = current_mode == "agentic" and "legacy" or "agentic"
+					require("avante").override({ mode = new_mode })
+					vim.notify("Avante mode switched to: " .. new_mode, vim.log.levels.INFO)
+				end,
+				desc = "Avante: Toggle Mode (agentic/legacy)",
+			},
 		},
 		build = vim.fn.has("win32") ~= 0 and "powershell " .. vim.fn.shellescape(
 			"-ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
 		) or "make BUILD_FROM_SOURCE=true",
 		version = false,
-		-- 关键：显式声明依赖 mcphub.nvim
+		-- Key: Explicitly declare dependency on mcphub.nvim
 		dependencies = {
 			"ravitemer/mcphub.nvim",
 			"nvim-lua/plenary.nvim",
@@ -35,6 +84,11 @@ return {
 		config = function()
 			require("avante_lib").load()
 			require("avante").setup({
+				-- Main configuration
+				mode = "agentic",
+
+				provider = "cherryin_openai_qwen3_coder_480b",
+
 				windows = {
 					position = "right",
 					wrap = true,
@@ -56,9 +110,9 @@ return {
 						height = 16,
 					},
 				},
-				-- MCP Hub 集成：系统提示词
+				-- MCP Hub Integration: System prompt
 				system_prompt = function()
-					-- 使用 pcall 防止 mcphub 还没加载完导致崩溃
+					-- Use pcall to prevent crashes when mcphub isn't loaded yet
 					local status, hub = pcall(require, "mcphub")
 					if status then
 						local hub_instance = hub.get_hub_instance()
@@ -67,7 +121,7 @@ return {
 					return ""
 				end,
 
-				-- MCP Hub 集成：工具
+				-- MCP Hub Integration: Tools
 				custom_tools = function()
 					local status, mcp_ext = pcall(require, "mcphub.extensions.avante")
 					if status then
@@ -75,18 +129,18 @@ return {
 					end
 					return {}
 				end,
-				disabled_tools = {
-					"list_files",
-					"search_files",
-					"read_file",
-					"create_file",
-					"rename_file",
-					"delete_file",
-					"create_dir",
-					"rename_dir",
-					"delete_dir",
-					"bash",
-				},
+				--disabled_tools = {
+				--	"list_files",
+				--	"search_files",
+				--	"read_file",
+				--	"create_file",
+				--	"rename_file",
+				--	"delete_file",
+				--	"create_dir",
+				--	"rename_dir",
+				--	"delete_dir",
+				--	"bash",
+				--},
 				behaviour = {
 					auto_suggestions = false,
 					auto_set_highlight_group = true,
@@ -97,7 +151,6 @@ return {
 					support_paste_from_clipboard = true,
 				},
 
-				provider = "cherryin_openai_qwen3_coder_480b",
 				providers = {
 					cherrryin_glm4_6 = {
 						__inherited_from = "openai",
@@ -135,7 +188,7 @@ return {
 					},
 				},
 
-				file_selector = {
+				selector = {
 					provider = "telescope",
 					provider_opts = {},
 				},
@@ -148,28 +201,41 @@ return {
 				},
 
 				acp_providers = {
+
+					["claude-code"] = {
+						command = "npx",
+						args = { "-y", "-g", "@zed-industries/claude-code-acp" },
+						env = {
+							NODE_NO_WARNINGS = "1",
+							ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY"),
+							ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL"),
+							ACP_PATH_TO_CLAUDE_CODE_EXECUTABLE = vim.fn.exepath("claude"),
+							ACP_PERMISSION_MODE = "bypassPermissions",
+						},
+					},
+
 					["goose"] = {
-						enabled = true,
 						command = "goose",
 						args = { "acp" },
 					},
 				},
 
 				rag_service = {
-					enabled = false,
+					enabled = true,
 					host_mount = os.getenv("HOME"),
 					runner = "docker",
 					llm = {
 						provider = "ollama",
 						endpoint = "http://host.docker.internal:11434",
-						model = "qwen2.5-coder:7b",
+						model = "deepseek-coder:6.7b-instruct-q4_K_M",
 					},
 					embed = {
 						provider = "ollama",
 						endpoint = "http://host.docker.internal:11434",
-						model = "nomic-embed-text:latest",
+						model = "bge-m3:latest",
 					},
-					docker_extra_args = "--network host",
+					-- docker_extra_args = "--add-host=host.docker.internal:host-gateway",
+					docker_extra_args = "--env http_proxy= --env https_proxy= --env all_proxy= --add-host=host.docker.internal:host-gateway",
 				},
 			})
 		end,

@@ -2,7 +2,7 @@
 ---@diagnostic disable: undefined-global
 return {
 	"nvim-tree/nvim-tree.lua",
-	lazy = false, -- [关键] 必须设为 false，否则启动时不会加载
+	event = "VeryLazy", -- [关键] 必须设为 false，否则启动时不会加载
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 
 	-- [关键] 在插件加载前禁用 netrw，这是官方推荐的做法

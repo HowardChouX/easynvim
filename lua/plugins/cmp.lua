@@ -3,8 +3,7 @@
 ---@diagnostic disable: undefined-global
 return {
   "hrsh7th/nvim-cmp",
-  version = "*",
-  event = "VeryLazy",
+  event = "VeryLazy", -- 必须在VeryLazy前加载否则cmd异常
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",

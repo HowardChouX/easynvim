@@ -1,6 +1,6 @@
 return {
 	"nvim-lualine/lualine.nvim",
-	event = "UIEnter", -- 界面渲染完成后触发
+	event = "UIenter", -- 界面渲染完成后触发
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 	},

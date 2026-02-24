@@ -516,3 +516,7 @@ vim.keymap.set("n", "<leader>az", function()
 	require("avante.api").zen_mode()
 end, { desc = "进入 Avante Zen 模式 (Enter Avante Zen Mode) --插件(Avante)" })
 vim.keymap.set("n", "<leader>as", "<cmd>AvanteStop<CR>", { desc = "停止 Avante (Stop Avante) --插件(Avante)" })
+
+-- Claude Code 快捷键：leader + c + l  Toggle Claude Code
+vim.keymap.set("n", "<leader>e", "<cmd>ClaudeCode<cr>", { desc = "Claude Code: Toggle --插件(claude-code)" })
+
