@@ -141,7 +141,7 @@ return {
 				},
 
 				rag_service = {
-					enabled = true,
+					enabled = false,
 					host_mount = os.getenv("HOME"),
 					runner = "docker",
 					llm = {
