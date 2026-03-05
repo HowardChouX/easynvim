@@ -20,12 +20,6 @@ if vim.g.neovide then
     vim.g.neovide_scale_factor = 1.0
 
 
-    -- 启用 Neovide 的内置字体渲染 (通常效果更好，推荐开启)
-    vim.g.neovide_no_multigrid = true
-
-    -- 启用 Neovide 的内置模糊效果 (如果需要，值越大模糊越强)
-    -- vim.g.neovide_transparency_blur_amount = 10
-
     -- 设置 Neovide 窗口的初始大小 (例如 "80x24" 或 "120x30")
     vim.g.neovide_remember_window_size = true -- 记住上次窗口大小
     vim.g.neovide_window_size = "120x30"     -- 设置特定初始大小
@@ -37,9 +31,6 @@ if vim.g.neovide then
     vim.g.neovide_font_family = "JetBrainsMono Nerd Font"
     vim.g.neovide_font_size = 14
     vim.o.guifont = "JetBrainsMono Nerd Font:h14"
-
-    -- 设置 fallback 字体以确保所有符号正确显示
-    vim.o.guifontset = "JetBrainsMono Nerd Font:h14,Symbols Nerd Font:h14"
 
     -- 启用 Neovide 的内置字体渲染 (通常效果更好，推荐开启)
     vim.g.neovide_no_multigrid = true

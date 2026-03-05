@@ -1,7 +1,7 @@
 return {
   "folke/noice.nvim",
   event = "VeryLazy",
-  dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
+  dependencies = { "MunifTanjim/nui.nvim" }, -- 移除 nvim-_notify，使用 noice 内置通知
   opts = {
     lsp = {
       override = {

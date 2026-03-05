@@ -8,14 +8,14 @@ return {
 		"nvim-tree/nvim-web-devicons",
 		"hrsh7th/nvim-cmp",
 	},
-	ft = { "markdown" },
+	ft = { "markdown", "Avante" },
 	config = function()
 		require("render-markdown").setup({
 			-- ===== 核心设置 =====
 			enabled = true,
-			render_modes = { "n", "c", "t" },
+			render_modes = { "n", "c", "t", "i" },
 			debounce = 100,
-			file_types = { "markdown" },
+			file_types = { "markdown", "Avante" },
 			max_file_size = 10.0,
 
 			-- ===== 标题渲染 =====
@@ -143,9 +143,8 @@ return {
 
 			-- ===== LaTeX 支持 =====
 			latex = {
-				enabled = true,
-				converter = { "utftex", "latex2text" },
-				position = "center",
+				enabled = false,
+				converter = {},
 			},
 
 			-- ===== 完成建议 =====
@@ -168,7 +167,7 @@ return {
 
 		-- 为 Markdown 文件添加专用快捷键
 		vim.api.nvim_create_autocmd("FileType", {
-			pattern = "markdown",
+			pattern = { "markdown", "Avante" },
 			callback = function()
 				-- 切换渲染模式
 				vim.keymap.set(

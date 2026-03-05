@@ -6,7 +6,7 @@ return {
 		"coder/claudecode.nvim",
 		enabled = true,
         event = "VeryLazy",
-		dependencies = { "folke/snacks.nvim" },
+		dependencies = { },
 		config = function()
 			require("claudecode").setup({
 				-- 服务器配置
@@ -18,17 +18,8 @@ return {
 				terminal = {
 					split_side = "right", -- "left" or "right"
 					split_width_percentage = 0.35,
-					provider = "snacks", -- 使用 snacks.nvim 提供更好的终端支持
+					provider = "native", -- 使用 native 终端
 					auto_close = true,
-					snacks_win_opts = {
-						-- 浮动窗口配置（可选）
-						position = "float",
-						width = 0.9,
-						height = 0.9,
-						border = "rounded",
-						title = " Claude Code ",
-						title_pos = "center",
-					},
 				},
 
 				-- 发送/聚焦行为

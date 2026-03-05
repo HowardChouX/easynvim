@@ -41,7 +41,7 @@ return {
                         __inherited_from = "openai",
                         endpoint = "https://open.cherryin.ai/v1",
                         api_key_name = "CherryIn_API_KEY",
-                        model = "agent/glm-4.6(free)",
+                        model = "z-ai/glm-4.6(free)",
                     },
                     SiliconFlow = {
                         __inherited_from = "openai",
@@ -54,10 +54,10 @@ return {
                 windows = {
                     position = "right",
                     wrap = true,
-                    width = 32,
+                    width = 45,
                     input = {
                         prefix = "> ",
-                        height = 16,
+                        height = 10,
                     },
                     sidebar = {
                         border = "rounded",
@@ -68,12 +68,12 @@ return {
                     ask = {
                         border = "rounded",
                         focus_on_apply = "ours",
-                        width = 32,
-                        height = 16,
+                        width = 45,
+                        height = 10,
                     },
                 },
                 behaviour = {
-                    auto_suggestions = true,
+                    auto_suggestions = false,
                     auto_set_highlight_group = true,
                     auto_set_keymaps = true,
                     auto_apply_diff_after_generation = false,
