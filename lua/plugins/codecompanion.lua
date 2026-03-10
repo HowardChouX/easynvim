@@ -28,6 +28,62 @@ return {
 			tools = "@",
 		},
 
+		-- ===== MCP 原生配置 =====
+		-- https://codecompanion.olimorris.dev/configuration/mcp.html
+		mcp = {
+			servers = {
+				-- 文件系统服务器 (限制访问目录)
+				["filesystem"] = {
+					cmd = { "npx", "-y", "@modelcontextprotocol/server-filesystem" },
+					-- Roots: 限制 MCP 服务器可访问的目录
+					roots = function()
+						return {
+							{ name = "config", uri = vim.fn.expand("~/.config") },
+							{ name = "home", uri = vim.fn.expand("~") },
+							{ name = "cwd", uri = vim.fn.getcwd() },
+						}
+					end,
+					-- 工具默认设置
+					tool_defaults = {
+						require_approval_before = false, -- 默认不需要批准
+					},
+					-- 单个工具覆盖配置
+					tool_overrides = {
+						-- 危险操作需要批准
+						write_file = {
+							opts = { require_approval_before = true },
+						},
+						edit_file = {
+							opts = { require_approval_before = true },
+						},
+						delete_file = {
+							opts = { require_approval_before = true },
+							enabled = true,
+						},
+						-- 只读操作无需批准
+						read_file = {
+							opts = { require_approval_before = false },
+						},
+						list_directory = {
+							opts = { require_approval_before = false },
+						},
+					},
+				},
+				-- 顺序思考服务器 (用于复杂推理)
+				["sequential-thinking"] = {
+					cmd = { "npx", "-y", "@modelcontextprotocol/server-sequential-thinking" },
+				},
+				-- 内存服务器 (用于持久化记忆)
+				["memory"] = {
+					cmd = { "npx", "-y", "@modelcontextprotocol/server-memory" },
+				},
+			},
+			-- 默认自动启动的服务器
+			opts = {
+				default_servers = { "sequential-thinking", "filesystem", "memory" },
+			},
+		},
+
 		-- ===== 显示配置 =====
 		display = {
 			action_palette = {
@@ -55,7 +111,7 @@ return {
 				auto_scroll = true, -- 响应流式输出时自动滚动
 				fold_context = true, -- 折叠上下文以节省空间
 				fold_reasoning = true, -- 流式完成后折叠推理内容
-				show_reasoning = true, -- 显示推理输出
+				show_reasoning = false, -- 显示推理输出
 				-- 其他 UI 选项
 				intro_message = "欢迎使用 CodeCompanion ✨！按 ? 查看选项",
 				separator = "─", -- 消息之间的分隔符
@@ -98,7 +154,7 @@ return {
 		-- ===== 交互配置 =====
 		interactions = {
 			chat = {
-				adapter = "anthropic", -- HTTP 适配器 (支持内置工具)
+				adapter = "anthropic", -- anthropic / claude_code
 				-- 变量配置 (MCP 扩展需要)
 				variables = {},
 				-- 角色名称配置
@@ -292,7 +348,7 @@ return {
 				},
 			},
 
-			-- ACP 适配器 (用于 chat，支持原生 Claude 工具)
+			-- ACP 适配器 (支持原生 Claude 工具)
 			acp = {
 				claude_code = function()
 					return require("codecompanion.adapters").extend("claude_code", {
@@ -323,6 +379,8 @@ return {
 					make_vars = true, -- 创建 MCP 变量
 					make_slash_commands = true, -- 创建 MCP slash 命令
 					show_result_in_chat = true, -- 在聊天中显示结果
+					-- 与原生 MCP 配置协同工作
+					-- mcphub 管理外部 MCP 服务器，原生 mcp.servers 管理内置服务器
 				},
 			},
 		},
