@@ -98,7 +98,7 @@ return {
 		-- ===== 交互配置 =====
 		interactions = {
 			chat = {
-				adapter = "claude_code", -- ACP 适配器
+				adapter = "anthropic", -- HTTP 适配器 (支持内置工具)
 				-- 变量配置 (MCP 扩展需要)
 				variables = {},
 				-- 角色名称配置
@@ -142,13 +142,7 @@ return {
 				},
 				-- 工具配置 (在聊天中使用 @工具名 调用)
 				tools = {
-					-- 全局工具选项
-					opts = {
-						auto_submit_errors = true, -- 自动将错误发送给 LLM
-						auto_submit_success = true, -- 自动将成功输出发送给 LLM
-						default_tools = {}, -- 默认加载的工具 (留空，按需使用 @tool 调用)
-					},
-					-- 内置工具条件启用
+					-- 内置工具启用配置
 					["grep_search"] = {
 						---@param adapter CodeCompanion.HTTPAdapter
 						---@return boolean
@@ -183,6 +177,12 @@ return {
 								collapse_tools = true,
 							},
 						},
+					},
+					-- 全局工具选项
+					opts = {
+						auto_submit_errors = true, -- 自动将错误发送给 LLM
+						auto_submit_success = true, -- 自动将成功输出发送给 LLM
+						default_tools = {}, -- 默认加载的工具 (留空，按需使用 @tool 调用)
 					},
 				},
 			},
@@ -256,68 +256,59 @@ return {
 
 		-- ===== 适配器配置 =====
 		adapters = {
-			-- HTTP 适配器 (用于 inline/cmd/background)
+			-- HTTP 适配器 (OpenAI 兼容格式，用于 inline/cmd/background)
 			http = {
-				-- OpenAI 兼容格式适配器
 				anthropic = function()
-					-- 从设置文件读取配置
-					local settings_path = vim.fn.expand("~/.claude/settings.json")
-					local settings_file = io.open(settings_path, "r")
-					local base_url, api_key, model
-
-					if settings_file then
-						local content = settings_file:read("*a")
-						settings_file:close()
-						local ok, settings = pcall(vim.json.decode, content)
-						if ok and settings and settings.env then
-							base_url = settings.env.ANTHROPIC_BASE_URL
-							api_key = settings.env.ANTHROPIC_API_KEY
-							model = settings.env.ANTHROPIC_MODEL
-						end
-					end
-
-					-- 回退到环境变量
-					base_url = base_url or os.getenv("ANTHROPIC_BASE_URL")
-					api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
-					model = model or os.getenv("ANTHROPIC_MODEL")
+					local base_url = os.getenv("ANTHROPIC_BASE_URL")
+					local api_key = os.getenv("ANTHROPIC_API_KEY")
+					local model = os.getenv("ANTHROPIC_MODEL") or "claude-sonnet-4-6"
 
 					if not base_url or not api_key then
+						vim.notify("CodeCompanion: 请设置 ANTHROPIC_BASE_URL 和 ANTHROPIC_API_KEY 环境变量", vim.log.levels.ERROR)
 						return nil
 					end
 
-					base_url = base_url:gsub("/$", "")
 					return require("codecompanion.adapters").extend("openai_compatible", {
 						env = {
-							url = base_url,
+							url = base_url:gsub("/$", ""),
 							api_key = api_key,
 						},
 						schema = {
-							model = {
-								default = model,
-							},
+							model = { default = model },
+						},
+						-- HTTP 适配器可用的工具
+						available_tools = {
+							["run_command"] = { enabled = true },
+							["insert_edit_into_file"] = { enabled = true },
+							["read_file"] = { enabled = true },
+							["grep_search"] = { enabled = true },
+							["full_stack_dev"] = { enabled = true },
 						},
 					})
 				end,
-
-				-- 适配器选项
 				opts = {
-					show_presets = false, -- 隐藏预设适配器，只显示用户定义的
-					show_model_choices = true, -- 切换适配器时显示模型选择
+					show_presets = false,
+					show_model_choices = true,
 				},
 			},
 
-			-- ACP 适配器 (用于 chat)
+			-- ACP 适配器 (用于 chat，支持原生 Claude 工具)
 			acp = {
-				-- Claude Code ACP 适配器
-				-- 环境变量从 /etc/claude-code/managed-settings.json 或 ~/.claude/settings.json 读取
 				claude_code = function()
 					return require("codecompanion.adapters").extend("claude_code", {
 						env = {
 							ANTHROPIC_API_KEY = "ANTHROPIC_API_KEY",
 						},
 						defaults = {
-							model = os.getenv("ANTHROPIC_MODEL"),
+							model = os.getenv("ANTHROPIC_MODEL") or "claude-sonnet-4-6",
 							mcpServers = "inherit_from_config",
+						},
+						available_tools = {
+							["run_command"] = { enabled = true },
+							["insert_edit_into_file"] = { enabled = true },
+							["read_file"] = { enabled = true },
+							["grep_search"] = { enabled = true },
+							["full_stack_dev"] = { enabled = true },
 						},
 					})
 				end,
@@ -335,37 +326,6 @@ return {
 				},
 			},
 		},
-
-		-- ===== MCP 服务器配置 =====
-		mcp = {
-			servers = {
-				-- 文件系统访问
-				["filesystem"] = {
-					cmd = { "npx", "-y", "@modelcontextprotocol/server-filesystem" },
-					roots = function()
-						return {
-							{ name = "config", uri = vim.fn.expand("~/.config") },
-							{ name = "project", uri = vim.fn.getcwd() },
-						}
-					end,
-				},
-				-- 顺序思考
-				["sequential-thinking"] = {
-					cmd = { "npx", "-y", "@modelcontextprotocol/server-sequential-thinking" },
-				},
-				-- 网络搜索
-				["tavily-mcp"] = {
-					cmd = { "npx", "-y", "tavily-mcp@latest" },
-					env = {
-						TAVILY_API_KEY = os.getenv("TAVILY_API_KEY"),
-					},
-				},
-			},
-			opts = {
-				-- 默认启动的服务器
-				default_servers = { "sequential-thinking" },
-			},
-		},
 	},
 
 	-- ===== 回调函数配置 (通过 autocmd 注册) =====
@@ -377,7 +337,7 @@ return {
 				local chat = require("codecompanion").buf_get_chat(args.data.bufnr)
 
 				-- 提交前检查 token 限制
-				chat:add_callback("on_before_submit", function(c, info)
+				chat:add_callback("on_before_submit", function(c, _)
 					local tokens = require("codecompanion.utils.tokens")
 					local token_count = tokens.calculate(vim.inspect(c.messages))
 					local context_limit = 128000
@@ -392,7 +352,7 @@ return {
 				end)
 
 				-- 工具输出截断回调
-				chat:add_callback("on_tool_output", function(c, data)
+				chat:add_callback("on_tool_output", function(_, data)
 					local tokens = require("codecompanion.utils.tokens")
 					local max_tokens = 10000
 
