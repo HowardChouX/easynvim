@@ -5,7 +5,7 @@
 vim.opt.number = true
 
 --显示相对行号
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false
 
 --光标所在行高亮
 vim.opt.cursorline = true
@@ -39,15 +39,13 @@ vim.opt.hlsearch = false
 --关闭 Neovim 底部的模式提示信息
 vim.opt.showmode = false
 
---将leader设置为空格
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+-- Leader 键设置 (在 keymap.lua 中)
 
 --绑定默认寄存器和系统剪贴板
 vim.opt.clipboard = "unnamedplus"
 
 --实现类似<ctrl+a>数字自增的字母自增
-vim.opt.nrformats = "bin,hex,alpha"
+--vim.opt.nrformats = "bin,hex,alpha"
 
 -- 组合键检测超时时间 (单位: 毫秒)
 -- 默认值是 1000ms。降低此值可以减少按键延迟，避免误触组合键 (如 bb vs b b)
@@ -56,11 +54,6 @@ vim.opt.timeoutlen = 300
 
 --暗色背景
 vim.o.background = "dark"
-
-
--- 禁用 netrw
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
 
 -- 确保有 24位色支持
 vim.opt.termguicolors = true

@@ -1,3 +1,4 @@
+-- LSP 增强插件：提供符号查找、代码操作、悬停文档、诊断显示、函数签名等功能
 -- 告诉 Lua 语言服务器 vim 是全局变量
 ---@diagnostic disable: undefined-global
 return {

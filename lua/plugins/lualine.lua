@@ -10,7 +10,7 @@ return {
 			local clients = vim.lsp.get_clients({ bufnr = 0 })
 
 			if #clients == 0 then
-				return "○"
+				return "?"
 			end
 			return " " .. #clients
 		end
@@ -43,8 +43,8 @@ return {
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = {
-					statusline = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect", "snacks_terminal" },
-					winbar = { "Avante", "AvanteInput", "AvanteSelectedFiles", "AvanteTodos", "DressingSelect", "snacks_terminal" },
+					statusline = { "DressingSelect", "snacks_terminal" },
+					winbar = { "DressingSelect", "snacks_terminal" },
 				},
 			},
 			extensions = { "nvim-tree" },

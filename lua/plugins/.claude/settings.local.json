@@ -10,7 +10,11 @@
       "Bash(cp /home/chou/.config/nvim/lua/plugins/cmp.lua /home/chou/.config/nvim/lua/plugins/cmp.lua.backup)",
       "Bash(nvim --headless -c 'try | lua require\\(\"\"minuet\"\"\\) | catch | echo \"\"Minuet 加载失败\"\" | endtry' -c 'qa!')",
       "Bash(nvim --headless -c 'try | lua require\\(\"\"cmp\"\"\\) | catch | echo \"\"CMP 加载失败\"\" | endtry' -c 'qa!')",
-      "Bash(nvim --headless -c 'try | lua require\\(\"\"claude-code\"\"\\) | catch | echo \"\"Claude Code plugin load failed\"\" | endtry' -c 'qa!')"
+      "Bash(nvim --headless -c 'try | lua require\\(\"\"claude-code\"\"\\) | catch | echo \"\"Claude Code plugin load failed\"\" | endtry' -c 'qa!')",
+      "Bash(gh api repos/olimorris/codecompanion.nvim/contents/doc/codecompanion.txt)",
+      "Bash(gh api repos/olimorris/codecompanion.nvim/contents/README.md)",
+      "Bash(python3 -c \"import sys,json,base64; print\\(base64.b64decode\\(json.load\\(sys.stdin\\)[''content'']\\).decode\\(\\)\\)\")",
+      "Bash(gh api repos/olimorris/codecompanion.nvim/contents/lua/codecompanion/config.lua)"
     ]
   }
 }

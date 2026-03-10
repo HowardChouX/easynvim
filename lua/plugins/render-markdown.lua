@@ -8,7 +8,7 @@ return {
 		"nvim-tree/nvim-web-devicons",
 		"hrsh7th/nvim-cmp",
 	},
-	ft = { "markdown" },
+	ft = { "markdown", "codecompanion" },
 	config = function()
 		require("render-markdown").setup({
 			-- ===== 核心设置 =====

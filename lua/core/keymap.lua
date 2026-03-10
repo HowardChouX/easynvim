@@ -1,53 +1,13 @@
 --- @diagnostic disable: undefined-global
 
---------------------------------------------------------------------------------
--- 0. Neovide 专用快捷键 (Neovide Specific Keymaps)
---------------------------------------------------------------------------------
--- 只有在 Neovide 运行时才启用这些快捷键
-if vim.g.neovide then
-	-- 定义一个 Lua 函数来切换 Neovide 的全屏状态
-	local function toggle_neovide_fullscreen()
-		-- 切换 vim.g.neovide_fullscreen 的布尔值
-		vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
-		-- 打印消息提示用户全屏状态已切换
-		if vim.g.neovide_fullscreen then
-			print("Neovide: 进入全屏模式")
-		else
-			print("Neovide: 退出全屏模式")
-		end
-	end
-
-	-- 将这个 Lua 函数注册为一个用户命令
-	-- 这样我们就可以在键位映射中使用 <cmd> 命令来调用它
-	vim.api.nvim_create_user_command("NeovideToggleFullscreen", toggle_neovide_fullscreen, {})
-
-	-- 映射 Ctrl+F11 键来执行 NeovideToggleFullscreen 命令
-	-- 适用于普通模式 (Normal), 插入模式 (Insert), 可视模式 (Visual), 终端模式 (Terminal)
-	vim.keymap.set(
-		"n",
-		"<C-F11>",
-		"<cmd>NeovideToggleFullscreen<CR>",
-		{ noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" }
-	)
-	vim.keymap.set(
-		"i",
-		"<C-F11>",
-		"<cmd>NeovideToggleFullscreen<CR>",
-		{ noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" }
-	)
-	vim.keymap.set(
-		"v",
-		"<C-F11>",
-		"<cmd>NeovideToggleFullscreen<CR>",
-		{ noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" }
-	)
-	vim.keymap.set(
-		"t",
-		"<C-F11>",
-		"<cmd>NeovideToggleFullscreen<CR>",
-		{ noremap = true, silent = true, desc = "切换 Neovide 全屏 (Toggle Neovide Fullscreen) --Neovide" }
-	)
-end
+-- 自动重载 keymap (开发时使用)
+vim.api.nvim_create_autocmd("BufWritePost", {
+	pattern = "**/keymap.lua",
+	callback = function()
+		vim.cmd("source ~/.config/nvim/lua/core/keymap.lua")
+		vim.notify("keymap.lua 已重新加载", vim.log.levels.INFO)
+	end,
+})
 
 --------------------------------------------------------------------------------
 -- 1. 基础配置与 Leader (Basic Config & Leader)
@@ -91,21 +51,13 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "保存文件 (Save File) --自定义" }
 )
 
--- Insert 模式翻页 (已注释，如果需要可启用)
--- vim.keymap.set("i", "tt", "<Esc><C-b>", { noremap = true, silent = true, desc = "向上翻页 (Page Up) --自定义" })
--- vim.keymap.set("i", "bb", "<Esc><C-f>", { noremap = true, silent = true, desc = "向下翻页 (Page Down) --自定义" })
 
 --------------------------------------------------------------------------------
 -- 3. 窗口与终端 (Window & Terminal Management)
 --------------------------------------------------------------------------------
 
--- Normal 模式下：<C-t> 打开终端 (底部分屏，高度为 8 行)
-vim.keymap.set(
-	"n",
-	"<C-t>",
-	":botright 8split | terminal<CR>",
-	{ noremap = true, silent = true, desc = "打开底部终端 (Open Bottom Terminal) --系统" }
-)
+-- Normal 模式下：<C-t> 打开 toggleterm 终端 (已配置在 toggleterm.lua 中)
+-- 快捷键 <C-t> 已由 toggleterm.nvim 插件接管，用于打开/关闭终端
 
 -- Terminal 模式下：jj 切换到 Normal 模式 (退出终端插入模式)
 vim.keymap.set(
@@ -236,57 +188,10 @@ vim.keymap.set("n", "@", "@", { desc = "执行宏 (Replay Macro) --系统" })
 -- 7. 缓冲区与列表 (Buffer & List Navigation)
 --------------------------------------------------------------------------------
 
--- 多行光标 (Multicursor) - 插件: Visual-Multi
-vim.keymap.set(
-	"n",
-	"<C-M-Up>",
-	"<Cmd>call vm#commands#add_cursor_up(0, 1)<CR>",
-	{ desc = "向上添加光标 (Add Cursor Up) --插件(Visual-Multi)" }
-)
-vim.keymap.set(
-	"n",
-	"<C-M-Down>",
-	"<Cmd>call vm#commands#add_cursor_down(0, 1)<CR>",
-	{ desc = "向下添加光标 (Add Cursor Down) --插件(Visual-Multi)" }
-)
-vim.keymap.set(
-	"n",
-	"<C-n>",
-	"<Plug>(VM-Find-Under)",
-	{ desc = "选中光标下单词 (Find Under) --插件(Visual-Multi)" }
-)
-vim.keymap.set(
-	"x",
-	"<C-n>",
-	"<Plug>(VM-Find-Subword-Under)",
-	{ desc = "选中光标下子词 (Find Subword) --插件(Visual-Multi)" }
-)
-vim.keymap.set("n", "<C-M-n>", "\\A", { desc = "全选匹配项 (Select All) --插件(Visual-Multi)" })
-vim.keymap.set("n", "n", "<Plug>(VM-Skip-Region)", { desc = "跳过当前匹配 (Skip Region) --插件(Visual-Multi)" })
-vim.keymap.set(
-	"n",
-	"Q",
-	"<Plug>(VM-Remove-Region)",
-	{ desc = "移除当前光标 (Remove Region) --插件(Visual-Multi)" }
-)
+-- 多行光标 (Multicursor) - 插件: vim-visual-multi
+-- 快捷键已在插件配置中定义 (multicursor.lua)
 
--- 列表/缓冲区导航 (List/Buffer Navigation)
-vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { desc = "上一个缓冲区 (Prev Buffer) --自定义" })
-vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { desc = "下一个缓冲区 (Next Buffer) --自定义" })
-vim.keymap.set("n", "[B", "<cmd>bfirst<CR>", { desc = "第一个缓冲区 (First Buffer) --自定义" })
-vim.keymap.set("n", "]B", "<cmd>blast<CR>", { desc = "最后一个缓冲区 (Last Buffer) --自定义" })
-vim.keymap.set("n", "[q", "<cmd>cprevious<CR>", { desc = "上一个速查项 (Prev Quickfix) --自定义" })
-vim.keymap.set("n", "]q", "<cmd>cnext<CR>", { desc = "下一个速查项 (Next Quickfix) --自定义" })
-vim.keymap.set("n", "[l", "<cmd>lprevious<CR>", { desc = "上一个位置项 (Prev Location) --自定义" })
-vim.keymap.set("n", "]l", "<cmd>lnext<CR>", { desc = "下一个位置项 (Next Location) --自定义" })
 
--- 插入空行 (Insert Empty Line)
-vim.keymap.set("n", "[<Space>", function()
-	vim.cmd("put! =''")
-end, { desc = "上方插入空行 (Add Empty Line Above) --自定义" })
-vim.keymap.set("n", "]<Space>", function()
-	vim.cmd("put =''")
-end, { desc = "下方插入空行 (Add Empty Line Below) --自定义" })
 
 --------------------------------------------------------------------------------
 -- 8. 插件快捷键 (Plugin Specific Keymaps)
@@ -362,9 +267,6 @@ vim.keymap.set(
 	{ silent = true, desc = "删除当前缓冲区 (Delete Buffer) --插件(Bufferline)" }
 )
 
--- GrugFar 插件快捷键
-vim.keymap.set("n", "<leader>fr", ":GrugFar<CR>", { desc = "查找与替换 (Find & Replace) --插件(GrugFar)" })
-
 -- Hop 插件快捷键
 vim.keymap.set("n", "ff", "<Cmd>HopWord<CR>", { silent = true, desc = "单词跳转 (Hop Word) --插件(Hop)" })
 
@@ -423,100 +325,80 @@ vim.keymap.set("t", "<Esc>", function()
 	end, 20)
 end, { noremap = true, silent = true, desc = "关闭终端 (Close Terminal) --插件(ToggleTerm)" })
 
--- LSP (Native & Autocommands) 快捷键
-vim.api.nvim_create_autocmd("LspAttach", {
-	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-	callback = function(ev)
-		local bufnr = ev.buf
-		local opts = { buffer = bufnr }
+--------------------------------------------------------------------------------
+-- 9. CodeCompanion AI 助手快捷键 (CodeCompanion AI Assistant)
+--------------------------------------------------------------------------------
 
-		vim.keymap.set(
-			"n",
-			"gD",
-			vim.lsp.buf.declaration,
-			{ desc = "跳转到声明 (Go to Declaration) --系统(LSP)", buffer = bufnr }
-		)
-		vim.keymap.set(
-			"n",
-			"gd",
-			vim.lsp.buf.definition,
-			{ desc = "跳转到定义 (Go to Definition) --系统(LSP)", buffer = bufnr }
-		)
-		vim.keymap.set(
-			"n",
-			"K",
-			vim.lsp.buf.hover,
-			{ desc = "显示文档 (Hover Documentation) --系统(LSP)", buffer = bufnr }
-		)
-		vim.keymap.set(
-			"n",
-			"gi",
-			vim.lsp.buf.implementation,
-			{ desc = "跳转到实现 (Go to Implementation) --系统(LSP)", buffer = bufnr }
-		)
-		vim.keymap.set(
-			"n",
-			"<C-k>",
-			vim.lsp.buf.signature_help,
-			{ desc = "签名帮助 (Signature Help) --系统(LSP)", buffer = bufnr }
-		)
-		vim.keymap.set(
-			"n",
-			"<space>rn",
-			vim.lsp.buf.rename,
-			{ desc = "重命名变量 (Rename) --系统(LSP)", buffer = bufnr }
-		)
-		vim.keymap.set(
-			{ "n", "v" },
-			"<space>ca",
-			vim.lsp.buf.code_action,
-			{ desc = "代码操作 (Code Action) --系统(LSP)", buffer = bufnr }
-		)
-		vim.keymap.set(
-			"n",
-			"gr",
-			vim.lsp.buf.references,
-			{ desc = "查看引用 (References) --系统(LSP)", buffer = bufnr }
-		)
-	end,
-})
-
-
--- Gemini CLI 插件快捷键
-vim.keymap.set("n", "<leader>ga", "<cmd>Gemini ask<cr>", { desc = "Launch Gemini --插件(Gemini CLI)" })
-vim.keymap.set("n", "<leader>gt", "<cmd>Gemini toggle<cr>", { desc = "Toggle Gemini CLI --插件(Gemini CLI)" })
-
--- Avante AI 助手 插件快捷键
-vim.keymap.set("n", "<leader>aa", function()
-	require("avante.api").ask()
-end, { desc = "显示侧边栏 (Show Sidebar) --插件(Avante)" })
-vim.keymap.set("n", "<leader>an", "<cmd>AvanteChatNew<CR>", { desc = "创建新聊天 (New Chat) --插件(Avante)" })
-vim.keymap.set("n", "<leader>ar", function()
-	require("avante.api").refresh()
-end, { desc = "刷新侧边栏 (Refresh Sidebar) --插件(Avante)" })
-vim.keymap.set("n", "<leader><tab>", function()
-	require("avante.api").focus()
-end, { desc = "切换侧边栏焦点 (Toggle Sidebar Focus) --插件(Avante)" })
-vim.keymap.set("n", "<leader>ac", function()
-	require("avante.api").select_model()
-end, { desc = "选择模型 (Select Model) --插件(Avante)" })
+-- 主入口：Action Palette (交互式命令面板)
 vim.keymap.set(
-	"n",
-	"<leader>ae",
-	"<cmd>AvanteEdit<CR>",
-	{ desc = "编辑选定的块 (Edit Selected Block) --插件(Avante)" }
+	{ "n", "v" },
+	"<leader><tab>a",
+	"<cmd>CodeCompanion<CR>",
+	{ desc = "AI 助手面板 (Action Palette) --插件(CodeCompanion)" }
+)
+
+-- 聊天窗口
+vim.keymap.set(
+	{ "n", "v" },
+	"<leader><tab>",
+	"<cmd>CodeCompanionChat<CR>",
+	{ desc = "打开 AI 聊天 (Open Chat) --插件(CodeCompanion)" }
 )
 vim.keymap.set(
 	"n",
-	"<leader>at",
-	"<cmd>AvanteToggle<CR>",
-	{ desc = "切换 Avante 侧边栏 (Toggle Avante Sidebar) --插件(Avante)" }
+	"<leader><tab>t",
+	"<cmd>CodeCompanionToggle<CR>",
+	{ desc = "切换 AI 聊天窗口 (Toggle Chat) --插件(CodeCompanion)" }
 )
-vim.keymap.set("n", "<leader>az", function()
-	require("avante.api").zen_mode()
-end, { desc = "进入 Avante Zen 模式 (Enter Avante Zen Mode) --插件(Avante)" })
-vim.keymap.set("n", "<leader>as", "<cmd>AvanteStop<CR>", { desc = "停止 Avante (Stop Avante) --插件(Avante)" })
 
--- Claude Code 快捷键：leader + c + l  Toggle Claude Code
-vim.keymap.set("n", "<leader>e", "<cmd>ClaudeCode<cr>", { desc = "Claude Code: Toggle --插件(claude-code)" })
+-- 内联助手 (Inline Assistant)
+vim.keymap.set(
+	"v",
+	"<leader><tab>i",
+	"<cmd>CodeCompanionInline<CR>",
+	{ desc = "AI 内联助手 (Inline Assistant) --插件(CodeCompanion)" }
+)
+
+
+
+-- 历史记录
+vim.keymap.set(
+	"n",
+	"<leader><tab>h",
+	"<cmd>CodeCompanionHistory<CR>",
+	{ desc = "聊天历史 (Chat History) --插件(CodeCompanion)" }
+)
+
+
+--------------------------------------------------------------------------------
+-- 10. CodeCompanion 内部快捷键配置表 (CodeCompanion Internal Keymaps Config)
+--------------------------------------------------------------------------------
+-- 注意：这些配置会被 codecompanion.lua 引用，用于插件内部快捷键设置
+
+-- 聊天缓冲区快捷键 (Chat Buffer Keymaps)
+vim.g.codecompanion_chat_keymaps = {
+	send = {
+		modes = { n = "<C-s>", i = "<C-s>" },
+	},
+	close = {
+		modes = { n = "<C-c>", i = "<C-c>" },
+	},
+	clear = {
+		modes = { n = "<C-l>" },
+	},
+	stop = {
+		modes = { n = "q" },
+	},
+}
+
+-- 内联助手快捷键 (Inline Assistant Keymaps)
+vim.g.codecompanion_inline_keymaps = {
+	accept_change = {
+		modes = { n = "ga" },
+	},
+	reject_change = {
+		modes = { n = "gr" },
+	},
+}
+
 
