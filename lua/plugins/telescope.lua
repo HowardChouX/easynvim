@@ -5,7 +5,6 @@ return {
         cmd = "Telescope", -- cmd Telescope` 懒加载
         dependencies = {
             "nvim-lua/plenary.nvim",
-            -- 添加 telescope-ui-select.nvim 作为依赖
             "nvim-telescope/telescope-ui-select.nvim",
         },
         opts = {
@@ -27,7 +26,6 @@ return {
                             mirror = true,
                         },
                     }
-                    -- 或者使用默认主题，不配置则为默认
                 }
             }
         },

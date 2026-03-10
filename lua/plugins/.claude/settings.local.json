@@ -14,7 +14,10 @@
       "Bash(gh api repos/olimorris/codecompanion.nvim/contents/doc/codecompanion.txt)",
       "Bash(gh api repos/olimorris/codecompanion.nvim/contents/README.md)",
       "Bash(python3 -c \"import sys,json,base64; print\\(base64.b64decode\\(json.load\\(sys.stdin\\)[''content'']\\).decode\\(\\)\\)\")",
-      "Bash(gh api repos/olimorris/codecompanion.nvim/contents/lua/codecompanion/config.lua)"
+      "Bash(gh api repos/olimorris/codecompanion.nvim/contents/lua/codecompanion/config.lua)",
+      "Bash(curl -s -X GET \"https://api.edgefn.net/v1/models\" -H \"Authorization: Bearer $ANTHROPIC_API_KEY\")",
+      "Bash(echo \"当前 shell API Key: $ANTHROPIC_API_KEY\")",
+      "Bash(curl -s -X POST \"https://api.edgefn.net/v1/chat/completions\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer sk-8HiebNISZGLLGsd1702f11Eb8b6245Ec91205554A3Ad99E8\" -d '{\"\"model\"\": \"\"GLM-5\"\", \"\"messages\"\": [{\"\"role\"\": \"\"user\"\", \"\"content\"\": \"\"hi\"\"}], \"\"max_tokens\"\": 10}')"
     ]
   }
 }

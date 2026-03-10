@@ -8,6 +8,8 @@ return {
     opts = {
         ensure_installed = {
             "lua",
+            "vim",
+            "vimdoc",
             "toml",
             "python",
             "cpp",        -- C++
@@ -16,11 +18,17 @@ return {
             "yaml",
             "bash",
             "markdown",
+            "markdown_inline",
             "html",
             "css",
             "javascript",
             "typescript",
             "tsx",
+            "regex",
+            "go",
+            "java",
+            "rust",
+            "query",
         },
         highlight = {
             enable = true,

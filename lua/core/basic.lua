@@ -57,3 +57,6 @@ vim.o.background = "dark"
 
 -- 确保有 24位色支持
 vim.opt.termguicolors = true
+
+-- 禁用 perl provider (避免警告)
+vim.g.loaded_perl_provider = 0

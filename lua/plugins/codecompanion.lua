@@ -110,8 +110,6 @@ return {
 						},
 					},
 				},
-				-- 聊天缓冲区内的快捷键 (配置在 keymap.lua)
-				keymaps = vim.g.codecompanion_chat_keymaps,
 				-- Slash 命令配置 (在聊天中使用 /file 等)
 				slash_commands = {
 					["file"] = {
@@ -179,19 +177,13 @@ return {
 			},
 			inline = {
 				-- HTTP 适配器配置 (inline 仅支持 HTTP 适配器)
-				adapter = {
-					name = "anthropic",
-					model = os.getenv("ANTHROPIC_MODEL"), -- 使用与 ACP 相同的模型
-				},
+				adapter = "anthropic",
 				-- 内联助手快捷键 (配置在 keymap.lua)
 				keymaps = vim.g.codecompanion_inline_keymaps,
 			},
 			-- 后台回调配置 (用于异步任务如生成聊天标题)
 			background = {
-				adapter = {
-					name = "anthropic",
-					model = os.getenv("ANTHROPIC_MODEL"),
-				},
+				adapter = "anthropic",
 				chat = {
 					callbacks = {
 						["on_ready"] = {
@@ -253,44 +245,72 @@ return {
 
 		-- ===== 适配器配置 =====
 		adapters = {
-			-- Claude Code ACP 适配器 (用于 chat)
-			-- 环境变量从 /etc/claude-code/managed-settings.json 或 ~/.claude/settings.json 读取
-			claude_code = function()
-				return require("codecompanion.adapters").extend("claude_code", {
-					env = {
-						--CLAUDECODE = "", -- 禁用嵌套检查
-						ANTHROPIC_API_KEY = "ANTHROPIC_API_KEY",
-					},
-					defaults = {
-						model = os.getenv("ANTHROPIC_MODEL"),
-						mcpServers = "inherit_from_config",
-					},
-				})
-			end,
+			-- HTTP 适配器 (用于 inline/cmd/background)
+			http = {
+				-- OpenAI 兼容格式适配器
+				anthropic = function()
+					-- 从设置文件读取配置
+					local settings_path = vim.fn.expand("~/.claude/settings.json")
+					local settings_file = io.open(settings_path, "r")
+					local base_url, api_key, model
 
-			-- HTTP 适配器 (用于 inline/cmd) - OpenAI 兼容格式
-			anthropic = function()
-				local base_url = os.getenv("ANTHROPIC_BASE_URL")
-				if not base_url then
-					return nil
-				end
-				base_url = base_url:gsub("/$", "") -- 移除尾部斜杠
-				return require("codecompanion.adapters").extend("openai", {
-					env = {
-						api_key = "ANTHROPIC_API_KEY",
-					},
-					url = base_url .. "/v1/chat/completions",
-					schema = {
-						model = {
-							default = os.getenv("ANTHROPIC_MODEL"),
+					if settings_file then
+						local content = settings_file:read("*a")
+						settings_file:close()
+						local ok, settings = pcall(vim.json.decode, content)
+						if ok and settings and settings.env then
+							base_url = settings.env.ANTHROPIC_BASE_URL
+							api_key = settings.env.ANTHROPIC_API_KEY
+							model = settings.env.ANTHROPIC_MODEL
+						end
+					end
+
+					-- 回退到环境变量
+					base_url = base_url or os.getenv("ANTHROPIC_BASE_URL")
+					api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+					model = model or os.getenv("ANTHROPIC_MODEL")
+
+					if not base_url or not api_key then
+						return nil
+					end
+
+					base_url = base_url:gsub("/$", "")
+					return require("codecompanion.adapters").extend("openai_compatible", {
+						env = {
+							url = base_url,
+							api_key = api_key,
 						},
-					},
-					headers = {
-						["Content-Type"] = "application/json",
-						["Authorization"] = "Bearer ${api_key}",
-					},
-				})
-			end,
+						schema = {
+							model = {
+								default = model,
+							},
+						},
+					})
+				end,
+
+				-- 适配器选项
+				opts = {
+					show_presets = false, -- 隐藏预设适配器，只显示用户定义的
+					show_model_choices = true, -- 切换适配器时显示模型选择
+				},
+			},
+
+			-- ACP 适配器 (用于 chat)
+			acp = {
+				-- Claude Code ACP 适配器
+				-- 环境变量从 /etc/claude-code/managed-settings.json 或 ~/.claude/settings.json 读取
+				claude_code = function()
+					return require("codecompanion.adapters").extend("claude_code", {
+						env = {
+							ANTHROPIC_API_KEY = "ANTHROPIC_API_KEY",
+						},
+						defaults = {
+							model = os.getenv("ANTHROPIC_MODEL"),
+							mcpServers = "inherit_from_config",
+						},
+					})
+				end,
+			},
 		},
 
 		-- ===== 扩展配置 =====

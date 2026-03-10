@@ -143,9 +143,7 @@ return {
 
 			-- ===== LaTeX 支持 =====
 			latex = {
-				enabled = true,
-				converter = { "utftex", "latex2text" },
-				position = "center",
+				enabled = false,
 			},
 
 			-- ===== 完成建议 =====
@@ -164,6 +162,14 @@ return {
 					rendered = "",
 				},
 			},
+		})
+
+		-- Enable treesitter highlighting for markdown
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = "markdown",
+			callback = function()
+				vim.treesitter.start()
+			end,
 		})
 
 		-- 为 Markdown 文件添加专用快捷键
