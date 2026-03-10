@@ -4,12 +4,19 @@
 return {
     "https://github.com/nvimdev/lspsaga.nvim",
     version = "*",
-    cmd = "Lspsaga",
+    event = "LspAttach",
     opts = {
         finder = {
             keys = {
                 toggle_or_open = "<CR>",
             },
+        },
+        symbol_in_winbar = {
+            enable = true,
+            separator = " > ",
+            hide_keyword = true,
+            show_file = true,
+            delay = 300,
         },
     },
 }

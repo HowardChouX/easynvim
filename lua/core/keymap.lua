@@ -35,7 +35,7 @@ vim.keymap.set(
 --  插入模式优化 (Insert Mode Enhancements)
 --------------------------------------------------------------------------------
 
--- Insert 模式下：jj = Esc (快速退出插入模式)
+-- Insert 模式下：jk = Esc (快速退出插入模式)
 vim.keymap.set(
 	"i",
 	"jj",
@@ -215,13 +215,6 @@ vim.keymap.set("n", "<leader>fg", function()
 	end
 end, { desc = "全局搜索 (Live Grep) --插件(Telescope)" })
 
--- NvimTree 插件快捷键
-vim.keymap.set(
-	"n",
-	"<leader>u",
-	":NvimTreeToggle<CR>",
-	{ desc = "切换文件树 (Toggle File Tree) --插件(NvimTree)" }
-)
 
 -- Dashboard 插件快捷键
 vim.keymap.set("n", "<leader>d", ":Dashboard<CR>", { desc = "打开仪表盘 (Open Dashboard) --插件(Dashboard)" })
@@ -284,7 +277,7 @@ end, { desc = "格式化代码 (Format Code) --插件(None-ls)" })
 -- ToggleTerm 插件快捷键
 vim.keymap.set(
 	"t",
-	"jj",
+	"jk",
 	[[<C-\><C-n>]],
 	{ noremap = true, silent = true, desc = "退出终端插入模式 (Exit Term Insert) --插件(ToggleTerm)" }
 )
@@ -297,14 +290,3 @@ vim.keymap.set("t", "<Esc>", function()
 	end, 20)
 end, { noremap = true, silent = true, desc = "关闭终端 (Close Terminal) --插件(ToggleTerm)" })
 
---------------------------------------------------------------------------------
--- 9. CodeCompanion AI 助手快捷键 (CodeCompanion AI Assistant)
---------------------------------------------------------------------------------
-
--- 聊天窗口
-vim.keymap.set(
-	{ "n", "v" },
-	"<leader><tab>",
-	"<cmd>CodeCompanionChat<CR>",
-	{ desc = "打开 AI 聊天 (Open Chat) --插件(CodeCompanion)" }
-)

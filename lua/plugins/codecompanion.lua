@@ -9,6 +9,16 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		"ravitemer/mcphub.nvim", -- MCP 服务器集成扩展
 	},
+	-- ===== 快捷键配置 =====
+	keys = {
+		-- Action Palette (<leader> + <tab>)
+		{
+			"<leader><tab>",
+			"<cmd>CodeCompanionActions<cr>",
+			mode = { "n", "v" },
+			desc = "CodeCompanion Actions",
+		},
+	},
 	opts = {
 		-- ===== 触发前缀配置 =====
 		triggers = {
@@ -58,13 +68,13 @@ return {
 				-- 自定义图标
 				icons = {
 					buffer_sync_all = "󰪴 ",
-					buffer_sync_diff = " ",
-					chat_context = " ",
-					chat_fold = " ",
-					tool_pending = " ",
-					tool_in_progress = " ",
-					tool_failure = " ",
-					tool_success = " ",
+					buffer_sync_diff = " ",
+					chat_context = " ",
+					chat_fold = " ",
+					tool_pending = "  ",
+					tool_in_progress = "  ",
+					tool_failure = "  ",
+					tool_success = "  ",
 				},
 				window = {
 					width = 0.4,
@@ -84,7 +94,6 @@ return {
 				layout = "vertical", -- vertical|horizontal|tab|buffer
 			},
 		},
-
 
 		-- ===== 交互配置 =====
 		interactions = {
@@ -141,7 +150,9 @@ return {
 					},
 					-- 内置工具条件启用
 					["grep_search"] = {
-						enabled = function()
+						---@param adapter CodeCompanion.HTTPAdapter
+						---@return boolean
+						enabled = function(adapter)
 							return vim.fn.executable("rg") == 1
 						end,
 					},
@@ -355,19 +366,6 @@ return {
 				default_servers = { "sequential-thinking" },
 			},
 		},
-	},
-
-	-- ===== 快捷键配置 =====
-	keys = {
-		-- Action Palette (j + <tab>)
-		{ "j", function()
-			local char = vim.fn.nr2char(vim.fn.getchar())
-			if char == "\t" then
-				vim.cmd("CodeCompanionActions")
-			else
-				vim.api.nvim_feedkeys("j" .. char, "n", false)
-			end
-		end, mode = { "n", "v" }, desc = "CodeCompanion Actions (j+tab)" },
 	},
 
 	-- ===== 回调函数配置 (通过 autocmd 注册) =====
