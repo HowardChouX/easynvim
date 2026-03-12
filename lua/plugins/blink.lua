@@ -135,10 +135,11 @@ return {
 
 		-- 键位映射
 		keymap = {
-			preset = "enter",
-			["<C-y>"] = { "select_and_accept" }, -- Ctrl + y 接受补全
-			["<Tab>"] = { "select_next", "fallback" },
-			["<S-Tab>"] = { "select_prev", "fallback" },
+			preset = "default",
+			["<Tab>"] = { "select_and_accept" }, -- Tab 接受补全
+			["<S-Tab>"] = { "select_next", "fallback" }, -- Shift + Tab 下一个补全项
+			["<Up>"] = { "select_prev", "fallback" },
+			["<Down>"] = { "select_next", "fallback" },
 		},
 
 		-- Fuzzy 配置
