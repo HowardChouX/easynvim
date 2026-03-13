@@ -18,5 +18,9 @@ return {
             show_file = true,
             delay = 300,
         },
+        -- 禁用 lightbulb（小灯泡），避免提示造成的屏幕抖动
+        lightbulb = {
+            enable = false,
+        },
     },
 }

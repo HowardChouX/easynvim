@@ -7,7 +7,6 @@ return {
 		priority = 1000,
 		lazy = false,
 		opts = {
-			-- snacks.nvim 基础配置
 		},
 	},
 	{
@@ -29,7 +28,7 @@ return {
 		},
 		opts = {
 			terminal = {
-				provider = "snacks", -- 使用 snacks.nvim 实现浮动窗口
+				provider = "snacks",
 				snacks_win_opts = {
 					position = "float",
 					width = 0.8,
