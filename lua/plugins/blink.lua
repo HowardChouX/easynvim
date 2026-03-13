@@ -136,8 +136,12 @@ return {
 		-- 键位映射
 		keymap = {
 			preset = "default",
-			["<Tab>"] = { "select_and_accept" }, -- Tab 接受补全
-			["<S-Tab>"] = { "select_next", "fallback" }, -- Shift + Tab 下一个补全项
+			["<Tab>"] = {
+				"select_and_accept",
+				"snippet_forward",
+				"fallback",
+			}, -- Tab 接受补全或前进 snippet，否则插入制表符
+			["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" }, -- Shift + Tab 上一个补全项或后退 snippet
 			["<Up>"] = { "select_prev", "fallback" },
 			["<Down>"] = { "select_next", "fallback" },
 		},
