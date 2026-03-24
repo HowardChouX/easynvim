@@ -63,15 +63,15 @@ return {
 					},
 					-- 单个工具覆盖配置
 					tool_overrides = {
-						-- 危险操作需要批准
+						-- 所有操作都无需批准
 						write_file = {
-							opts = { require_approval_before = true },
+							opts = { require_approval_before = false },
 						},
 						edit_file = {
-							opts = { require_approval_before = true },
+							opts = { require_approval_before = false },
 						},
 						delete_file = {
-							opts = { require_approval_before = true },
+							opts = { require_approval_before = false },
 							enabled = true,
 						},
 						-- 只读操作无需批准
@@ -117,6 +117,9 @@ return {
 			-- 差异显示配置
 			diff = {
 				enabled = true,
+				opts = {
+					highlight_whitespace = false, -- 高亮空白字符
+				},
 				word_highlights = {
 					additions = true,
 					deletions = true,
@@ -209,10 +212,8 @@ return {
 				-- 角色名称配置
 				roles = {
 					---The header name for the LLM's messages
-					---@type string|fun(adapter: CodeCompanion.Adapter): string
-					llm = function(adapter)
-						return "CodeCompanion (" .. adapter.formatted_name .. ")"
-					end,
+					---@type string
+					llm = "CodeCompanion",
 
 					---The header name for your messages
 					---@type string
@@ -262,15 +263,34 @@ return {
 						},
 					},
 					-- 内置工具配置
+					["ask_questions"] = {
+						enabled = false, -- 默认隐藏，只能通过 agent 组使用
+					},
 					["create_file"] = {
 						opts = {
-							require_approval_before = true, -- 创建文件需要批准
+							allowed_in_yolo_mode = true, -- 允许在 YOLO 模式下使用
+							require_approval_before = false, -- 不需要预先批准
 						},
 					},
 					["delete_file"] = {
 						opts = {
-							allowed_in_yolo_mode = false, -- YOLO 模式下也不允许
-							require_approval_before = true,
+							allowed_in_yolo_mode = true, -- 允许在 YOLO 模式下使用
+							require_approval_before = false, -- 不需要预先批准
+						},
+					},
+					["file_search"] = {
+						opts = {
+							max_results = 500, -- 限制返回结果数量
+						},
+					},
+					["get_changed_files"] = {
+						opts = {
+							max_lines = 1000, -- 限制返回的 diff 行数
+						},
+					},
+					["get_diagnostics"] = {
+						opts = {
+							-- severity 过滤: "ERROR" | "WARNING" | "INFORMATION" | "HINT"
 						},
 					},
 					["grep_search"] = {
@@ -278,31 +298,29 @@ return {
 							return vim.fn.executable("rg") == 1
 						end,
 						opts = {
-							max_results = 100,
+							max_files = 100, -- 限制搜索文件数量
 							respect_gitignore = true,
-							require_approval_before = true,
 						},
 					},
 					["insert_edit_into_file"] = {
 						opts = {
-							require_approval_before = {
-								buffer = false, -- 编辑缓冲区不需要批准
-								file = false, -- 编辑文件不需要批准
-							},
-							require_confirmation_after = true, -- 编辑后需要确认
+							allowed_in_yolo_mode = true, -- 允许在 YOLO 模式下使用
+							require_approval_before = false, -- 不需要预先批准
+							require_confirmation_after = false, -- 不需要事后确认
 							file_size_limit_mb = 2, -- 最大文件大小限制
 						},
 					},
 					["read_file"] = {
 						opts = {
-							require_approval_before = true,
+							allowed_in_yolo_mode = true,
+							require_approval_before = false,
 						},
 					},
 					["run_command"] = {
 						opts = {
-							allowed_in_yolo_mode = false,
-							require_approval_before = true,
-							require_cmd_approval = true,
+							allowed_in_yolo_mode = true,
+							require_approval_before = false,
+							require_cmd_approval = false,
 						},
 					},
 					["web_search"] = {
@@ -319,6 +337,11 @@ return {
 					["fetch_webpage"] = {
 						opts = {
 							adapter = "jina",
+						},
+					},
+					["memory"] = {
+						opts = {
+							whitelist = {}, -- 可添加白名单路径
 						},
 					},
 					-- 全局工具选项
@@ -338,7 +361,7 @@ return {
 					["buffer"] = {
 						opts = {
 							contains_code = true,
-							default_params = "diff", -- 默认同步缓冲区差异
+							default_params = "diff", -- 默认只发送差异部分
 						},
 					},
 					["buffers"] = {
@@ -356,9 +379,24 @@ return {
 							contains_code = true,
 						},
 					},
+					["messages"] = {
+						opts = {
+							contains_code = false,
+						},
+					},
+					["quickfix"] = {
+						opts = {
+							contains_code = true,
+						},
+					},
 					["selection"] = {
 						opts = {
 							contains_code = true,
+						},
+					},
+					["terminal"] = {
+						opts = {
+							contains_code = false,
 						},
 					},
 					["viewport"] = {
@@ -563,6 +601,12 @@ return {
 			-- 共享快捷键配置
 			shared = {
 				keymaps = {
+					view_diff = {
+						callback = "keymaps.view_diff",
+						description = "查看差异",
+						modes = { n = "gv" },
+						opts = { nowait = true },
+					},
 					always_accept = {
 						callback = "keymaps.always_accept",
 						description = "始终接受此缓冲区的更改",
@@ -580,6 +624,12 @@ return {
 						description = "拒绝更改",
 						modes = { n = "g3" },
 						opts = { nowait = true, noremap = true },
+					},
+					cancel = {
+						callback = "keymaps.cancel",
+						description = "取消所有待处理的工具调用",
+						modes = { n = "g4" },
+						opts = { nowait = true },
 					},
 					next_hunk = {
 						callback = "keymaps.next_hunk",
