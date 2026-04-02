@@ -20,12 +20,9 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true, desc = "Leader
 vim.keymap.set({ "n", "i" }, "<C-z>", "<Cmd>undo<CR>", { silent = true, desc = "撤销 (Undo) --自定义" })
 
 -- F1: 显示快捷键帮助 (依赖 Telescope 插件)
-vim.keymap.set(
-	{ "n", "i" },
-	"<F1>",
-	"<cmd>Telescope keymaps<CR>",
-	{ noremap = true, silent = true, desc = "显示快捷键列表 (Show Keymaps) --系统" }
-)
+vim.keymap.set({ "n", "i" }, "<F1>", function()
+	require("telescope.builtin").keymaps()
+end, { noremap = true, silent = true, desc = "显示快捷键列表 (Show Keymaps) --系统" })
 
 -- Insert 模式下：jj = Esc (快速退出插入模式)，但在 yazi 缓冲区中禁用
 vim.keymap.set("i", "jj", function()
@@ -54,12 +51,9 @@ vim.keymap.set({ "n", "v" }, "H", "0", { desc = "跳转到行首 (Start of Line)
 vim.keymap.set({ "n", "v" }, "L", "$", { desc = "跳转到行尾 (End of Line) --自定义" })
 
 -- Telescope 插件快捷键
-vim.keymap.set(
-	"n",
-	"<leader>ff",
-	"<cmd>Telescope find_files<CR>",
-	{ desc = "查找文件 (Find Files) --插件(Telescope)" }
-)
+vim.keymap.set("n", "<leader>ff", function()
+	require("telescope.builtin").find_files()
+end, { desc = "查找文件 (Find Files) --插件(Telescope)" })
 vim.keymap.set("n", "<leader>fg", function()
 	-- 检查 ripgrep 是否可用
 	local has_rg = false
@@ -69,14 +63,14 @@ vim.keymap.set("n", "<leader>fg", function()
 
 	if has_rg then
 		-- ripgrep 可用，使用 live_grep 进行全局搜索
-		vim.cmd("Telescope live_grep")
+		require('telescope.builtin').live_grep()
 	else
 		-- ripgrep 不可用，使用普通的 find_files 替代并发出警告
 		vim.notify(
 			"ripgrep 未安装，使用文件查找替代。推荐安装 ripgrep 以获得更好的搜索体验。",
 			vim.log.levels.WARN
 		)
-		vim.cmd("Telescope find_files")
+		require('telescope.builtin').find_files()
 	end
 end, { desc = "全局搜索 (Live Grep) --插件(Telescope)" })
 
@@ -140,17 +134,17 @@ vim.keymap.set("n", "<leader>f", function()
 end, { desc = "格式化代码 (Format Code) --插件(Conform)" })
 
 -- Snacks Terminal 插件快捷键
-vim.keymap.set(
-	"t",
-	"jj",
-	function()
-		if vim.bo.filetype == "yazi" then
-			return vim.NIL
-		end
-		return vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
-	end,
-	{ expr = true, noremap = true, silent = true, desc = "退出终端插入模式 (Exit Term Insert) --插件(Snacks)" }
-)
+vim.keymap.set("t", "jj", function()
+	if vim.bo.filetype == "yazi" then
+		return vim.NIL
+	end
+	return vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
+end, {
+	expr = true,
+	noremap = true,
+	silent = true,
+	desc = "退出终端插入模式 (Exit Term Insert) --插件(Snacks)",
+})
 
 vim.keymap.set("t", "<Esc>", function()
 	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
@@ -162,6 +156,18 @@ vim.keymap.set("t", "<Esc>", function()
 end, { noremap = true, silent = true, desc = "关闭终端 (Close Terminal) --插件(Snacks)" })
 
 -- Aerial 插件快捷键
-vim.keymap.set("n", "<leader>q", "<cmd>AerialToggle!<CR>", {
-  desc = "打开/关闭大纲 (Toggle Outline) --插件(Aerial)",
+vim.keymap.set("n", "<leader>q", function()
+  local ok, aerial = pcall(require, "aerial")
+  if ok then
+    aerial.toggle()
+    -- 手动切换焦点到aerial窗口
+    local aerial_info = aerial.get_location()
+    if aerial_info and aerial_info.winid then
+      vim.api.nvim_set_current_win(aerial_info.winid)
+    end
+  else
+    vim.notify("aerial.nvim 插件未加载", vim.log.levels.WARN)
+  end
+end, {
+	desc = "打开/关闭大纲 (Toggle Outline) --插件(Aerial)",
 })

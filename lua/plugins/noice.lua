@@ -118,9 +118,13 @@ return {
 	},
 	keys = {
 		-- ESC 关闭通知
-		{ "<Esc>", function()
-			pcall(require("noice").cmd, "dismiss")
-		end, desc = "Dismiss Notification" },
+		{
+			"<Esc>",
+			function()
+				pcall(require("noice").cmd, "dismiss")
+			end,
+			desc = "Dismiss Notification",
+		},
 	},
 	config = function(_, opts)
 		if vim.o.filetype == "lazy" then

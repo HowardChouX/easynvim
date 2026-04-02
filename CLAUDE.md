@@ -23,27 +23,67 @@ This is a Neovim configuration using `lazy.nvim` as the plugin manager. The conf
 
 **Plugin Loading Pattern**: Each file in `lua/plugins/` returns a lazy.nvim spec table. The `lazy.lua` imports all plugins via `{ import = "plugins" }`.
 
-## Key Commands
+## Common Development Commands
 
 ### Plugin Management
 ```vim
 :Lazy sync        " Install/update/clean plugins
 :Lazy clean       " Remove unused plugins
 :Lazy profile     " Analyze startup performance
+:Lazy health      " Check plugin health status
+:Lazy update      " Update all plugins
 ```
 
 ### LSP & Formatting
 ```vim
 :Mason            " Open Mason UI to install LSP servers
+:MasonInstall all " Install all configured LSP servers and tools
 :LspInfo          " Show attached LSP clients
+:LspRestart       " Restart LSP server for current buffer
 :NullLsInfo       " Show null-ls sources (formatters)
 :TSInstall all    " Install all Treesitter parsers
+:TSUpdate         " Update Treesitter parsers
+:TSInstallInfo    " Show installed parsers
 ```
 
-### Diagnostics
+### Diagnostics & Debugging
 ```vim
 :checkhealth              " Full health check
 :checkhealth telescope    " Check Telescope dependencies
+:checkhealth provider     " Check external providers (python, ruby, node)
+:checkhealth mason        " Check Mason installation
+:LspLog                   " View LSP server logs
+:MasonLog                 " View Mason installation logs
+```
+
+### CodeCompanion (AI Assistant)
+```vim
+<leader>a        " Toggle CodeCompanion chat window
+<leader><tab>    " Open CodeCompanion action palette
+:CodeCompanionChat Toggle " Open/close chat
+:CodeCompanionChat Add    " Add visual selection to chat
+:CodeCompanionActions     " Show action palette
+```
+
+### Telescope Search & Navigation
+```vim
+<leader>ff      " Find files
+<leader>fg      " Live grep (requires ripgrep)
+<leader>fb      " Find buffers
+<leader>fh      " Find help tags
+<leader>fk      " Find keymaps
+<leader>f/      " Search current buffer
+```
+
+### File & Buffer Management
+```vim
+<leader>d       " Open dashboard
+<leader>bh      " Previous buffer
+<leader>bl      " Next buffer
+<leader>bp      " Pick buffer to close
+:bd             " Close current buffer
+:bn/:bp         " Next/previous buffer
+:ls             " List all buffers
 ```
 
 ## Configuration Patterns
@@ -148,12 +188,46 @@ vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>",
 
 The Telescope keymaps picker filters to show only keymaps with Chinese descriptions.
 
+## Plugin Ecosystem
+
+### Core Plugins
+- **lazy.nvim**: Plugin manager with lazy loading
+- **mason.nvim**: LSP/DAP/Linter/Formatter installer
+- **nvim-lspconfig**: LSP client configuration
+- **nvim-cmp**: Completion engine
+- **telescope.nvim**: Fuzzy finder
+- **nvim-treesitter**: Syntax highlighting and parsing
+- **codecompanion.nvim**: AI coding assistant with MCP support
+- **noice.nvim**: Modern UI components
+- **dashboard-nvim**: Startup screen
+
+### UI & Navigation
+- **tokyonight.nvim**: Color theme
+- **lualine.nvim**: Status line
+- **bufferline.nvim**: Buffer tabs
+- **indent-blankline.nvim**: Indentation guides
+- **aerial.nvim**: Code outline sidebar
+- **hop.nvim**: Easy motion navigation
+
+### Editing & LSP
+- **conform.nvim**: Code formatting
+- **lspsaga.nvim**: Enhanced LSP UI
+- **nvim-autopairs**: Auto-pair brackets
+- **vim-visual-multi**: Multiple cursors
+- **yazi.nvim**: File manager integration
+
+### AI Integration
+- **codecompanion.nvim**: Primary AI assistant with MCP
+- **claudecode.nvim**: Claude Code integration
+- **blink.nvim**: AI-powered code completion
+
 ## Pre-configured LSP Servers
 
 - `lua_ls` - Lua
 - `pyright` - Python
 - `clangd` - C/C++
 - `racket_langserver` - Racket
+- `sqls` - SQL
 
 ## Pre-configured Formatters (via conform.nvim)
 
@@ -189,3 +263,91 @@ Required external tools:
 - `node` + `npm` - LSP servers
 - `gcc` - Treesitter compilation
 - `ripgrep` + `fd` - Telescope search (recommended)
+
+## Development Workflow
+
+### Testing Configuration Changes
+1. Edit the relevant Lua file in `lua/plugins/` or `lua/core/`
+2. Save the file
+3. Run `:Lazy sync` to apply changes
+4. Restart Neovim or run `:Lazy reload` for specific plugins
+
+### Debugging Plugin Issues
+1. Check `:Lazy health` for plugin status
+2. Run `:Lazy profile` to identify slow plugins
+3. Check `:LspInfo` for LSP server status
+4. Run `:checkhealth` for system diagnostics
+
+### Adding New Language Support
+1. Run `:Mason` to install LSP server
+2. Add configuration to `lua/plugins/mason.lua`
+3. Install Treesitter parser: `:TSInstall <language>`
+4. Configure formatter in `lua/plugins/conform.lua`
+
+### AI Assistant Configuration
+1. Set environment variables for AI providers:
+   ```bash
+   export ANTHROPIC_API_KEY="your-key"
+   export ANTHROPIC_MODEL="claude-3-5-sonnet-20241022"
+   ```
+2. Configure MCP servers in `lua/plugins/codecompanion.lua`
+3. Adjust tool permissions and approval settings as needed
+
+## Troubleshooting
+
+### Common Issues
+
+**LSP not working:**
+1. Run `:Mason` to ensure server is installed
+2. Check `:LspInfo` for active clients
+3. Verify file type detection: `:set filetype?`
+4. Check LSP logs: `:LspLog`
+
+**Plugin loading errors:**
+1. Run `:Lazy clean` then `:Lazy sync`
+2. Check network connectivity
+3. Verify Git is in PATH
+
+**Treesitter highlighting broken:**
+1. Run `:TSUpdate` to update parsers
+2. Reinstall: `:TSInstall <language>`
+3. Check gcc installation
+
+**CodeCompanion not responding:**
+1. Verify MCP servers are running
+2. Check API key configuration
+3. Run `:CodeCompanion debug` for diagnostics
+
+### Performance Issues
+- Run `:Lazy profile` to identify slow plugins
+- Check `:checkhealth` for system issues
+- Consider disabling unused plugins
+- Use `event = "VeryLazy"` for non-critical plugins
+
+## File Structure Conventions
+
+- `lua/core/` - Core configuration (basic, keymaps, lazy loading)
+- `lua/plugins/` - Individual plugin configurations
+- Each plugin gets its own `.lua` file
+- Plugin configurations return a lazy.nvim spec table
+- Keymaps are centralized in `keymap.lua`
+- LSP configurations are in `mason.lua`
+- AI assistant configuration is in `codecompanion.lua`
+
+## Environment Variables
+
+For AI functionality, set these in your shell:
+```bash
+# Claude/Anthropic
+export ANTHROPIC_API_KEY="your-key"
+export ANTHROPIC_MODEL="claude-3-5-sonnet-20241022"
+export ANTHROPIC_BASE_URL="https://api.anthropic.com"
+
+# Alternative AI providers
+export OPEN_SOURCE_API_KEY="your-key"
+export SILICONFLOW_API_KEY="your-key"
+export TAVILY_API_KEY="your-key"
+
+# Ollama
+export OLLAMA_HOST="http://localhost:11434"
+```
