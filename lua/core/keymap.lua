@@ -160,3 +160,8 @@ vim.keymap.set("t", "<Esc>", function()
 		end
 	end, 20)
 end, { noremap = true, silent = true, desc = "关闭终端 (Close Terminal) --插件(Snacks)" })
+
+-- Aerial 插件快捷键
+vim.keymap.set("n", "<leader>q", "<cmd>AerialToggle!<CR>", {
+  desc = "打开/关闭大纲 (Toggle Outline) --插件(Aerial)",
+})
