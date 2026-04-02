@@ -90,7 +90,23 @@ return {
 				["memory"] = {
 					cmd = { "npx", "-y", "@modelcontextprotocol/server-memory" },
 				},
-			},
+                -- 命令行工具服务器
+                ["time"] = {
+                    cmd = { "uvx", "mcp-server-time" },
+                },
+                -- 网络请求服务器
+                ["fetch"] = {
+                    cmd = { "uvx", "mcp-server-fetch" },
+                },
+                -- Tavily 搜索服务器
+                ["tavily"] = {
+                    cmd = { "npx", "-y", "@mcptools/mcp-tavily" },
+                    env = {
+                        TAVILY_API_KEY = "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",
+                    },
+                },
+            },
+
 			-- 默认自动启动的服务器
 			opts = {
 				default_servers = {},
