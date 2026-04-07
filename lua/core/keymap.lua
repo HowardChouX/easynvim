@@ -171,3 +171,7 @@ vim.keymap.set("n", "<leader>q", function()
 end, {
 	desc = "打开/关闭大纲 (Toggle Outline) --插件(Aerial)",
 })
+
+-- LSP 跳转到定义 (使用 LSPSaga)
+vim.keymap.set("n", "gd", ":Lspsaga goto_definition<CR>",
+  { silent = true, desc = "跳转到定义 (Go to Definition) --插件(Lspsaga)" })

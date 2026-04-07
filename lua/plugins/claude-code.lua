@@ -3,13 +3,6 @@
 
 return {
 	{
-		"folke/snacks.nvim",
-		priority = 1000,
-		lazy = false,
-		opts = {
-		},
-	},
-	{
 		"coder/claudecode.nvim",
 		dependencies = { "folke/snacks.nvim" },
 		cmd = {

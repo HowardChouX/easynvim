@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 -- lua/mason.lua
 -- Mason 安装和自动安装 LSP
 return {
@@ -6,8 +7,8 @@ return {
 	event = "VeryLazy",
 	dependencies = {
 		"mason-org/mason-lspconfig.nvim",
-		"WhoIsSethDaniel/mason-tool-installer.nvim",
-		"neovim/nvim-lspconfig",
+		-- 添加 mason-conform.nvim 依赖
+		"zapling/mason-conform.nvim",
 	},
 	config = function()
 		-- Mason UI配置
@@ -23,13 +24,9 @@ return {
 
 		-- Mason LSP配置 - 使用推荐的自动启用方式
 		require("mason-lspconfig").setup({
-			ensure_installed = {
-				"lua_ls",
-				"pyright",
-				"clangd",
-				"sqls",
-			},
-			automatic_enable = true
+			-- 注意：这里不再配置 ensure_installed，因为统一由 mason-tool-installer 管理
+			-- 只配置 LSP 自动启用
+			automatic_installation = true,
 		})
 
 		-- 使用Neovim 0.11+的vim.lsp.config API配置服务器
@@ -117,13 +114,12 @@ return {
 		})
 
 
-		-- Mason工具安装器
-		require("mason-tool-installer").setup({
-			ensure_installed = {
-				"stylua",
-				"black",
-				"clang-format",
-			},
+		-- 配置 mason-conform.nvim - 自动安装 conform.nvim 中配置的格式化工具
+		require("mason-conform").setup({
+			-- 可选：设置自动安装，默认为 true
+			auto_install = true,
+			-- 可选：忽略某些格式化工具
+			-- ignore_install = { "prettier" },
 		})
 	end,
 }

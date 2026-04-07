@@ -15,6 +15,9 @@ return {
 				winblend = 0,
 			},
 		},
+		notifier = {
+			enabled = false, -- 禁用 Snacks.nvim 的通知系统，使用 noice.nvim 代替
+		},
 	},
 	keys = {
 		{ "<C-t>", function() Snacks.terminal.toggle() end, desc = "切换终端 (Toggle Terminal)", mode = { "n", "t" } },

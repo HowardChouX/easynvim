@@ -6,9 +6,9 @@ return {
 		formatters_by_ft = {
 			lua = { "stylua" },
 			python = { "black" },
-			c = { "clang_format" },
-			cpp = { "clang_format" },
-			sql = { "sqlfluff", "pg_format" },
+			c = { "clang-format" },
+			cpp = { "clang-format" },
+			sql = { "sqlfluff" },
 		},
 		format_on_save = {
 			timeout_ms = 500,
