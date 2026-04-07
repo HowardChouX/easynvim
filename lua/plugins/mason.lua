@@ -1,12 +1,11 @@
 return {
 	"mason-org/mason.nvim",
-	-- 强制在进入文件缓冲区时加载，确保 LSP 能捕捉到第一个打开的文件
 	event = "VeryLazy",
 	cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
 	dependencies = {
 		"mason-org/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
-		"neovim/nvim-lspconfig", -- 即使使用原生 API，lspconfig 提供的配置定义仍有很大参考价值
+		"neovim/nvim-lspconfig",
 	},
 	config = function()
 		-- 1. 【关键】环境变量注入
