@@ -1,21 +1,22 @@
+-- lua/mason.lua
+-- Mason 安装和自动安装 LSP
 return {
 	"mason-org/mason.nvim",
-	event = "VeryLazy",
 	cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+	event = "VeryLazy",
 	dependencies = {
 		"mason-org/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		"neovim/nvim-lspconfig",
 	},
 	config = function()
-		-- 1. 【关键】环境变量注入
-		-- 确保 Neovim 的原生 vim.lsp.enable 能找到 Mason 安装的二进制文件
+		-- 【关键】环境变量注入，确保 vim.lsp.enable 能找到 Mason 安装的二进制文件
 		local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
 		if not string.find(vim.env.PATH, mason_bin) then
 			vim.env.PATH = mason_bin .. (vim.loop.os_uname().sysname == "Windows_NT" and ";" or ":") .. vim.env.PATH
 		end
 
-		-- 2. Mason 基础设置
+		-- Mason UI配置
 		require("mason").setup({
 			ui = {
 				icons = {
@@ -26,63 +27,107 @@ return {
 			},
 		})
 
-		-- 3. 定义服务器列表（用于自动化）
-		local servers = {
-			lua_ls = {
-				settings = { Lua = { diagnostics = { globals = { "vim" } } } },
+		-- Mason LSP配置 - 使用推荐的自动启用方式
+		require("mason-lspconfig").setup({
+			ensure_installed = {
+				"lua_ls",
+				"pyright",
+				"clangd",
+				"sqls",
 			},
-			pyright = {
-				settings = {
-					python = {
-						analysis = {
-							autoSearchPaths = true,
-							typeCheckingMode = "basic",
-						},
+			automatic_enable = true,
+		})
+
+		-- 使用Neovim 0.11+的vim.lsp.config API配置服务器
+		-- 这些配置会被mason-lspconfig自动应用到已安装的服务器
+
+		-- Lua LSP配置
+		vim.lsp.config("lua_ls", {
+			filetypes = { "lua" },
+			settings = {
+				Lua = {
+					diagnostics = {
+						globals = { "vim" },
 					},
 				},
 			},
-			clangd = {
-				cmd = { "clangd", "--background-index", "--clang-tidy", "--header-insertion=iwyu" },
-			},
-			-- Racket 不在 Mason 里，需手动通过 raco pkg install racket-langserver 安装
-			racket_langserver = {
-				filetypes = { "racket", "scheme" },
-				cmd = { "racket", "--lib", "racket-langserver" },
-			},
-		}
-
-		-- 4. 配置 Mason-LSPConfig
-		require("mason-lspconfig").setup({
-			-- 过滤掉不在 Mason 仓库中的服务器（如 racket）
-			ensure_installed = { "lua_ls", "pyright", "clangd" },
-			-- 在 0.11+ 中，这个选项会将配置同步给原生 vim.lsp.config
-			automatic_installation = true,
 		})
 
-		-- 5. 使用原生 API 注册配置并启用
-		for name, config in pairs(servers) do
-			vim.lsp.config(name, config)
-		end
-
-		-- 一键启用所有定义的服务器
-		vim.lsp.enable(vim.tbl_keys(servers))
-
-		-- 6. Mason 工具安装 (Formatter/Linter)
-		require("mason-tool-installer").setup({
-			ensure_installed = { "stylua", "black", "clang-format" },
+		-- Python LSP配置
+		vim.lsp.config("pyright", {
+			filetypes = { "python" },
+			handlers = {
+				-- 禁用 pyright 的格式化，让 conform 处理
+				["textDocument/formatting"] = nil,
+				["textDocument/rangeFormatting"] = nil,
+			},
+			settings = {
+				python = {
+					analysis = {
+						autoSearchPaths = true,
+						diagnosticMode = "openFilesOnly",
+						useLibraryCodeForTypes = true,
+						typeCheckingMode = "basic",
+					},
+				},
+			},
 		})
 
-		-- 7. 优化通知系统：增加连接状态检查
+		-- C/C++ LSP配置
+		vim.lsp.config("clangd", {
+			filetypes = { "c", "cpp", "objc", "objcpp" },
+			cmd = {
+				"clangd",
+				"--background-index",
+				"--clang-tidy",
+				"--header-insertion=iwyu",
+				"--completion-style=detailed",
+				"--function-arg-placeholders",
+				"--fallback-style=llvm",
+				"-j=4",
+				"--pch-storage=memory",
+			},
+		})
+
+		-- SQL LSP配置
+		vim.lsp.config("sqls", {
+			filetypes = { "sql", "mysql", "plsql" },
+		})
+
+		-- Racket LSP配置 - 修正为正确的配置
+		vim.lsp.config("racket_langserver", {
+			filetypes = { "racket", "scheme" },
+			cmd = { "racket", "--lib", "racket-langserver" }, -- 正确的命令 [3]
+			settings = {
+				racket = {
+					completion = {
+						enabled = true,
+					},
+				},
+			},
+		})
+		-- 显式启用 racket_langserver
+		vim.lsp.enable("racket_langserver")
+
+		-- 简化通知系统
 		vim.api.nvim_create_autocmd("LspAttach", {
 			callback = function(args)
 				local client = vim.lsp.get_client_by_id(args.data.client_id)
 				if client then
-					vim.notify("" .. client.name .. " ready", vim.log.levels.INFO, {
+					vim.notify(client.name .. " 服务器已启动", vim.log.levels.INFO, {
 						title = "LSP",
-						timeout = 20000,
 					})
 				end
 			end,
+		})
+
+		-- Mason工具安装器
+		require("mason-tool-installer").setup({
+			ensure_installed = {
+				"stylua",
+				"black",
+				"clang-format",
+			},
 		})
 	end,
 }
