@@ -114,7 +114,7 @@ return {
 			callback = function(args)
 				local client = vim.lsp.get_client_by_id(args.data.client_id)
 				if client then
-					vim.notify(client.name .. " 服务器已启动", vim.log.levels.INFO, {
+					vim.notify(client.name .. " ready ", vim.log.levels.INFO, {
 						title = "LSP",
 					})
 				end
