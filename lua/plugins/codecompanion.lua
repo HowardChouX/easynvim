@@ -315,8 +315,8 @@ return {
 				-- anthropic: 使用 HTTP 适配器直接调用 Anthropic API
 				-- deepseek: 使用 DeepSeek HTTP 适配器
 				adapter = {
-					name = "deepseek", -- 默认使用 DeepSeek HTTP 适配器
-					model = "deepseek-chat", -- DeepSeek 模型
+					name = "claude_code", -- 使用 Claude Code ACP 适配器
+					model = os.getenv("ANTHROPIC_MODEL"), -- 从环境变量获取模型
 				},
 
 				-- =========== 角色名称配置 ===========
