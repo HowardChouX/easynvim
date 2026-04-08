@@ -141,7 +141,7 @@ return {
 
 			-- ===== LaTeX 支持 =====
 			latex = {
-				enabled = false,
+				enabled = true,
 			},
 
 			-- ===== 完成建议 =====
@@ -167,22 +167,6 @@ return {
 			pattern = "markdown",
 			callback = function()
 				vim.treesitter.start()
-			end,
-		})
-
-		-- 为 Markdown 文件添加专用快捷键
-		vim.api.nvim_create_autocmd("FileType", {
-			pattern = "markdown",
-			callback = function()
-				-- 切换渲染模式
-				vim.keymap.set(
-					"n",
-					"<leader>mp",
-					"<cmd>RenderMarkdownToggle<cr>",
-					{ desc = "Toggle Markdown Rendering" }
-				)
-				-- 预览渲染效果
-				vim.keymap.set("n", "<leader>mv", "<cmd>RenderMarkdownPreview<cr>", { desc = "Preview Markdown" })
 			end,
 		})
 	end,

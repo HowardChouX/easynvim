@@ -114,9 +114,25 @@ return {
 			callback = function(args)
 				local client = vim.lsp.get_client_by_id(args.data.client_id)
 				if client then
-					vim.notify(client.name .. " ready ", vim.log.levels.INFO, {
-						title = "LSP",
-					})
+					-- 排除不需要通知的 LSP 服务器
+					local excluded_lsp = {
+						"render-markdown",  -- render-markdown LSP
+					}
+
+					-- 检查是否在排除列表中
+					local should_notify = true
+					for _, excluded in ipairs(excluded_lsp) do
+						if client.name == excluded then
+							should_notify = false
+							break
+						end
+					end
+
+					if should_notify then
+						vim.notify(client.name .. " ready ", vim.log.levels.INFO, {
+							title = "LSP",
+						})
+					end
 				end
 			end,
 		})
