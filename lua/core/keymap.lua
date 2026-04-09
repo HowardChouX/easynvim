@@ -134,6 +134,15 @@ vim.keymap.set("n", "<leader>f", function()
 end, { desc = "格式化代码 (Format Code) --插件(Conform)" })
 
 -- Snacks Terminal 插件快捷键
+vim.keymap.set({ "n", "t" }, "<C-t>", function()
+  local ok, snacks = pcall(require, "snacks")
+  if ok then
+    snacks.terminal.toggle()
+  else
+    vim.notify("Snacks.nvim 插件未加载", vim.log.levels.WARN)
+  end
+end, { desc = "切换终端 (Toggle Terminal) --插件(Snacks)" })
+
 vim.keymap.set("t", "jj", function()
 	if vim.bo.filetype == "yazi" then
 		return vim.NIL
@@ -170,6 +179,11 @@ vim.keymap.set("n", "<leader>q", function()
   end
 end, {
 	desc = "打开/关闭大纲 (Toggle Outline) --插件(Aerial)",
+})
+
+-- Yazi 插件快捷键
+vim.keymap.set("n", "<leader>e", "<cmd>Yazi<CR>", {
+  desc = "打开文件管理器 (Open yazi) --插件(Yazi)",
 })
 
 -- LSP 跳转到定义 (使用 LSPSaga)

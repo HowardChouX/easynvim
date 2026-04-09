@@ -23,10 +23,9 @@ return {
 			terminal = {
 				provider = "snacks",
 				snacks_win_opts = {
-					position = "float",
-					width = 0.8,
-					height = 0.8,
-					border = "rounded",
+					position = "right",
+					width = 0.4,
+					border = "single",
 				},
 			},
 		},
