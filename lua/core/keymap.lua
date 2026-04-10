@@ -160,14 +160,6 @@ vim.keymap.set("n", "<C-t>", ":ToggleTerm<CR>", {
 	desc = "打开/关闭终端 (Toggle Terminal) --插件(ToggleTerm)",
 })
 
--- Terminal 模式下：jj 切换到 Normal 模式 (退出终端插入模式)
-vim.keymap.set(
-	"t",
-	"jj",
-	[[<C-\><C-n>]],
-	{ noremap = true, silent = true, desc = "终端模式 -> 普通模式 (Terminal -> Normal) --系统" }
-)
-
 -- Terminal 模式下：Esc 切换到 Normal 模式 (退出终端插入模式)
 vim.keymap.set(
 	"t",
