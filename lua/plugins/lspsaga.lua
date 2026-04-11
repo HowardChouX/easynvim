@@ -2,25 +2,24 @@
 -- 告诉 Lua 语言服务器 vim 是全局变量
 ---@diagnostic disable: undefined-global
 return {
-    "https://github.com/nvimdev/lspsaga.nvim",
-    version = "*",
-    event = "LspAttach",
-    opts = {
-        finder = {
-            keys = {
-                toggle_or_open = "<CR>",
-            },
-        },
-        symbol_in_winbar = {
-            enable = true,
-            separator = " > ",
-            hide_keyword = true,
-            show_file = true,
-            delay = 300,
-        },
-        -- 禁用 lightbulb（小灯泡），避免提示造成的屏幕抖动
-        lightbulb = {
-            enable = false,
-        },
-    },
+	"https://github.com/nvimdev/lspsaga.nvim",
+	event = "LspAttach",
+	opts = {
+		finder = {
+			keys = {
+				toggle_or_open = "<CR>",
+			},
+		},
+		symbol_in_winbar = {
+			enable = true,
+			separator = " > ",
+			hide_keyword = true,
+			show_file = true,
+			delay = 300,
+		},
+		-- 禁用 lightbulb（小灯泡），避免提示造成的屏幕抖动
+		lightbulb = {
+			enable = false,
+		},
+	},
 }
