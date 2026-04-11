@@ -954,6 +954,31 @@ return {
 						},
 					})
 				end,
+
+				-- ===== Qwen2API 适配器配置 =====
+				-- 配置连接到 Qwen2API 本地服务
+				qwen = function()
+					local base_url = "http://localhost:3000"
+					local api_key = "sk-admin123"
+					local model = "qwen-max-latest"
+
+					-- ===== 环境变量检查 =====
+					if not api_key then
+						vim.notify("CodeCompanion: 请设置 QWEN2API_API_KEY 环境变量", vim.log.levels.WARN)
+						return nil
+					end
+					-- ===== 适配器扩展 =====
+					-- 基于 OpenAI 兼容 API 配置 Qwen2API 适配器
+					return require("codecompanion.adapters").extend("openai_compatible", {
+						env = {
+							url = base_url,
+							api_key = api_key, -- API 密钥
+						},
+						schema = {
+							model = { default = model },
+						},
+					})
+				end,
 			},
 
 			-- ===== ACP (Anthropic Code Protocol) 适配器配置 =====
@@ -986,7 +1011,7 @@ return {
 		-- 插件全局配置选项
 		opts = {
 			log_level = "ERROR", -- 日志级别: TRACE|DEBUG|ERROR|INFO
-			language = "English", -- LLM 响应使用的语言
+			language = "Chinese", -- LLM 响应使用的语言
 			send_code = true, -- 是否发送代码到 LLM
 			submit_delay = 500, -- 自动提交聊天缓冲区前的延迟 (毫秒)
 			-- ===== 项目级配置 =====
