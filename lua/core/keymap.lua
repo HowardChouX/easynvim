@@ -156,7 +156,7 @@ vim.keymap.set("n", "<leader>e", "<cmd>Yazi<CR>", {
 })
 
 -- ToggleTerm 插件快捷键
-vim.keymap.set("n", "<C-t>", ":ToggleTerm<CR>", {
+vim.keymap.set("n", "<leader>t", ":ToggleTerm<CR>", {
 	desc = "打开/关闭终端 (Toggle Terminal) --插件(ToggleTerm)",
 })
 
