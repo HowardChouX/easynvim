@@ -4,13 +4,11 @@
 return {
 	"saghen/blink.cmp",
 	event = "VeryLazy",
-	dependencies = {
-		"L3MON4D3/LuaSnip",
-	},
 	opts = {
-		-- Snippet 配置
-		snippets = {
-			preset = "default",
+
+		-- 启用 nvim-cmp 兼容模式
+		compat = {
+			nvim_cmp = true,
 		},
 
 		-- 外观配置
@@ -79,25 +77,19 @@ return {
 
 		-- Sources 配置
 		sources = {
-			default = { "lsp", "path", "snippets", "buffer" },
+			default = { "lsp", "buffer", "path" },
 			providers = {
 				lsp = {
 					name = "lsp",
 					enabled = true,
 					module = "blink.cmp.sources.lsp",
-					score_offset = 0,
-				},
-				snippets = {
-					name = "snippets",
-					enabled = true,
-					module = "blink.cmp.sources.snippets",
-					score_offset = -1,
+					score_offset = 5,
 				},
 				buffer = {
 					name = "buffer",
 					enabled = true,
 					module = "blink.cmp.sources.buffer",
-					score_offset = -5,
+					score_offset = 2,
 				},
 				path = {
 					name = "path",
