@@ -1,21 +1,21 @@
--- lua/plugins/blink.lua
--- Blink.cmp 配置 - 基于 LazyVim 推荐配置优化
----@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-global, undefined-doc-name
 return {
 	"saghen/blink.cmp",
-	event = "VeryLazy",
+	build = "cargo build --release",
+	event = { "InsertEnter", "CmdlineEnter" },
+	dependencies = {
+		"rafamadriz/friendly-snippets",
+		{ "saghen/blink.compat", opts = {} },
+	},
+	---@module 'blink.cmp'
+	---@type blink.cmp.Config
 	opts = {
-
-		-- 启用 nvim-cmp 兼容模式
-		compat = {
-			nvim_cmp = true,
+		snippets = {
+			preset = "default",
 		},
-
-		-- 外观配置
 		appearance = {
 			use_nvim_cmp_as_default = false,
 			nerd_font_variant = "mono",
-			-- kind 图标 (使用 Nerd Fonts)
 			kind_icons = {
 				Text = "󰉿",
 				Method = "󰆧",
@@ -45,77 +45,48 @@ return {
 			},
 		},
 
-		-- 补全配置
 		completion = {
-			accept = {
-				auto_brackets = {
-					enabled = true,
-				},
-			},
+			accept = { auto_brackets = { enabled = true } },
 			menu = {
 				draw = {
-					treesitter = { "lsp" },
+					treesitter = { "lsp", "buffer", "snippets", "path" },
+					columns = { { "kind_icon" }, { "label", "label_description", gap = 1 }, { "source_name" } },
 				},
 			},
 			documentation = {
 				auto_show = true,
-				auto_show_delay_ms = 200,
+				auto_show_delay_ms = 350,
+				window = { border = "rounded" },
 			},
-			ghost_text = {
-				enabled = false,
-			},
+			ghost_text = { enabled = false },
 			list = {
 				selection = {
 					preselect = true,
-					auto_insert = true,
+					auto_insert = false,
 				},
 			},
-			trigger = {
-				show_on_trigger_character = true,
-			},
+			trigger = { show_on_trigger_character = true },
 		},
 
-		-- Sources 配置
+		signature = { enabled = true },
+
 		sources = {
-			default = { "lsp", "buffer", "path" },
+			default = { "lsp", "path", "snippets", "buffer" },
 			providers = {
-				lsp = {
-					name = "lsp",
-					enabled = true,
-					module = "blink.cmp.sources.lsp",
-					score_offset = 5,
-				},
-				buffer = {
-					name = "buffer",
-					enabled = true,
-					module = "blink.cmp.sources.buffer",
-					score_offset = 2,
-				},
-				path = {
-					name = "path",
-					enabled = true,
-					module = "blink.cmp.sources.path",
-					score_offset = -10,
-				},
-			},
-			-- 为 codecompanion 添加 per_filetype 源
-			per_filetype = {
-				codecompanion = { "codecompanion" },
+				lsp = { score_offset = 5 },
+				buffer = { score_offset = 2 },
+				path = { score_offset = 0 },
+				snippets = { score_offset = 3 },
 			},
 		},
 
-		-- 命令行补全
 		cmdline = {
 			enabled = true,
-			keymap = {
-				preset = "cmdline",
-				["<Right>"] = false,
-				["<Left>"] = false,
-			},
+			keymap = { preset = "cmdline" },
 			completion = {
 				list = { selection = { preselect = false } },
 				menu = {
-					auto_show = function(ctx)
+					auto_show = function()
 						return vim.fn.getcmdtype() == ":"
 					end,
 				},
@@ -123,20 +94,13 @@ return {
 			},
 		},
 
-		-- 键位映射 - 自定义：Tab 只跳转不 accept
 		keymap = {
 			preset = "super-tab",
-			-- 覆盖 Tab：只跳转/选择下一个，不 accept
 			["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
 			["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
 			["<Enter>"] = { "accept", "fallback" },
 			["<Up>"] = { "select_prev", "fallback" },
 			["<Down>"] = { "select_next", "fallback" },
-		},
-
-		-- Fuzzy 配置
-		fuzzy = {
-			implementation = "lua",
 		},
 	},
 }

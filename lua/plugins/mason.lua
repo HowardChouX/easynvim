@@ -1,5 +1,6 @@
 -- lua/mason.lua
 -- Mason 安装和自动安装 LSP
+---@diagnostic disable
 return {
 	"mason-org/mason.nvim",
 	cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonUninstallAll", "MasonLog" },

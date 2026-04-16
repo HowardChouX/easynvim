@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 return {
 	"folke/noice.nvim",
 	event = "VeryLazy",
