@@ -6,8 +6,8 @@ return {
 		formatters_by_ft = {
 			lua = { "stylua" },
 			python = { "black" },
-			c = { "clang-format" }, -- 修正为 Mason 中的名称
-			cpp = { "clang-format" }, -- 修正为 Mason 中的名称
+			c = { "clang-format" },
+			cpp = { "clang-format" },
 			sql = { "sql-formatter" },
 			["_"] = { "trim_whitespace" },
 		},
