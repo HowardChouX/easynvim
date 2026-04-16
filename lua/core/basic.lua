@@ -57,3 +57,6 @@ vim.opt.termguicolors = true
 
 -- 禁用 perl provider (避免警告)
 vim.g.loaded_perl_provider = 0
+
+-- 禁用鼠标支持 (所有模式)
+vim.opt.mouse = ""
