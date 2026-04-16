@@ -51,10 +51,10 @@ vim.keymap.set({ "n", "v" }, "H", "0", { desc = "跳转到行首 (Start of Line)
 vim.keymap.set({ "n", "v" }, "L", "$", { desc = "跳转到行尾 (End of Line) --自定义" })
 
 -- Telescope 插件快捷键
-vim.keymap.set("n", "<leader>ff", function()
+vim.keymap.set("n", "<leader>fg", function()
 	require("telescope.builtin").find_files()
 end, { desc = "查找文件 (Find Files) --插件(Telescope)" })
-vim.keymap.set("n", "<leader>fg", function()
+vim.keymap.set("n", "<leader>ff", function()
 	-- 检查 ripgrep 是否可用
 	local has_rg = false
 	if vim.fn.executable("rg") == 1 or vim.fn.executable("ripgrep") == 1 then
