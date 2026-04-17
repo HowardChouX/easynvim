@@ -15,6 +15,35 @@
 -- =========================== 配置开始 ============================
 
 ---@diagnostic disable: undefined-global  -- 禁用 undefined-global 诊断警告
+
+-- 读取 ~/.claude/settings.json 配置
+local function load_claude_settings()
+	local path = vim.fn.expand("~/.claude/settings.json")
+	local file = io.open(path, "r")
+	if not file then
+		return {}
+	end
+	local content = file:read("*a")
+	file:close()
+
+	local ok, data = pcall(vim.json.decode, content)
+	if not ok then
+		vim.notify("无法解析 ~/.claude/settings.json: " .. tostring(data), vim.log.levels.WARN)
+		return {}
+	end
+
+	return data or {}
+end
+
+-- 获取 settings.json 中的配置值
+local function get_setting(key)
+	local settings = load_claude_settings()
+	if settings.env and settings.env[key] then
+		return settings.env[key]
+	end
+	return nil
+end
+
 return {
 	-- =========================== 插件基本信息 ============================
 	-- 插件仓库地址和名称
@@ -287,7 +316,7 @@ return {
 				-- 适配器配置: 后台任务使用的 AI 模型
 				adapter = {
 					name = "anthropic", -- 使用 Anthropic HTTP 适配器
-					model = os.getenv("ANTHROPIC_MODEL"), -- 从环境变量获取模型
+					model = get_setting("ANTHROPIC_MODEL"), -- 从 settings.json 获取模型
 				},
 
 				-- =========== 回调函数配置 ===========
@@ -315,7 +344,7 @@ return {
 				-- deepseek: 使用 DeepSeek HTTP 适配器
 				adapter = {
 					name = "claude_code", -- 使用 Claude Code ACP 适配器
-					model = os.getenv("ANTHROPIC_MODEL"), -- 从环境变量获取模型
+					model = get_setting("ANTHROPIC_MODEL"), -- 从 settings.json 获取模型
 				},
 
 				-- =========== 角色名称配置 ===========
@@ -788,7 +817,7 @@ return {
 				-- 内联助手的 AI 模型适配器
 				adapter = {
 					name = "anthropic", -- 使用 Anthropic HTTP 适配器
-					model = os.getenv("ANTHROPIC_MODEL"), -- 从环境变量获取模型
+					model = get_setting("ANTHROPIC_MODEL"), -- 从 settings.json 获取模型
 				},
 				-- =========== 快捷键配置 ===========
 				-- 内联助手的专用快捷键
@@ -831,7 +860,7 @@ return {
 				-- 命令行模式下使用的 AI 适配器
 				adapter = {
 					name = "anthropic", -- 使用 Anthropic HTTP 适配器
-					model = os.getenv("ANTHROPIC_MODEL"), -- 从环境变量获取模型
+					model = get_setting("ANTHROPIC_MODEL"), -- 从 settings.json 获取模型
 				},
 			},
 		},
@@ -905,14 +934,14 @@ return {
 				-- ===== Anthropic 适配器配置 =====
 				-- 配置连接到 Anthropic Claude API
 				anthropic = function()
-					local base_url = os.getenv("ANTHROPIC_BASE_URL")
-					local api_key = os.getenv("ANTHROPIC_API_KEY")
-					local model = os.getenv("ANTHROPIC_MODEL")
+					local base_url = get_setting("ANTHROPIC_BASE_URL")
+					local api_key = get_setting("ANTHROPIC_API_KEY")
+					local model = get_setting("ANTHROPIC_MODEL")
 
 					-- ===== 环境变量检查 =====
 					if not base_url or not api_key then
 						vim.notify(
-							"CodeCompanion: 请设置 ANTHROPIC_BASE_URL 和 ANTHROPIC_API_KEY 环境变量",
+							"CodeCompanion: 请在 ~/.claude/settings.json 中配置 ANTHROPIC_BASE_URL 和 ANTHROPIC_API_KEY",
 							vim.log.levels.ERROR
 						)
 						return nil
@@ -947,31 +976,6 @@ return {
 						},
 					})
 				end,
-
-				-- ===== Qwen2API 适配器配置 =====
-				-- 配置连接到 Qwen2API 本地服务
-				qwen = function()
-					local base_url = "http://localhost:3000"
-					local api_key = "sk-admin123"
-					local model = "qwen-max-latest"
-
-					-- ===== 环境变量检查 =====
-					if not api_key then
-						vim.notify("CodeCompanion: 请设置 QWEN2API_API_KEY 环境变量", vim.log.levels.WARN)
-						return nil
-					end
-					-- ===== 适配器扩展 =====
-					-- 基于 OpenAI 兼容 API 配置 Qwen2API 适配器
-					return require("codecompanion.adapters").extend("openai_compatible", {
-						env = {
-							url = base_url,
-							api_key = api_key, -- API 密钥
-						},
-						schema = {
-							model = { default = model },
-						},
-					})
-				end,
 			},
 
 			-- ===== ACP (Anthropic Code Protocol) 适配器配置 =====
@@ -992,7 +996,7 @@ return {
 					-- 基于 Claude Code ACP 适配器扩展配置
 					return require("codecompanion.adapters").extend("claude_code", {
 						defaults = {
-							model = os.getenv("ANTHROPIC_MODEL"), -- 从环境变量获取模型
+							model = get_setting("ANTHROPIC_MODEL"), -- 从 settings.json 获取模型
 							mcpServers = "inherit_from_config", -- 继承配置文件中的 MCP 服务器设置
 						},
 					})

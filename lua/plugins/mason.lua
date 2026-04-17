@@ -122,13 +122,7 @@ return {
 			settings = {
 				java = {
 					configuration = {
-						runtimes = {
-							-- 这里可以根据需要添加 JDK 运行时配置
-							-- {
-							-- 	name = "JavaSE-17",
-							-- 	path = "/path/to/jdk-17",
-							-- },
-						},
+						runtimes = {},
 					},
 					format = {
 						enabled = false, -- 禁用内置格式化，使用 google-java-format
