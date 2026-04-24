@@ -179,6 +179,11 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "终端模式 -> 普通模式 (Terminal -> Normal) --系统" }
 )
 
+-- Noice.nvim：dismiss 通知
+vim.keymap.set("n", "<leader>nd", function()
+	require("noice").cmd("dismiss")
+end, { silent = true, desc = "关闭通知 (Dismiss Notification) --插件(Noice)" })
+
 -- LSP 跳转到定义 (使用 LSPSaga)
 vim.keymap.set(
 	"n",
@@ -186,3 +191,6 @@ vim.keymap.set(
 	":Lspsaga goto_definition<CR>",
 	{ silent = true, desc = "跳转到定义 (Go to Definition) --插件(Lspsaga)" }
 )
+
+-- WhichKey 配置：modern preset 会自动发现带 desc 的 leader 快捷键
+-- 无需手动 register，which-key 会根据 keymap 的 desc 自动分组显示

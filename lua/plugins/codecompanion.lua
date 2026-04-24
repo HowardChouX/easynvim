@@ -972,7 +972,7 @@ return {
 		-- ===== 通用选项 =====
 		-- 插件全局配置选项
 		opts = {
-			log_level = "ERROR", -- 日志级别: TRACE|DEBUG|ERROR|INFO
+			log_level = "INFO", -- 日志级别: TRACE|DEBUG|WARN|ERROR|INFO
 			language = "Chinese", -- LLM 响应使用的语言
 			send_code = true, -- 是否发送代码到 LLM
 			submit_delay = 500, -- 自动提交聊天缓冲区前的延迟 (毫秒)

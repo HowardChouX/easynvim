@@ -59,6 +59,13 @@ return {
 				},
 				opts = { skip = true },
 			},
+			{
+				filter = {
+					event = "notify",
+					find = "Missing frontmatter",
+				},
+				opts = { skip = true },
+			},
 		},
 		presets = {
 			bottom_search = true,
@@ -74,6 +81,7 @@ return {
 				size = { width = 40, height = "auto" },
 				border = "none",
 				zindex = 50,
+				footer = "按 <leader>nd 关闭",
 				win_options = {
 					winblend = 20,
 				},
