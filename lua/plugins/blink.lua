@@ -1,7 +1,6 @@
 ---@diagnostic disable: undefined-global, undefined-doc-name
 return {
 	"saghen/blink.cmp",
-	version = "1.*",
 	build = function()
 		require("blink.cmp").build():wait(60000)
 	end,
