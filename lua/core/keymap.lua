@@ -51,31 +51,12 @@ vim.keymap.set({ "n", "v" }, "H", "0", { desc = "跳转到行首 (Start of Line)
 vim.keymap.set({ "n", "v" }, "L", "$", { desc = "跳转到行尾 (End of Line) --自定义" })
 
 -- Telescope 插件快捷键
-vim.keymap.set("n", "<leader>fg", function()
+vim.keymap.set("n", "<leader>ff", function()
 	require("telescope.builtin").find_files()
 end, { desc = "查找文件 (Find Files) --插件(Telescope)" })
-vim.keymap.set("n", "<leader>ff", function()
-	-- 检查 ripgrep 是否可用
-	local has_rg = false
-	if vim.fn.executable("rg") == 1 or vim.fn.executable("ripgrep") == 1 then
-		has_rg = true
-	end
-
-	if has_rg then
-		-- ripgrep 可用，使用 live_grep 进行全局搜索
-		require("telescope.builtin").live_grep()
-	else
-		-- ripgrep 不可用，使用普通的 find_files 替代并发出警告
-		vim.notify(
-			"ripgrep 未安装，使用文件查找替代。推荐安装 ripgrep 以获得更好的搜索体验。",
-			vim.log.levels.WARN
-		)
-		require("telescope.builtin").find_files()
-	end
+vim.keymap.set("n", "<leader>fg", function()
+	require("telescope.builtin").live_grep()
 end, { desc = "全局搜索 (Live Grep) --插件(Telescope)" })
-
--- Dashboard 插件快捷键
-vim.keymap.set("n", "<leader>d", ":Dashboard<CR>", { desc = "打开仪表盘 (Open Dashboard) --插件(Dashboard)" })
 
 -- Bufferline 插件快捷键
 vim.keymap.set(
@@ -129,7 +110,7 @@ vim.keymap.set(
 )
 
 -- Conform 插件快捷键
-vim.keymap.set("n", "<leader>f", function()
+vim.keymap.set("n", "<leader>ft", function()
 	require("conform").format({ async = true, lsp_fallback = true })
 end, { desc = "格式化代码 (Format Code) --插件(Conform)" })
 
@@ -161,8 +142,8 @@ vim.keymap.set("n", "<leader>t", ":ToggleTerm<CR>", {
 })
 
 -- CodeCompanion 插件快捷键
-vim.keymap.set({ "n", "v" }, "<leader><tab>", "<cmd>CodeCompanionActions<CR>", {
-	desc = "CodeCompanion 动作面板 (Actions Palette) --插件(CodeCompanion)",
+vim.keymap.set({ "n", "v" }, "<leader><tab>", "<cmd>Dashboard<CR>", {
+	desc = "打开仪表盘 (Open Dashboard) --插件(Dashboard)",
 })
 vim.keymap.set({ "n", "v" }, "<leader>a", "<cmd>CodeCompanionChat Toggle<CR>", {
 	desc = "CodeCompanion 聊天窗口 (Toggle Chat) --插件(CodeCompanion)",
