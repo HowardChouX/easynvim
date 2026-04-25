@@ -194,42 +194,68 @@ vim.keymap.set(
 
 -- nvim-java 快捷键
 vim.keymap.set("n", "<leader>jr", ":JavaRunnerRunMain<CR>", { desc = "运行主类 (Run Main) --插件(nvim-java)" })
-vim.keymap.set("n", "<leader>jR", ":JavaRunnerStopMain<CR>", { desc = "停止运行 (Stop Runner) --插件(nvim-java)" })
-vim.keymap.set("n", "<leader>jb", ":JavaBuildBuildWorkspace<CR>", { desc = "构建工作区 (Build Workspace) --插件(nvim-java)" })
-vim.keymap.set("n", "<leader>jt", ":JavaTestRunCurrentClass<CR>", { desc = "运行测试类 (Run Test Class) --插件(nvim-java)" })
-vim.keymap.set("n", "<leader>jT", ":JavaTestRunCurrentMethod<CR>", { desc = "运行测试方法 (Run Test Method) --插件(nvim-java)" })
-vim.keymap.set("n", "<leader>jd", ":JavaTestDebugCurrentClass<CR>", { desc = "调试测试类 (Debug Test Class) --插件(nvim-java)" })
-vim.keymap.set("n", "<leader>jD", ":JavaTestDebugCurrentMethod<CR>", { desc = "调试测试方法 (Debug Test Method) --插件(nvim-java)" })
-vim.keymap.set("n", "<leader>jA", ":JavaTestRunAllTests<CR>", { desc = "运行所有测试 (Run All Tests) --插件(nvim-java)" })
+vim.keymap.set(
+	"n",
+	"<leader>jR",
+	":JavaRunnerStopMain<CR>",
+	{ desc = "停止运行 (Stop Runner) --插件(nvim-java)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>jb",
+	":JavaBuildBuildWorkspace<CR>",
+	{ desc = "构建工作区 (Build Workspace) --插件(nvim-java)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>jt",
+	":JavaTestRunCurrentClass<CR>",
+	{ desc = "运行测试类 (Run Test Class) --插件(nvim-java)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>jT",
+	":JavaTestRunCurrentMethod<CR>",
+	{ desc = "运行测试方法 (Run Test Method) --插件(nvim-java)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>jd",
+	":JavaTestDebugCurrentClass<CR>",
+	{ desc = "调试测试类 (Debug Test Class) --插件(nvim-java)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>jD",
+	":JavaTestDebugCurrentMethod<CR>",
+	{ desc = "调试测试方法 (Debug Test Method) --插件(nvim-java)" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>jA",
+	":JavaTestRunAllTests<CR>",
+	{ desc = "运行所有测试 (Run All Tests) --插件(nvim-java)" }
+)
 
 -- 调试快捷键 (DAP - Debug Adapter Protocol)
-vim.keymap.set("n", "<F5>", function()
+vim.keymap.set("n", "<leader><F5>", function()
 	require("dap").continue()
-end, { desc = "开始调试 / 继续 (Start/Continue Debug) --系统" })
-vim.keymap.set("n", "<S-F5>", function()
-	require("dap").stop()
-end, { desc = "停止调试 (Stop Debug) --系统" })
-vim.keymap.set("n", "<C-S-F5>", function()
-	require("dap").restart()
-end, { desc = "重启调试 (Restart Debug) --系统" })
-vim.keymap.set("n", "<C-S-D>", function()
-	require("dap").toggle_breakpoint()
-end, { desc = "切换断点 (Toggle Breakpoint) --系统" })
-vim.keymap.set("n", "<F9>", function()
-	require("dap").toggle_breakpoint()
-end, { desc = "切换断点 (Toggle Breakpoint) --系统" })
-vim.keymap.set("n", "<F10>", function()
+end, { desc = "开始调试 / 继续 (Start/Continue Debug) --DAP" })
+vim.keymap.set("n", "<leader><F10>", function()
 	require("dap").step_over()
-end, { desc = "逐过程 (Step Over) --系统" })
-vim.keymap.set("n", "<F11>", function()
+end, { desc = "逐过程 (Step Over) --DAP" })
+vim.keymap.set("n", "<leader><F11>", function()
 	require("dap").step_into()
-end, { desc = "逐语句 (Step Into) --系统" })
-vim.keymap.set("n", "<S-F11>", function()
+end, { desc = "逐语句 (Step Into) --DAP" })
+vim.keymap.set("n", "<leader><S-F11>", function()
 	require("dap").step_out()
-end, { desc = "跳出 (Step Out) --系统" })
-vim.keymap.set("n", "<C-S-Y>", function()
-	require("dap").repl.toggle()
-end, { desc = "切换调试控制台 (Toggle REPL) --系统" })
+end, { desc = "跳出 (Step Out) --DAP" })
+vim.keymap.set("n", "<leader><F9>", function()
+	require("dap").toggle_breakpoint()
+end, { desc = "切换断点 (Toggle Breakpoint) --DAP" })
+vim.keymap.set("n", "<leader><S-F5>", function()
+	require("dap").stop()
+end, { desc = "停止调试 (Stop Debug) --DAP" })
 
 -- WhichKey 配置：modern preset 会自动发现带 desc 的 leader 快捷键
 -- 无需手动 register，which-key 会根据 keymap 的 desc 自动分组显示

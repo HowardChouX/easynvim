@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a Neovim configuration using `lazy.nvim` as the plugin manager. The config targets Neovim 0.11+ and uses Lua throughout. The primary AI assistant is CodeCompanion with full MCP (Model Context Protocol) support.
+This is a Neovim 0.11+ configuration using `lazy.nvim` as the plugin manager. The config is written in Lua with the primary AI assistant being CodeCompanion with full MCP (Model Context Protocol) support.
 
 ## Architecture
 
 ```
 ~/.config/nvim/
-├── init.lua              # Entry point - loads core modules in order
+├── init.lua              # Entry point - loads core modules in order: basic, keymap, lazy
 ├── lua/
 │   ├── core/
 │   │   ├── basic.lua     # Editor options (numbers, tabs, clipboard, etc.)
@@ -21,9 +21,9 @@ This is a Neovim configuration using `lazy.nvim` as the plugin manager. The conf
 └── plugin/               # Generated plugin directory
 ```
 
-**Plugin Loading Pattern**: Each file in `lua/plugins/` returns a lazy.nvim spec table. The `lazy.lua` imports all plugins via `{ import = "plugins" }`.
+**Plugin Loading Pattern**: Each file in `lua/plugins/` returns a lazy.nvim spec table. `lazy.lua` imports all plugins via `{ import = "plugins" }`.
 
-## Common Development Commands
+## Common Commands
 
 ### Plugin Management
 ```vim
@@ -31,7 +31,6 @@ This is a Neovim configuration using `lazy.nvim` as the plugin manager. The conf
 :Lazy clean       " Remove unused plugins
 :Lazy profile     " Analyze startup performance
 :Lazy health      " Check plugin health status
-:Lazy update      " Update all plugins
 ```
 
 ### LSP & Formatting
@@ -40,50 +39,35 @@ This is a Neovim configuration using `lazy.nvim` as the plugin manager. The conf
 :MasonInstall all " Install all configured LSP servers and tools
 :LspInfo          " Show attached LSP clients
 :LspRestart       " Restart LSP server for current buffer
-:NullLsInfo       " Show null-ls sources (formatters)
 :TSInstall all    " Install all Treesitter parsers
 :TSUpdate         " Update Treesitter parsers
-:TSInstallInfo    " Show installed parsers
 ```
 
-### Diagnostics & Debugging
+### Debugging (DAP)
 ```vim
-:checkhealth              " Full health check
-:checkhealth telescope    " Check Telescope dependencies
-:checkhealth provider     " Check external providers (python, ruby, node)
-:checkhealth mason        " Check Mason installation
-:LspLog                   " View LSP server logs
-:MasonLog                 " View Mason installation logs
+<leader><F5>     " Start/Continue debug
+<leader><F9>     " Toggle breakpoint
+<leader><F10>    " Step over
+<leader><F11>    " Step into
+<leader><S-F11>  " Step out
+<leader><S-F5>   " Stop debug
+<leader>dv       " Show variables (dapui)
+<leader>dw       " Show watch expressions (dapui)
+<leader>ds       " Show call stack (dapui)
 ```
 
 ### CodeCompanion (AI Assistant)
 ```vim
-<leader>a        " Toggle CodeCompanion chat window
-<leader><tab>    " Open CodeCompanion action palette
-:CodeCompanionChat Toggle " Open/close chat
-:CodeCompanionChat Add    " Add visual selection to chat
-:CodeCompanionActions     " Show action palette
+<leader>a              " Toggle CodeCompanion chat
+<leader><tab>          " Open CodeCompanion action palette
 ```
 
-### Telescope Search & Navigation
+### Telescope Search
 ```vim
 <leader>ff      " Find files
 <leader>fg      " Live grep (requires ripgrep)
 <leader>fb      " Find buffers
 <leader>fh      " Find help tags
-<leader>fk      " Find keymaps
-<leader>f/      " Search current buffer
-```
-
-### File & Buffer Management
-```vim
-<leader>d       " Open dashboard
-<leader>bh      " Previous buffer
-<leader>bl      " Next buffer
-<leader>bp      " Pick buffer to close
-:bd             " Close current buffer
-:bn/:bp         " Next/previous buffer
-:ls             " List all buffers
 ```
 
 ## Configuration Patterns
@@ -94,10 +78,8 @@ Create a new file in `lua/plugins/` that returns a lazy.nvim spec:
 ---@diagnostic disable: undefined-global
 return {
   "author/plugin-name",
-  event = "VeryLazy",  -- or cmd, keys, ft for lazy loading
-  opts = {
-    -- plugin options
-  },
+  event = "VeryLazy",
+  opts = { /* plugin options */ },
 }
 ```
 
@@ -110,83 +92,20 @@ vim.lsp.config("server_name", {
 })
 ```
 
-### MCP (Model Context Protocol) Configuration
-CodeCompanion uses MCP servers for tool integration. MCP servers are configured in `lua/plugins/codecompanion.lua`:
-- **filesystem**: File system operations (restricted to config, home, and cwd directories)
-- **sequential-thinking**: Complex reasoning assistance
-- **memory**: Persistent memory storage
-
-MCP servers use `npx -y @modelcontextprotocol/server-<name>` commands and can be extended with tool overrides.
-
-### Configuration Patterns
-
-**Adding a New Plugin**: Create a new file in `lua/plugins/` that returns a lazy.nvim spec. Most plugins use `opts` for configuration:
-```lua
----@diagnostic disable: undefined-global
-return {
-  "author/plugin-name",
-  event = "VeryLazy",
-  opts = { /* plugin options */ },
-}
-```
-
 ### Keymap Binding Rules
 
 **重要原则**：所有快捷键必须统一管理在 `lua/core/keymap.lua` 中，禁止在插件配置文件里直接定义快捷键。
 
-#### 快捷键命名规范
-
-- **系统快捷键**：Vim 原生操作，描述标签使用 `--系统`
-- **自定义快捷键**：用户自定义的增强功能，描述标签使用 `--自定义`
-- **插件快捷键**：调用插件功能的快捷键，描述标签使用 `--插件(插件名)`
-
-```lua
--- 格式示例
-vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>",
-  { desc = "查找文件 (Find Files) --插件(Telescope)" })
-```
-
-#### 描述格式
-
-所有快捷键必须包含中文描述，格式为：`中文描述 (English Description) --类型`
-
-- 类型标签：`--系统`、`--自定义`、`--插件(名称)`
-- Telescope 插件会根据描述中的中文来过滤显示快捷键
-
-#### 快捷键分类 (keymap.lua 结构)
-
-1. **基础配置与 Leader** - Leader 键设置、系统级快捷键
-2. **插入模式优化** - Insert 模式下的快捷键
-3. **窗口与终端** - 终端相关快捷键
-4. **常用编辑操作** - 编辑、翻页、保存等
-5. **光标移动与模式切换** - 移动、模式切换
-6. **文本对象与高级操作** - 文本对象、宏、寄存器
-7. **插件快捷键** - 所有插件的快捷键
-
-#### 开发时重载
-
-keymap.lua 配置了自动重载，修改后保存会自动重新加载：
-```lua
-vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = "**/keymap.lua",
-  callback = function()
-    vim.cmd("source ~/.config/nvim/lua/core/keymap.lua")
-  end,
-})
-```
-
-#### 添加新快捷键
-
-在 keymap.lua 的对应分类下添加，遵循现有格式。禁止在插件配置文件中使用 `keys = {}` 或 `vim.keymap.set()` 定义快捷键。
-
-### Keybinding Convention
-All keymaps in `keymap.lua` include Chinese descriptions with source tags:
+All keymaps include Chinese descriptions with source tags:
 ```lua
 vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>",
   { desc = "查找文件 (Find Files) --插件(Telescope)" })
 ```
 
-The Telescope keymaps picker filters to show only keymaps with Chinese descriptions.
+Description format: `中文描述 (English Description) --类型`
+- Type tags: `--系统`、`--自定义`、`--插件(名称)`
+
+keymap.lua auto-reloads on save via BufWritePost autocmd.
 
 ## Plugin Ecosystem
 
@@ -195,10 +114,12 @@ The Telescope keymaps picker filters to show only keymaps with Chinese descripti
 - **mason.nvim**: LSP/DAP/Linter/Formatter installer
 - **nvim-lspconfig**: LSP client configuration
 - **nvim-cmp**: Completion engine
+- **blink.nvim**: AI-powered code completion
 - **telescope.nvim**: Fuzzy finder
 - **nvim-treesitter**: Syntax highlighting and parsing
 - **codecompanion.nvim**: AI coding assistant with MCP support
 - **noice.nvim**: Modern UI components
+- **aerial.nvim**: Code outline sidebar
 - **dashboard-nvim**: Startup screen
 
 ### UI & Navigation
@@ -206,27 +127,26 @@ The Telescope keymaps picker filters to show only keymaps with Chinese descripti
 - **lualine.nvim**: Status line
 - **bufferline.nvim**: Buffer tabs
 - **indent-blankline.nvim**: Indentation guides
-- **aerial.nvim**: Code outline sidebar
 - **hop.nvim**: Easy motion navigation
+- **yazi.nvim**: File manager integration
 
 ### Editing & LSP
 - **conform.nvim**: Code formatting
 - **lspsaga.nvim**: Enhanced LSP UI
 - **nvim-autopairs**: Auto-pair brackets
 - **vim-visual-multi**: Multiple cursors
-- **yazi.nvim**: File manager integration
+- **nvim-surround**: Text surrounding operations
 
-### AI Integration
-- **codecompanion.nvim**: Primary AI assistant with MCP
-- **claudecode.nvim**: Claude Code integration
-- **blink.nvim**: AI-powered code completion
+### Debugging
+- **nvim-dap**: Debug Adapter Protocol client
+- **nvim-dap-ui**: DAP UI components
+- **nvim-java**: Java debugging support (with java.lua config)
 
 ## Pre-configured LSP Servers
 
 - `lua_ls` - Lua
 - `pyright` - Python
 - `clangd` - C/C++
-- `racket_langserver` - Racket
 - `sqls` - SQL
 
 ## Pre-configured Formatters (via conform.nvim)
@@ -243,111 +163,45 @@ The Telescope keymaps picker filters to show only keymaps with Chinese descripti
 | `<leader>ff` | Find files (Telescope) |
 | `<leader>fg` | Live grep (Telescope) |
 | `<leader>d` | Dashboard |
-| `<leader>f` | Format code (LSP) |
+| `<leader>f` | Format code (Conform) |
 | `<leader>bh/bl` | Buffer prev/next |
+| `<leader>a` | CodeCompanion Chat |
+| `<leader><tab>` | CodeCompanion Actions |
+| `<leader>q` | Toggle Aerial (code outline) |
+| `<leader>e` | Open Yazi file manager |
+| `<leader>t` | Toggle terminal |
+| `<leader>nd` | Dismiss notification (Noice) |
 | `ff` | Hop word jump |
 | `jj` | Exit insert mode |
 | `<C-s>` | Save file |
-| `<C-t>` | Toggle terminal |
-| `H` / `L` | Line start / end |
-| `tt` / `bb` | Page up / down |
 | `<F1>` | Show keymaps (Telescope) |
 | `<F2>` | Rename symbol (Lspsaga) |
-| `<leader>a` | CodeCompanion Chat Toggle |
-| `<leader><tab>` | CodeCompanion Actions |
+| `gd` | Go to definition (Lspsaga) |
+| `H` / `L` | Line start / end |
+| `tt` / `bb` | Page up / down |
 
 ## Dependencies
 
 Required external tools:
 - `git` - Plugin management
-- `node` + `npm` - LSP servers
+- `node` + `npm` - LSP servers, MCP servers
 - `gcc` - Treesitter compilation
 - `ripgrep` + `fd` - Telescope search (recommended)
-
-## Development Workflow
-
-### Testing Configuration Changes
-1. Edit the relevant Lua file in `lua/plugins/` or `lua/core/`
-2. Save the file
-3. Run `:Lazy sync` to apply changes
-4. Restart Neovim or run `:Lazy reload` for specific plugins
-
-### Debugging Plugin Issues
-1. Check `:Lazy health` for plugin status
-2. Run `:Lazy profile` to identify slow plugins
-3. Check `:LspInfo` for LSP server status
-4. Run `:checkhealth` for system diagnostics
-
-### Adding New Language Support
-1. Run `:Mason` to install LSP server
-2. Add configuration to `lua/plugins/mason.lua`
-3. Install Treesitter parser: `:TSInstall <language>`
-4. Configure formatter in `lua/plugins/conform.lua`
-
-### AI Assistant Configuration
-1. Set environment variables for AI providers:
-   ```bash
-   export ANTHROPIC_API_KEY="your-key"
-   export ANTHROPIC_MODEL="claude-3-5-sonnet-20241022"
-   ```
-2. Configure MCP servers in `lua/plugins/codecompanion.lua`
-3. Adjust tool permissions and approval settings as needed
-
-## Troubleshooting
-
-### Common Issues
-
-**LSP not working:**
-1. Run `:Mason` to ensure server is installed
-2. Check `:LspInfo` for active clients
-3. Verify file type detection: `:set filetype?`
-4. Check LSP logs: `:LspLog`
-
-**Plugin loading errors:**
-1. Run `:Lazy clean` then `:Lazy sync`
-2. Check network connectivity
-3. Verify Git is in PATH
-
-**Treesitter highlighting broken:**
-1. Run `:TSUpdate` to update parsers
-2. Reinstall: `:TSInstall <language>`
-3. Check gcc installation
-
-**CodeCompanion not responding:**
-1. Verify MCP servers are running
-2. Check API key configuration
-3. Run `:CodeCompanion debug` for diagnostics
-
-### Performance Issues
-- Run `:Lazy profile` to identify slow plugins
-- Check `:checkhealth` for system issues
-- Consider disabling unused plugins
-- Use `event = "VeryLazy"` for non-critical plugins
-
-## File Structure Conventions
-
-- `lua/core/` - Core configuration (basic, keymaps, lazy loading)
-- `lua/plugins/` - Individual plugin configurations
-- Each plugin gets its own `.lua` file
-- Plugin configurations return a lazy.nvim spec table
-- Keymaps are centralized in `keymap.lua`
-- LSP configurations are in `mason.lua`
-- AI assistant configuration is in `codecompanion.lua`
 
 ## Environment Variables
 
 For AI functionality, set these in your shell:
 ```bash
-# Claude/Anthropic
 export ANTHROPIC_API_KEY="your-key"
 export ANTHROPIC_MODEL="claude-3-5-sonnet-20241022"
-export ANTHROPIC_BASE_URL="https://api.anthropic.com"
-
-# Alternative AI providers
-export OPEN_SOURCE_API_KEY="your-key"
-export SILICONFLOW_API_KEY="your-key"
 export TAVILY_API_KEY="your-key"
-
-# Ollama
-export OLLAMA_HOST="http://localhost:11434"
 ```
+
+## File Structure Conventions
+
+- `lua/core/` - Core configuration (basic, keymaps, lazy loading)
+- `lua/plugins/` - Individual plugin configurations
+- Each plugin gets its own `.lua` file returning a lazy.nvim spec table
+- Keymaps are centralized in `keymap.lua`
+- LSP configurations are in `mason.lua`
+- AI assistant configuration is in `codecompanion.lua`
