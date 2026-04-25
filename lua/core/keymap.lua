@@ -114,12 +114,16 @@ vim.keymap.set("n", "<leader>ft", function()
 	require("conform").format({ async = true, lsp_fallback = true })
 end, { desc = "格式化代码 (Format Code) --插件(Conform)" })
 
+-- Yazi 插件快捷键
+vim.keymap.set("n", "<leader>e", "<cmd>Yazi<CR>", {
+	desc = "打开文件管理器 (Open yazi) --插件(Yazi)",
+})
+
 -- Aerial 插件快捷键
-vim.keymap.set("n", "<leader>q", function()
+vim.keymap.set("n", "<leader>t", function()
 	local ok, aerial = pcall(require, "aerial")
 	if ok then
 		aerial.toggle()
-		-- 手动切换焦点到aerial窗口
 		local aerial_info = aerial.get_location()
 		if aerial_info and aerial_info.winid then
 			vim.api.nvim_set_current_win(aerial_info.winid)
@@ -131,21 +135,11 @@ end, {
 	desc = "打开/关闭大纲 (Toggle Outline) --插件(Aerial)",
 })
 
--- Yazi 插件快捷键
-vim.keymap.set("n", "<leader>e", "<cmd>Yazi<CR>", {
-	desc = "打开文件管理器 (Open yazi) --插件(Yazi)",
-})
-
--- ToggleTerm 插件快捷键
-vim.keymap.set("n", "<leader>t", ":ToggleTerm<CR>", {
-	desc = "打开/关闭终端 (Toggle Terminal) --插件(ToggleTerm)",
-})
-
 -- CodeCompanion 插件快捷键
 vim.keymap.set({ "n", "v" }, "<leader><tab>", "<cmd>Dashboard<CR>", {
 	desc = "打开仪表盘 (Open Dashboard) --插件(Dashboard)",
 })
-vim.keymap.set({ "n", "v" }, "<leader>a", "<cmd>CodeCompanionChat Toggle<CR>", {
+vim.keymap.set({ "n", "v" }, "<leader>cc", "<cmd>CodeCompanionChat Toggle<CR>", {
 	desc = "CodeCompanion 聊天窗口 (Toggle Chat) --插件(CodeCompanion)",
 })
 vim.keymap.set("v", "ga", "<cmd>CodeCompanionChat Add<CR>", {
