@@ -4,7 +4,6 @@
 return {
 	"mason-org/mason.nvim",
 	cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
-	event = "VeryLazy",
 	dependencies = {
 		"mason-org/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
@@ -35,6 +34,7 @@ return {
 				"pyright",
 				"clangd",
 				"sqls",
+				"jdtls",
 			},
 			automatic_enable = true,
 		})
@@ -93,6 +93,17 @@ return {
 		-- SQL LSP配置
 		vim.lsp.config("sqls", {
 			filetypes = { "sql", "mysql", "plsql" },
+		})
+
+		-- JDTLS 配置
+		vim.lsp.config("jdtls", {
+			filetypes = { "java" },
+			root_dir = function(fname)
+				return vim.fs.root(fname, {
+					"mvnw", "gradlew", ".git", "pom.xml", "build.gradle", "build.gradle.kts",
+					"build.xml", "settings.gradle"
+				}) or vim.fn.getcwd()
+			end,
 		})
 
 		-- 简化通知系统
