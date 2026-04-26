@@ -1,5 +1,5 @@
 -- lua/mason.lua
--- Mason 安装和自动安装 LSP
+-- Mason 安装和自动安装
 ---@diagnostic disable: undefined-global
 
 return {
@@ -131,9 +131,60 @@ return {
 					return
 				end
 
-				-- 调用 LSP 功能增强模块
-				if _G.lsp_features then
-					_G.lsp_features.on_attach(client, args.bufnr)
+				local bufnr = args.bufnr
+
+				-- Document Highlight
+				if client.server_capabilities.documentHighlightProvider then
+					local group = vim.api.nvim_create_augroup("lsp_document_highlight", { clear = false })
+					vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+					vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+						group = group,
+						buffer = bufnr,
+						callback = vim.lsp.buf.document_highlight,
+					})
+					vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+						group = group,
+						buffer = bufnr,
+						callback = vim.lsp.buf.clear_references,
+					})
+				end
+
+				-- Inlay Hints
+				if client:supports_method("textDocument/inlayHint") then
+					vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+				end
+
+				-- CodeLens
+				if client:supports_method("textDocument/codeLens") then
+					vim.lsp.codelens.enable(true, { bufnr = bufnr })
+				end
+
+				-- Inline Completion
+				if client:supports_method("textDocument/inlineCompletion") then
+					vim.lsp.inline_completion.enable(true, { client_id = client.id })
+					vim.keymap.set("i", "<M-CR>", function()
+						vim.lsp.inline_completion.accept()
+					end, {
+						buffer = bufnr,
+						desc = "Accept inline completion",
+					})
+					vim.keymap.set("i", "<M-]>", function()
+						vim.lsp.inline_completion.select({ count = 1 })
+					end, {
+						buffer = bufnr,
+						desc = "Next inline completion",
+					})
+					vim.keymap.set("i", "<M-[>", function()
+						vim.lsp.inline_completion.select({ count = -1 })
+					end, {
+						buffer = bufnr,
+						desc = "Prev inline completion",
+					})
+				end
+
+				-- Linked Editing Range
+				if client:supports_method("textDocument/linkedEditingRange") then
+					vim.lsp.linked_editing_range.enable(true, { client_id = client.id })
 				end
 
 				-- 排除不需要通知的 LSP 服务器

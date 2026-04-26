@@ -56,12 +56,6 @@ This is a Neovim 0.11+ configuration using `lazy.nvim` as the plugin manager. Th
 <leader>ds       " Show call stack (dapui)
 ```
 
-### CodeCompanion (AI Assistant)
-```vim
-<leader>a              " Toggle CodeCompanion chat
-<leader><tab>          " Open CodeCompanion action palette
-```
-
 ### Telescope Search
 ```vim
 <leader>ff      " Find files
@@ -154,31 +148,6 @@ keymap.lua auto-reloads on save via BufWritePost autocmd.
 - `stylua` - Lua
 - `black` - Python
 - `clang-format` - C/C++
-
-## Key Bindings Reference
-
-| Key | Action |
-|-----|--------|
-| `Space` | Leader key |
-| `<leader>ff` | Find files (Telescope) |
-| `<leader>fg` | Live grep (Telescope) |
-| `<leader>d` | Dashboard |
-| `<leader>f` | Format code (Conform) |
-| `<leader>bh/bl` | Buffer prev/next |
-| `<leader>a` | CodeCompanion Chat |
-| `<leader><tab>` | CodeCompanion Actions |
-| `<leader>q` | Toggle Aerial (code outline) |
-| `<leader>e` | Open Yazi file manager |
-| `<leader>t` | Toggle terminal |
-| `<leader>nd` | Dismiss notification (Noice) |
-| `ff` | Hop word jump |
-| `jj` | Exit insert mode |
-| `<C-s>` | Save file |
-| `<F1>` | Show keymaps (Telescope) |
-| `<F2>` | Rename symbol (Lspsaga) |
-| `gd` | Go to definition (Lspsaga) |
-| `H` / `L` | Line start / end |
-| `tt` / `bb` | Page up / down |
 
 ## Dependencies
 
