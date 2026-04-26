@@ -3,6 +3,7 @@
 ---@diagnostic disable
 return {
 	"mason-org/mason.nvim",
+	event = "VeryLazy",
 	cmd = { "Mason", "MasonInstall", "MasonUpdate", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
 	dependencies = {
 		"mason-org/mason-lspconfig.nvim",
@@ -98,57 +99,64 @@ return {
 		-- JDTLS 配置
 		vim.lsp.config("jdtls", {
 			filetypes = { "java" },
+			cmd = { "jdtls" },
 			root_dir = function(fname)
 				return vim.fs.root(fname, {
-					"mvnw", "gradlew", ".git", "pom.xml", "build.gradle", "build.gradle.kts",
-					"build.xml", "settings.gradle"
+					"mvnw",
+					"gradlew",
+					".git",
+					"pom.xml",
+					"build.gradle",
+					"build.gradle.kts",
+					"build.xml",
+					"settings.gradle",
 				}) or vim.fn.getcwd()
 			end,
+			init_options = {
+				bundles = {},
+			},
+			settings = {
+				java = {
+					home = vim.fn.exepath("java") or "/usr/lib/jvm/default",
+				},
+			},
 		})
 
-		-- 简化通知系统
+		-- LspAttach 事件处理
 		vim.api.nvim_create_autocmd("LspAttach", {
 			callback = function(args)
 				local client = vim.lsp.get_client_by_id(args.data.client_id)
-				if client then
-					-- 排除不需要通知的 LSP 服务器
-					local excluded_lsp = {
-						"render-markdown", -- render-markdown LSP
-					}
-
-					-- 检查是否在排除列表中
-					local should_notify = true
-					for _, excluded in ipairs(excluded_lsp) do
-						if client.name == excluded then
-							should_notify = false
-							break
-						end
-					end
-
-					if should_notify then
-						vim.notify(client.name .. " ready ", vim.log.levels.INFO, {
-							title = "LSP",
-						})
-					end
+				if not client then
+					return
 				end
+
+				-- 调用 LSP 功能增强模块
+				if _G.lsp_features then
+					_G.lsp_features.on_attach(client, args.bufnr)
+				end
+
+				-- 排除不需要通知的 LSP 服务器
+				if client.name == "render-markdown" then
+					return
+				end
+
+				vim.notify(client.name .. " ready", vim.log.levels.INFO, {
+					title = "LSP",
+				})
 			end,
 		})
 
-		-- Mason工具安装器 - 延迟初始化避免循环依赖
-		vim.defer_fn(function()
-			require("mason-tool-installer").setup({
-				ensure_installed = {
-					"stylua",
-					"black",
-					"clang-format",
-					"sql-formatter",
-					"google-java-format", -- Java 格式化工具
-				},
-				auto_update = true,
-				run_on_start = true,
-			})
-			-- 自动检查并安装缺失的工具
-			require("mason-tool-installer").check_install()
-		end, 1000)
+		-- Mason工具安装器
+		require("mason-tool-installer").setup({
+			ensure_installed = {
+				"stylua",
+				"black",
+				"clang-format",
+				"sql-formatter",
+				"google-java-format",
+			},
+			auto_update = true,
+			run_on_start = true,
+		})
 	end,
 }

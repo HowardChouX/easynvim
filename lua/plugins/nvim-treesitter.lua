@@ -5,6 +5,7 @@ return {
 	event = "VeryLazy",
 	build = ":TSUpdate",
 	opts = {
+		auto_install = true, -- 自动安装 ensure_installed 中的解析器
 		ensure_installed = {
 			"lua",
 			"vim",

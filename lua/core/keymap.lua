@@ -155,7 +155,7 @@ vim.keymap.set(
 )
 
 -- Noice.nvim：dismiss 通知
-vim.keymap.set("n", "<leader>nd", function()
+vim.keymap.set("n", "<leader>dn", function()
 	require("noice").cmd("dismiss")
 end, { silent = true, desc = "关闭通知 (Dismiss Notification) --插件(Noice)" })
 

@@ -144,6 +144,16 @@ return {
 				enabled = true,
 			},
 
+			-- ===== HTML 支持 =====
+			html = {
+				enabled = true,
+			},
+
+			-- ===== YAML 支持 =====
+			yaml = {
+				enabled = true,
+			},
+
 			-- ===== 完成建议 =====
 			completions = {
 				lsp = { enabled = true },

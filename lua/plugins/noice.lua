@@ -81,7 +81,7 @@ return {
 				size = { width = 40, height = "auto" },
 				border = "none",
 				zindex = 50,
-				footer = "按 <leader>nd 关闭",
+				footer = "按 <leader>dn 关闭",
 				win_options = {
 					winblend = 20,
 				},
@@ -117,7 +117,7 @@ return {
 				cmdline = { pattern = "^:", icon = "󰌘", lang = "vim" },
 				search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
 				search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
-				filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
+				filter = { pattern = "^:%s*!", icon = "$", lang = "vim" },
 				lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
 				help = { pattern = "^:%s*he?l?p?%s+", icon = "󰌖" },
 			},
