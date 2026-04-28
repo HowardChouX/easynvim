@@ -896,39 +896,11 @@ return {
 					show_presets = false, -- 不显示预设模型
 					show_model_choices = true, -- 显示模型选择界面
 				},
-				-- ===== Anthropic 适配器配置 =====
-				-- 配置连接到 Anthropic Claude API
-				anthropic = function()
-					local base_url = get_setting("ANTHROPIC_BASE_URL")
-					local api_key = get_setting("ANTHROPIC_API_KEY")
-					local model = get_setting("ANTHROPIC_MODEL")
-
-					-- ===== 环境变量检查 =====
-					if not base_url or not api_key then
-						vim.notify(
-							"CodeCompanion: 请在 ~/.claude/settings.json 中配置 ANTHROPIC_BASE_URL 和 ANTHROPIC_API_KEY",
-							vim.log.levels.ERROR
-						)
-						return nil
-					end
-					-- ===== 适配器扩展 =====
-					-- 基于 OpenAI 兼容 API 配置 Anthropic 适配器
-					return require("codecompanion.adapters").extend("openai_compatible", {
-						env = {
-							url = base_url:gsub("/$", ""), -- 清理 URL 结尾的斜杠
-							api_key = api_key, -- API 密钥
-						},
-						schema = {
-							model = { default = model }, -- 默认模型配置
-						},
-					})
-				end,
 				-- ===== DeepSeek 适配器配置 =====
 				-- 配置连接到 DeepSeek API
 				deepseek = function()
 					local base_url = "https://api.deepseek.com"
 					local api_key = os.getenv("DeepSeek_API_KEY")
-					local model = "deepseek-chat"
 					-- ===== 适配器扩展 =====
 					-- 基于 OpenAI 兼容 API 配置 DeepSeek 适配器
 					return require("codecompanion.adapters").extend("deepseek", {
@@ -937,7 +909,7 @@ return {
 							api_key = api_key, -- API 密钥
 						},
 						schema = {
-							model = { default = model }, -- 默认模型配置
+							model = { default = "deepseek-v4-flash" },
 						},
 					})
 				end,
@@ -961,7 +933,18 @@ return {
 					-- 基于 Claude Code ACP 适配器扩展配置
 					return require("codecompanion.adapters").extend("claude_code", {
 						defaults = {
-							model = get_setting("ANTHROPIC_MODEL"), -- 从 settings.json 获取模型
+							mcpServers = "inherit_from_config", -- 继承配置文件中的 MCP 服务器设置
+						},
+					})
+				end,
+				-- ===== OpenCode 适配器配置 =====
+				-- 配置连接到 OpenCode (开源 ACP 客户端)
+				-- OpenCode 模型由自身的配置文件管理 (~/.config/opencode/config.toml)
+				opencode = function()
+					-- ===== 适配器扩展 =====
+					-- 基于 OpenCode ACP 适配器扩展配置
+					return require("codecompanion.adapters").extend("opencode", {
+						defaults = {
 							mcpServers = "inherit_from_config", -- 继承配置文件中的 MCP 服务器设置
 						},
 					})
@@ -986,3 +969,4 @@ return {
 		},
 	},
 }
+

@@ -94,8 +94,10 @@ vim.keymap.set(
 vim.keymap.set("n", "ff", "<Cmd>HopWord<CR>", { silent = true, desc = "单词跳转 (Hop Word) --插件(Hop)" })
 
 -- Lspsaga 插件快捷键
-vim.keymap.set("n", "K", ":Lspsaga hover_doc<CR>", { desc = "悬停查看诊断 (Hover Diagnostic) --插件(Lspsaga)" })
-vim.keymap.set("n", "<F2>", ":Lspsaga rename<CR>", { desc = "全局重命名变量 (Rename) --插件(Lspsaga)" })
+vim.keymap.set("n", "K", ":Lspsaga show_line_diagnostics<CR>", { desc = "显示当前行诊断 (Line Diagnostics) --插件(Lspsaga)" })
+vim.keymap.set("n", "<F2>", function()
+  vim.lsp.buf.rename()
+end, { desc = "全局重命名变量 (Rename) --LSP" })
 vim.keymap.set(
 	"n",
 	"<leader>n",
